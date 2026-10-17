@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0a84ff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Absensi Guru">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" href="icons/ikon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <script src="config.js"></script>
+  <script src="assets/api.js"></script>
+    <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    :root {
+      --bg1: #c7d2fe;
+      --bg2: #fbcfe8;
+      --bg3: #bbf7d0;
+      --bg4: #fde68a;
+      --bg5: #a5f3fc;
+      --glass-bg: rgba(255,255,255,0.20);
+      --glass-border: rgba(255,255,255,0.62);
+      --glass-shadow: rgba(31,38,135,0.16);
+      --modal-bg: rgba(255,255,255,0.82);
+      --modal-text-sub: rgba(20,20,24,0.82);
+      --modal-glow: 0 1px 4px rgba(255,255,255,0.85);
+      --text-main: #1c1c1e;
+      --text-sub: rgba(28,28,30,0.6);
+      --accent-blue: #0a84ff;
+      --accent-blue-2: #5e5ce6;
+      --accent-green: #30d158;
+      --accent-green-2: #248a3d;
+      --accent-orange: #ff9f0a;
+      --accent-red: #ff3b30;
+      --divider: rgba(60,60,67,0.10);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Roboto, Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 8%, var(--bg1) 0%, transparent 42%),
+        radial-gradient(circle at 90% 12%, var(--bg2) 0%, transparent 48%),
+        radial-gradient(circle at 25% 92%, var(--bg3) 0%, transparent 50%),
+        radial-gradient(circle at 78% 85%, var(--bg4) 0%, transparent 45%),
+        radial-gradient(circle at 55% 45%, var(--bg5) 0%, transparent 55%),
+        #f2f3f7;
+      background-attachment: fixed;
+      animation: bgDrift 22s ease-in-out infinite alternate;
+      background-size: 130% 130%;
+      -webkit-font-smoothing: antialiased;
+    }
+    @keyframes bgDrift {
+      0%   { background-position: 0% 0%, 100% 0%, 20% 100%, 100% 100%, 50% 50%; }
+      100% { background-position: 10% 15%, 85% 20%, 35% 85%, 80% 80%, 60% 40%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body { animation: none; }
+    }
+    .wrap { max-width: 400px; width: 100%; }
+
+    /* ===== Kartu utama (absen) — Liquid Glass ===== */
+    .card {
+      position: relative;
+      background: var(--glass-bg);
+      backdrop-filter: blur(30px) saturate(220%) contrast(115%) brightness(1.08);
+      -webkit-backdrop-filter: blur(30px) saturate(220%) contrast(115%) brightness(1.08);
+      border: 1px solid var(--glass-border);
+      border-radius: 30px;
+      padding: 28px 22px 24px;
+      width: 100%;
+      box-shadow: 0 12px 36px var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.4);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      top: -60%; left: -70%;
+      width: 55%; height: 220%;
+      background: linear-gradient(115deg,
+        transparent 0%,
+        rgba(255,255,255,0.05) 35%,
+        rgba(255,255,255,0.55) 48%,
+        rgba(255,255,255,0.10) 60%,
+        transparent 100%);
+      transform: rotate(6deg);
+      pointer-events: none;
+      animation: glassSheen 7s ease-in-out infinite;
+      mix-blend-mode: overlay;
+    }
+    .card::after {
+      content: "";
+      position: absolute; inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(180deg,
+        rgba(255,255,255,0.75) 0%,
+        rgba(255,255,255,0.05) 25%,
+        rgba(255,255,255,0) 65%,
+        rgba(255,255,255,0.30) 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    @keyframes glassSheen {
+      0%, 100% { left: -70%; }
+      50% { left: 115%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .card::before { animation: none; }
+    }
+    .logo-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+    .logo-wrap img {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+    }
+    .school-tag {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-sub);
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-main);
+      text-align: center;
+      letter-spacing: -0.02em;
+      margin: 0 0 6px;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-blue-2));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    p.sub {
+      color: var(--text-sub);
+      font-size: 12.5px;
+      text-align: center;
+      line-height: 1.5;
+      margin: 0 0 20px;
+      padding: 0 6px;
+    }
+
+    .clock {
+      text-align: center;
+      font-size: 38px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+      margin-bottom: 18px;
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(20px) saturate(200%) contrast(112%) brightness(1.06);
+      -webkit-backdrop-filter: blur(20px) saturate(200%) contrast(112%) brightness(1.06);
+      border: 1px solid rgba(255,255,255,0.5);
+      border-radius: 20px;
+      padding: 16px 16px 14px;
+    }
+
+    label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--text-sub); }
+    .label-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .label-row label { margin-bottom: 0; }
+    .riwayat-link {
+      font-size: 11.5px; font-weight: 700; color: #c3c7cc; text-decoration: none;
+      pointer-events: none; transition: color 0.15s ease;
+    }
+    .riwayat-link.active { color: var(--accent-blue); pointer-events: auto; }
+    .riwayat-link.active:hover { text-decoration: underline; }
+    select, input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(0,0,0,0.05);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      background: #fff;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    select:focus, input:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(10,132,255,0.18);
+    }
+
+    .buttons { display: flex; gap: 10px; }
+    button {
+      border: none;
+      border-radius: 16px;
+      font-size: 14.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s, opacity .15s;
+    }
+    button:active { transform: scale(0.98); }
+    #btnMasuk, #btnKeluar { flex: 1; padding: 14px 8px; }
+    #btnMasuk {
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-green-2));
+      color: #ffffff;
+      box-shadow: 0 6px 16px rgba(48,209,88,0.35);
+    }
+    #btnKeluar {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-2));
+      color: #ffffff;
+      box-shadow: 0 6px 16px rgba(10,132,255,0.35);
+    }
+    button:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+
+    .status { margin-top: 12px; padding: 12px; border-radius: 14px; font-size: 12.5px; line-height: 1.45; display: none; }
+    .status.info { background: rgba(10,132,255,0.12); color: #0a4a8f; display: block; }
+    .status.ok { background: rgba(48,209,88,0.16); color: var(--accent-green-2); display: block; }
+    .status.err { background: rgba(255,59,48,0.14); color: var(--accent-red); display: block; }
+
+    /* Keterangan "Sudah absen Masuk..." di bawah tombol -- diperbesar &
+       dipertegas supaya langsung kebaca, mencegah guru panik/tekan
+       ulang saat sistem masih mengecek status di background. */
+    #statusAbsen.status { font-size: 15px; font-weight: 700; padding: 16px 14px; text-align: center; line-height: 1.5; }
+
+    .card2 {
+      position: relative;
+      background: var(--glass-bg);
+      backdrop-filter: blur(30px) saturate(220%) contrast(115%) brightness(1.08);
+      -webkit-backdrop-filter: blur(30px) saturate(220%) contrast(115%) brightness(1.08);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 20px 18px;
+      width: 100%;
+      box-shadow: 0 10px 28px var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.35);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .card2::before {
+      content: "";
+      position: absolute;
+      top: -60%; left: -70%;
+      width: 55%; height: 220%;
+      background: linear-gradient(115deg,
+        transparent 0%,
+        rgba(255,255,255,0.05) 35%,
+        rgba(255,255,255,0.50) 48%,
+        rgba(255,255,255,0.10) 60%,
+        transparent 100%);
+      transform: rotate(6deg);
+      pointer-events: none;
+      animation: glassSheen 8s ease-in-out infinite;
+      animation-delay: -2s;
+      mix-blend-mode: overlay;
+    }
+    .card2::after {
+      content: "";
+      position: absolute; inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(180deg,
+        rgba(255,255,255,0.70) 0%,
+        rgba(255,255,255,0.05) 25%,
+        rgba(255,255,255,0) 65%,
+        rgba(255,255,255,0.25) 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .card2::before { animation: none; }
+    }
+    h2 { font-size: 15.5px; font-weight: 700; margin: 0 0 4px; color: var(--text-main); letter-spacing: -0.01em; }
+    .card2 p.sub { text-align: left; padding: 0; margin: 0 0 16px; }
+
+    .pin-row { display: flex; gap: 10px; }
+    .pin-row input { margin-bottom: 0; }
+    #btnBukaForm {
+      flex-shrink: 0;
+      width: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-2));
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(10,132,255,0.3);
+    }
+    #btnBukaForm svg { width: 19px; height: 19px; }
+
+    #ketFields {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+    }
+    #ketFields.open {
+      max-height: 900px;
+      margin-top: 16px;
+    }
+    .divider { height: 1px; background: var(--divider); margin-bottom: 16px; }
+    #btnKet {
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-2));
+      color: #fff;
+      box-shadow: 0 6px 16px rgba(10,132,255,0.3);
+    }
+
+    .lock-hint {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; color: rgba(28,28,30,0.45);
+      margin-top: 10px;
+    }
+    .lock-hint svg { width: 13px; height: 13px; }
+
+    #btnReset { width: 100%; padding: 13px; background: #6b7280; color: #fff; }
+
+    details { margin-top: 4px; }
+    summary { font-size: 13px; color: var(--accent-blue); cursor: pointer; font-weight: 700; margin-bottom: 12px; }
+    details p.hint-small { font-size: 12px; color: #666; margin: 8px 0; }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 20, 30, 0.35);
+      backdrop-filter: blur(10px) saturate(190%) contrast(110%) brightness(1.05);
+      -webkit-backdrop-filter: blur(10px) saturate(190%) contrast(110%) brightness(1.05);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-card {
+      background: var(--modal-bg);
+      backdrop-filter: blur(34px) saturate(180%) contrast(105%);
+      -webkit-backdrop-filter: blur(34px) saturate(180%) contrast(105%);
+      border: 1px solid var(--glass-border);
+      border-radius: 26px;
+      padding: 32px 28px 28px;
+      max-width: 340px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 25px 50px -18px rgba(20,20,40,0.35);
+      animation: modalPop 0.18s ease-out;
+    }
+    @keyframes modalPop {
+      from { transform: scale(0.92); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal-icon {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 18px;
+      border: none;
+    }
+    .modal-icon.ok { background: linear-gradient(135deg, var(--accent-green), var(--accent-green-2)); color: #fff; }
+    .modal-icon.err { background: rgba(255,59,48,0.16); color: var(--accent-red); }
+    .modal-icon svg { width: 30px; height: 30px; }
+
+    /* ===== Icon centang hijau beranimasi -- dipakai untuk popup
+       "Sudah Absen Hari Ini" supaya kelihatan hidup, bukan cuma
+       ikon statis ===== */
+    .modal-icon.ok-animated {
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-green-2));
+      color: #ffffff;
+      animation: pulseRingHijau 1.7s ease-out 0.35s infinite;
+    }
+    .modal-icon.ok-animated svg { width: 32px; height: 32px; }
+    .modal-icon.ok-animated .check-path {
+      stroke-dasharray: 24;
+      stroke-dashoffset: 24;
+      animation: drawCheckHijau 0.5s cubic-bezier(.65,0,.45,1) 0.2s forwards;
+    }
+    @keyframes drawCheckHijau {
+      to { stroke-dashoffset: 0; }
+    }
+    @keyframes pulseRingHijau {
+      0%   { box-shadow: 0 0 0 0 rgba(48,209,88,0.45); }
+      70%  { box-shadow: 0 0 0 16px rgba(48,209,88,0); }
+      100% { box-shadow: 0 0 0 0 rgba(48,209,88,0); }
+    }
+    .modal-title { font-size: 17px; font-weight: 800; color: var(--text-main); margin: 0 0 8px; text-shadow: var(--modal-glow); }
+    .modal-desc { font-size: 13.5px; font-weight: 600; color: var(--modal-text-sub); line-height: 1.5; margin: 0 0 24px; text-shadow: var(--modal-glow); }
+    .modal-btn {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-2));
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 12px 40px;
+      font-size: 14.5px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      box-shadow: 0 6px 18px rgba(10,132,255,0.35);
+    }
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .modal-actions .modal-btn {
+      flex: 1;
+      width: auto;
+      padding: 12px 8px;
+    }
+    .modal-btn.secondary {
+      background: #e5e5ea;
+      color: var(--text-main);
+      box-shadow: none;
+    }
+
+    .rich-card {
+      border-radius: 30px;
+      padding: 34px 24px 26px;
+      max-width: 340px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 25px 50px -18px rgba(20,20,40,0.35);
+      animation: modalPop 0.18s ease-out;
+      backdrop-filter: blur(34px) saturate(220%) contrast(115%) brightness(1.08);
+      -webkit-backdrop-filter: blur(34px) saturate(220%) contrast(115%) brightness(1.08);
+      border: 1px solid rgba(255,255,255,0.55);
+    }
+    .rich-icon-ring {
+      width: 78px; height: 78px; border-radius: 50%;
+      margin: 0 auto 18px; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 10px 22px -8px rgba(0,0,0,0.28);
+    }
+    .rich-icon-ring svg { width: 34px; height: 34px; }
+    .rich-title { font-size: 18px; font-weight: 700; color: var(--text-main); margin: 0 0 14px; }
+    .rich-time {
+      font-size: 40px; font-weight: 700; letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums; margin: 0 0 4px;
+    }
+    .rich-date { font-size: 12.5px; color: var(--text-sub); margin: 0 0 16px; }
+    .rich-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 16px; border-radius: 999px;
+      font-size: 12.5px; font-weight: 700; margin-bottom: 22px;
+    }
+    .rich-badge svg { width: 13px; height: 13px; }
+
+    /* ===== Tag "Absen Daring" — tampil di atas badge shift kalau mode
+       daring aktif, supaya guru & admin langsung sadar ini absen dari
+       luar sekolah, bukan tertukar dengan absen tatap muka biasa ===== */
+    .rich-daring-tag {
+      display: none;
+      align-items: center; justify-content: center; gap: 6px;
+      padding: 6px 14px; border-radius: 999px;
+      font-size: 11.5px; font-weight: 700;
+      background: rgba(255,159,10,0.18); color: #b96400;
+      margin: 0 auto 12px; width: fit-content;
+    }
+    .rich-daring-tag svg { width: 12px; height: 12px; }
+    .rich-stat-card { background: rgba(255,255,255,0.7); border-radius: 20px; padding: 6px 18px; text-align: left; margin-bottom: 20px; }
+    .rich-stat-row {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 14px;
+      padding: 13px 0; border-bottom: 1px solid var(--divider);
+    }
+    .rich-stat-row:last-child { border-bottom: none; }
+    .rich-stat-label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-sub); font-weight: 600; flex-shrink: 0; padding-top: 1px; }
+    .rich-stat-label svg { width: 15px; height: 15px; opacity: 0.6; flex-shrink: 0; }
+    .rich-stat-value { font-size: 13px; font-weight: 700; color: var(--text-main); text-align: right; }
+    .rich-stat-value.accent { display: flex; align-items: center; gap: 5px; }
+    .rich-stat-value.accent svg { width: 13px; height: 13px; }
+    .rich-stat-value.warn { color: #b3401f; }
+    .rich-quote { font-size: 12.5px; font-style: italic; color: var(--text-sub); margin: 0 0 22px; line-height: 1.5; }
+    .rich-time-note {
+      display: none; font-size: 11px; color: var(--text-sub); background: rgba(10,132,255,0.08);
+      border-radius: 12px; padding: 8px 12px; margin: -12px 0 16px; line-height: 1.45; text-align: left;
+    }
+    .rich-time-note.show { display: block; }
+    .rich-cta {
+      width: 100%; border: none; border-radius: 999px; padding: 14px;
+      font-size: 14.5px; font-weight: 700; color: #fff; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .rich-cta svg { width: 15px; height: 15px; }
+
+    /* ===== Tombol simpan gambar & buka WhatsApp (popup hasil absen) ===== */
+    #richModalOverlay { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    #richModalOverlay .rich-card { margin: auto; }
+    .rich-wa {
+      display: none; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; margin-bottom: 10px; padding: 13px;
+      border: none; border-radius: 999px; color: #fff;
+      font-family: inherit; font-weight: 700; font-size: 14.5px; cursor: pointer;
+      text-decoration: none;
+    }
+    .rich-wa svg { width: 19px; height: 19px; flex-shrink: 0; }
+    .rich-wa-simpan { background: #1c1c1e; box-shadow: 0 6px 16px rgba(28,28,30,0.3); }
+    .rich-wa-buka { background: #25d366; box-shadow: 0 6px 18px rgba(37,211,102,0.4); }
+    .rich-wa:disabled { opacity: 0.65; cursor: wait; box-shadow: none; }
+    .rich-wa-hint {
+      display: none; margin: 0 0 14px; font-size: 11.5px; line-height: 1.5;
+      color: var(--text-sub); text-align: center;
+    }
+    .rich-wa-preview {
+      display: none; width: 100%; height: auto; border-radius: 14px;
+      margin: 0 0 14px; border: 1px solid rgba(60,60,67,0.15);
+    }
+
+
+    .rich-bg-pagi  { background: linear-gradient(165deg, rgba(234,242,255,0.85) 0%, rgba(214,231,255,0.8) 55%, rgba(198,220,255,0.8) 100%); }
+    .rich-bg-siang { background: linear-gradient(165deg, rgba(241,236,255,0.85) 0%, rgba(226,215,255,0.8) 55%, rgba(213,199,250,0.8) 100%); }
+    .rich-bg-penuh { background: linear-gradient(165deg, rgba(233,250,235,0.85) 0%, rgba(214,242,214,0.8) 55%, rgba(196,232,196,0.8) 100%); }
+
+    .rich-accent-pagi  .rich-icon-ring { background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-2)); color: #fff; }
+    .rich-accent-pagi  .rich-time      { color: #0a4a8f; }
+    .rich-accent-pagi  .rich-badge     { background: rgba(10,132,255,0.16); color: #0a4a8f; }
+    .rich-accent-pagi  .rich-stat-value.accent { color: var(--accent-blue); }
+    .rich-accent-pagi  .rich-cta       { background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-2)); box-shadow: 0 6px 16px rgba(10,132,255,0.35); }
+
+    .rich-accent-siang .rich-icon-ring { background: linear-gradient(135deg, #7c5cbf, #5e5ce6); color: #fff; }
+    .rich-accent-siang .rich-time      { color: #5b3f96; }
+    .rich-accent-siang .rich-badge     { background: rgba(124,92,191,0.16); color: #5b3f96; }
+    .rich-accent-siang .rich-stat-value.accent { color: #7c5cbf; }
+    .rich-accent-siang .rich-cta       { background: linear-gradient(135deg, #7c5cbf, #5e5ce6); box-shadow: 0 6px 16px rgba(124,92,191,0.35); }
+
+    .rich-accent-penuh .rich-icon-ring { background: linear-gradient(135deg, var(--accent-green), var(--accent-green-2)); color: #fff; }
+    .rich-accent-penuh .rich-time      { color: #206b28; }
+    .rich-accent-penuh .rich-badge     { background: rgba(48,209,88,0.18); color: #206b28; }
+    .rich-accent-penuh .rich-stat-value.accent { color: var(--accent-green-2); }
+    .rich-accent-penuh .rich-cta       { background: linear-gradient(135deg, var(--accent-green), var(--accent-green-2)); box-shadow: 0 6px 16px rgba(48,209,88,0.35); }
+
+    .rich-status-terlambat .rich-icon-ring { background: linear-gradient(135deg, #ff453a, #ff375f); color: #fff; }
+    .rich-status-terlambat .rich-time      { color: #b3401f; }
+    .rich-status-terlambat .rich-badge     { background: rgba(255,69,58,0.16); color: #b3401f; }
+    .rich-status-terlambat .rich-cta       { background: linear-gradient(135deg, #ff453a, #ff375f); box-shadow: 0 6px 16px rgba(255,69,58,0.35); }
+
+    /* ===== Popup Loading -- muncul begitu tombol absen ditekan ===== */
+    .loading-spinner {
+      width: 46px;
+      height: 46px;
+      margin: 0 auto 18px;
+      border: 5px solid rgba(10,132,255,0.2);
+      border-top-color: var(--accent-blue);
+      border-radius: 50%;
+      animation: spinLoading 0.8s linear infinite;
+    }
+    @keyframes spinLoading {
+      to { transform: rotate(360deg); }
+    }
+    #loadingOverlay .modal-card { padding: 34px 28px 30px; }
+    #loadingDesc { margin-bottom: 0; }
+
+    .app-footer {
+      margin-top: 18px;
+      padding: 14px 16px 16px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(30px) saturate(220%) contrast(115%) brightness(1.08);
+      -webkit-backdrop-filter: blur(30px) saturate(220%) contrast(115%) brightness(1.08);
+      border: 1px solid var(--glass-border);
+      border-radius: 22px;
+      box-shadow: 0 12px 36px var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.4);
+      text-align: center;
+    }
+    .app-footer::before {
+      content: "";
+      display: block;
+      height: 1px;
+      background: var(--divider);
+      margin-bottom: 12px;
+    }
+    .app-footer p {
+      margin: 0;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-sub);
+    }
+  </style>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+  <div class="wrap">
+
+    <div class="card">
+      <div class="logo-wrap">
+        <img src="assets/header.png" alt="Logo UPTD SPF SD Inpres Mariso I">
+      </div>
+      <div class="school-tag">UPTD SPF SD Inpres Mariso I</div>
+      <h1 id="appTitle">Absensi Guru</h1>
+      <p class="sub">Lokasi GPS diambil otomatis. Absen hanya bisa dari HP yang sudah terdaftar untuk namamu.</p>
+
+      <div class="clock" id="clock">--.--.--</div>
+
+      <div class="panel">
+        <div class="label-row">
+          <label for="guruSelect">Pilih Nama</label>
+          <a href="#" id="riwayatLink" class="riwayat-link" onclick="return false;">Riwayat Absensi -&gt;</a>
+        </div>
+        <select id="guruSelect">
+          <option value="">Memuat daftar guru...</option>
+        </select>
+
+        <div class="buttons">
+          <button id="btnMasuk" onclick="absen('masuk')">Absen Masuk</button>
+          <button id="btnKeluar" onclick="absen('keluar')">Absen Pulang</button>
+        </div>
+
+        <div id="statusAbsen" class="status"></div>
+      </div>
+    </div>
+
+    <div class="card2" id="adminMenu" style="display:none;">
+      <h2>Menu Admin</h2>
+      <p class="sub">Khusus admin/operator sekolah.</p>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px;">
+        <button type="button" onclick="window.location.href = 'dashboard.html'">Dashboard</button>
+        <button type="button" onclick="bukaKartuKeterangan()">Ajukan Keterangan Tidak Masuk</button>
+        <button type="button" onclick="window.location.href = 'pengaturan.html'">Pengaturan Mode Absen</button>
+      </div>
+    </div>
+
+    <div class="card2" id="ketCard" style="display:none;">
+      <h2>Ajukan Keterangan Tidak Masuk</h2>
+      <p class="sub">Khusus admin/operator sekolah. Masukkan PIN admin untuk membuka form.</p>
+
+      <div class="pin-row">
+        <input type="password" id="ketPin" inputmode="numeric" placeholder="Masukkan PIN admin">
+        <button id="btnBukaForm" onclick="bukaFormKeterangan()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"/><path d="M13 6l6 6-6 6"/>
+          </svg>
+        </button>
+      </div>
+
+      <div id="ketFields">
+        <div class="divider"></div>
+
+        <label for="ketGuruSelect">Nama Guru</label>
+        <select id="ketGuruSelect">
+          <option value="">Memuat daftar guru...</option>
+        </select>
+
+        <label for="ketTanggal">Tanggal Mulai</label>
+        <input type="date" id="ketTanggal">
+
+        <label for="ketTanggalSampai">Sampai Tanggal</label>
+        <input type="date" id="ketTanggalSampai">
+
+        <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-weight:600;">
+          <input type="checkbox" id="ketLewatiAkhirPekan" checked style="width:auto;margin:0;">
+          Lewati Sabtu &amp; Minggu
+        </label>
+
+        <label for="ketKode">Keterangan</label>
+        <select id="ketKode">
+          <option value="S">S - Sakit</option>
+          <option value="I">I - Izin</option>
+          <option value="A">A - Alpa (tanpa keterangan)</option>
+          <option value="DL">DL - Dinas Luar</option>
+          <option value="C">C - Cuti Melahirkan</option>
+        </select>
+
+        <button id="btnKet" onclick="simpanKeterangan()">Simpan Keterangan</button>
+
+        <div id="statusKet" class="status"></div>
+
+        <details>
+          <summary>Reset Perangkat (Advanced)</summary>
+          <p class="hint-small">Gunakan kalau ada masalah dengan HP ini (mis. guru ganti HP dan perlu didaftarkan ulang). Perlu PIN admin.</p>
+          <button id="btnReset" onclick="resetDeviceManual()">Reset Device Saya Sekarang</button>
+          <div id="statusReset" class="status" style="margin-top:10px;"></div>
+        </details>
+      </div>
+
+      <div class="lock-hint" id="lockHint">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+        </svg>
+        Form terkunci sampai PIN dimasukkan
+      </div>
+    </div>
+
+
+    <footer class="app-footer">
+      <p id="footerSecret">Dikembangkan oleh: Ade Irwansyah</p>
+    </footer>
+  </div>
+
+  <div id="modalOverlay" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-icon" id="modalIcon"></div>
+      <h3 class="modal-title" id="modalTitle"></h3>
+      <p class="modal-desc" id="modalDesc"></p>
+      <button class="modal-btn" onclick="closeModal()">Oke</button>
+    </div>
+  </div>
+
+  <div id="confirmOverlay" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-icon" style="background:#b3cadb; color:#1d1d1f;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </div>
+      <h3 class="modal-title" id="confirmTitle"></h3>
+      <p class="modal-desc" id="confirmDesc"></p>
+      <div class="modal-actions">
+        <button class="modal-btn secondary" onclick="cancelConfirm()">Batal</button>
+        <button class="modal-btn" onclick="proceedConfirm()">Ya, Lanjutkan</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="loadingOverlay" class="modal-overlay">
+    <div class="modal-card">
+      <div class="loading-spinner"></div>
+      <h3 class="modal-title" id="loadingTitle">Memproses Absen...</h3>
+      <p class="modal-desc" id="loadingDesc">Mohon tunggu, jangan tutup halaman ini.</p>
+    </div>
+  </div>
+
+  <div id="waRenderHost" style="position:fixed;left:-10000px;top:0;pointer-events:none;"></div>
+  <div id="richModalOverlay" class="modal-overlay">
+    <div class="rich-card" id="richCard">
+      <div class="rich-icon-ring" id="richIconRing"></div>
+      <p class="rich-title" id="richTitle"></p>
+      <div class="rich-time" id="richTime"></div>
+      <p class="rich-date" id="richDate"></p>
+      <div class="rich-daring-tag" id="richDaringTag"></div>
+      <div class="rich-badge" id="richBadge"></div>
+      <div class="rich-stat-card" id="richStatCard"></div>
+      <p class="rich-quote" id="richQuote"></p>
+      <p class="rich-time-note" id="richTimeNote"></p>
+      <button type="button" class="rich-wa rich-wa-simpan" id="richSimpan" onclick="simpanGambarWA()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M5 21h14"/></svg>
+        <span id="richSimpanLabel">Simpan Gambar</span>
+      </button>
+      <a class="rich-wa rich-wa-buka" id="richWaBuka" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3.5A11.8 11.8 0 0 0 12 0C5.4 0 .1 5.3.1 11.9c0 2.1.5 4.1 1.6 5.9L0 24l6.4-1.7a11.9 11.9 0 0 0 5.6 1.4c6.6 0 11.9-5.3 11.9-11.9 0-3.2-1.2-6.2-3.4-8.3zM12 21.7c-1.8 0-3.6-.5-5.1-1.4l-.4-.2-3.8 1 1-3.7-.2-.4a9.8 9.8 0 0 1-1.5-5.1C2 6.5 6.5 2 12 2c2.6 0 5.1 1 6.9 2.9a9.7 9.7 0 0 1 2.9 6.9c0 5.5-4.5 9.9-9.8 9.9zm5.4-7.4c-.3-.1-1.8-.9-2-1s-.5-.1-.7.1-.8 1-.9 1.1-.3.2-.6.1a8 8 0 0 1-4-3.5c-.3-.5.3-.5.9-1.6.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4s-1 1-1 2.4 1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3 1.8.8 2.5.8 3.4.7.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4s-.3-.2-.6-.3z"/></svg>
+        Buka WhatsApp
+      </a>
+      <p class="rich-wa-hint" id="richWaHint"></p>
+      <img class="rich-wa-preview" id="richWaPreview" alt="Gambar absen">
+      <button class="rich-cta" id="richCta" onclick="closeRichModal()">Oke</button>
+    </div>
+  </div>
+
+  <script>
+    var WEBAPP_URL = "index.html";
+
+    // Deteksi iPhone/iPad, dipakai backend untuk kasih instruksi akurasi GPS
+    // yang benar (soal "Precise Location"), bukan tips WiFi/Data Seluler yang
+    // memang tidak relevan untuk kasus iOS. Cek userAgent + fallback iPadOS
+    // (yang mengaku sebagai "Macintosh" tapi punya layar sentuh).
+    function isIOSDevice() {
+      var ua = navigator.userAgent || '';
+      var iOSByUA = /iPad|iPhone|iPod/.test(ua);
+      var iPadOSDesktopMode = /Macintosh/.test(ua) && navigator.maxTouchPoints > 1;
+      return iOSByUA || iPadOSDesktopMode;
+    }
+    // --- Akses tersembunyi ke halaman Pengaturan (khusus admin) ---
+    // Tekan-tahan judul "Absensi Guru" selama 2 detik untuk membuka
+    // halaman Pengaturan Mode Absen. Sengaja tidak ada tombol/link yang
+    // kelihatan, supaya guru biasa yang buka halaman ini tidak tahu ada
+    // jalur ke sana -- cuma admin yang tahu triknya.
+    (function () {
+      var titleEl = document.getElementById('appTitle');
+      if (!titleEl) return;
+      var pressTimer = null;
+      var HOLD_MS = 2000;
+      function bukaPengaturan() {
+        window.location.href = 'pengaturan.html';
+      }
+      function mulaiTekan(e) {
+        pressTimer = setTimeout(bukaPengaturan, HOLD_MS);
+      }
+      function batalTekan() {
+        if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+      }
+      titleEl.addEventListener('touchstart', mulaiTekan, { passive: true });
+      titleEl.addEventListener('touchend', batalTekan);
+      titleEl.addEventListener('touchmove', batalTekan);
+      titleEl.addEventListener('touchcancel', batalTekan);
+      titleEl.addEventListener('mousedown', mulaiTekan);
+      titleEl.addEventListener('mouseup', batalTekan);
+      titleEl.addEventListener('mouseleave', batalTekan);
+    })();
+
+    var ICON_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+    var ICON_ERR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+    // Versi centang yang "menggambar diri sendiri" (dipakai class .check-path
+    // di CSS untuk animasi stroke-dashoffset) -- dipakai khusus untuk popup
+    // "Sudah Absen Hari Ini".
+    var ICON_OK_ANIM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline class="check-path" points="20 6 9 17 4 12"></polyline></svg>';
+
+    function showModal(type, title, message) {
+      var icon = document.getElementById('modalIcon');
+      icon.className = 'modal-icon ' + (type === 'ok' ? 'ok' : 'err');
+      icon.innerHTML = type === 'ok' ? ICON_OK : ICON_ERR;
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalDesc').textContent = message;
+      document.getElementById('modalOverlay').classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('show');
+    }
+
+    // Popup loading -- muncul PERSIS saat tombol absen ditekan (sebelum
+    // GPS dicari) sampai hasilnya keluar, supaya siapapun yang pegang HP
+    // langsung sadar sistem sedang memproses, bukan macet.
+    function showLoading(msg) {
+      document.getElementById('loadingDesc').textContent = msg || 'Mohon tunggu, jangan tutup halaman ini.';
+      document.getElementById('loadingOverlay').classList.add('show');
+    }
+
+    function hideLoading() {
+      document.getElementById('loadingOverlay').classList.remove('show');
+    }
+
+    // Popup khusus: "Sudah Absen Hari Ini" -- muncul begitu guru memilih
+    // namanya dan ternyata sudah absen (Masuk dan/atau Pulang) hari itu.
+    // Pakai icon lingkaran hijau + centang beranimasi supaya terasa hidup,
+    // bukan sekadar teks status biasa.
+    function showSudahAbsenModal(message) {
+      var icon = document.getElementById('modalIcon');
+      icon.className = 'modal-icon ok-animated';
+      icon.innerHTML = ICON_OK_ANIM;
+      document.getElementById('modalTitle').textContent = 'Sudah Absen Hari Ini';
+      document.getElementById('modalDesc').textContent = message;
+      document.getElementById('modalOverlay').classList.add('show');
+    }
+
+    var pendingConfirmAction = null;
+
+    function showConfirm(title, desc, onYes) {
+      document.getElementById('confirmTitle').textContent = title;
+      document.getElementById('confirmDesc').textContent = desc;
+      pendingConfirmAction = onYes;
+      document.getElementById('confirmOverlay').classList.add('show');
+    }
+
+    function cancelConfirm() {
+      pendingConfirmAction = null;
+      document.getElementById('confirmOverlay').classList.remove('show');
+    }
+
+    function proceedConfirm() {
+      document.getElementById('confirmOverlay').classList.remove('show');
+      var action = pendingConfirmAction;
+      pendingConfirmAction = null;
+      if (action) action();
+    }
+
+    var RICH_ICONS = {
+      check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+      warn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M10.3 3.9l-8.5 14.7A1.5 1.5 0 0 0 3 21h18a1.5 1.5 0 0 0 1.3-2.3L13.7 3.9a1.5 1.5 0 0 0-2.6 0z"/><path d="M12 17h.01"/></svg>',
+      exit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>',
+      clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>',
+      person: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>',
+      shift: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+      dot: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>',
+      pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+      home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5l9-7 9 7"/><path d="M9 22V12h6v10"/></svg>',
+      calendar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>',
+      timer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2"/><path d="M9 2h6"/></svg>'
+    };
+
+    var SHIFT_LABEL = { pagi: 'Shift Pagi', siang: 'Shift Siang', penuh: 'Shift Penuh' };
+
+    function guessShiftFromTime() {
+      var h = new Date().getHours();
+      if (h < 10) return 'pagi';
+      if (h < 15) return 'siang';
+      return 'penuh';
+    }
+
+    function richRow(icon, label, valueHtml) {
+      return '<div class="rich-stat-row"><span class="rich-stat-label">' + icon + label + '</span><span ' + valueHtml + '</div>';
+    }
+
+    function showAbsenResult(result, tipe, nama) {
+      var shift = result.shift || guessShiftFromTime();
+      var isTerlambat = tipe === 'masuk' && !!result.terlambat;
+      var now = new Date();
+      // PENTING: pakai jam yang BENAR-BENAR tersimpan di sheet (dikirim server
+      // lewat result.jamTercatat), BUKAN jam browser saat popup ini dirender --
+      // dua-duanya bisa beda beberapa detik/menit karena proses cari lokasi GPS
+      // dan jaringan makan waktu setelah tombol absen dipencet.
+      var jam = result.jamTercatat || now.toLocaleTimeString('id-ID');
+      var tanggal = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+      var isDaring = result.modeAbsen === 'DARING';
+
+      var card = document.getElementById('richCard');
+      card.className = 'rich-card rich-bg-' + shift + ' rich-accent-' + shift + (isTerlambat ? ' rich-status-terlambat' : '');
+
+      var daringTag = document.getElementById('richDaringTag');
+      if (isDaring) {
+        daringTag.style.display = 'inline-flex';
+        daringTag.innerHTML = RICH_ICONS.home + ' Absen Daring (dari luar sekolah)';
+      } else {
+        daringTag.style.display = 'none';
+        daringTag.innerHTML = '';
+      }
+
+      var timeNote = document.getElementById('richTimeNote');
+      if (result.catatanWaktuKlik) {
+        timeNote.textContent = result.catatanWaktuKlik;
+        timeNote.classList.add('show');
+      } else {
+        timeNote.textContent = '';
+        timeNote.classList.remove('show');
+      }
+
+      var rows = richRow(RICH_ICONS.person, 'Nama', 'class="rich-stat-value">' + nama + '</span>') +
+                 richRow(RICH_ICONS.shift, 'Shift', 'class="rich-stat-value accent">' + RICH_ICONS.dot + ' ' + SHIFT_LABEL[shift] + '</span>');
+
+      if (tipe === 'masuk') {
+        document.getElementById('richIconRing').innerHTML = isTerlambat ? RICH_ICONS.warn : RICH_ICONS.check;
+        document.getElementById('richTitle').textContent = isTerlambat ? 'Absen Masuk Terlambat' : 'Absen Masuk Berhasil';
+        document.getElementById('richBadge').innerHTML = (isTerlambat ? RICH_ICONS.warn : RICH_ICONS.clock) + (isTerlambat ? ' Terlambat' : ' Tepat Waktu');
+
+        if (isTerlambat) {
+          rows += richRow(RICH_ICONS.timer, 'Keterlambatan', 'class="rich-stat-value warn">' + (result.keterlambatan || '-') + '</span>');
+        } else {
+          rows += richRow(RICH_ICONS.clock, 'Jam Masuk', 'class="rich-stat-value">' + jam + '</span>');
+        }
+        if (result.lokasiKeterangan) rows += richRow(RICH_ICONS.pin, 'Lokasi', 'class="rich-stat-value">' + result.lokasiKeterangan + '</span>');
+
+        var namaDepan = nama.split(' ')[0] || nama;
+        if (isTerlambat) {
+          document.getElementById('richQuote').textContent = 'Jangan lupa atur alarm lebih awal ya, ' + namaDepan + '.';
+        } else if (isDaring) {
+          document.getElementById('richQuote').textContent = 'Tetap semangat mendampingi belajar daring, ' + namaDepan + '!';
+        } else {
+          document.getElementById('richQuote').textContent = 'Selamat bertugas, ' + namaDepan + '! Semangat mengajar hari ini.';
+        }
+
+      } else {
+        document.getElementById('richIconRing').innerHTML = RICH_ICONS.exit;
+        document.getElementById('richTitle').textContent = 'Absen Pulang Berhasil';
+        document.getElementById('richBadge').innerHTML = RICH_ICONS.check + ' Selesai';
+
+        rows += richRow(RICH_ICONS.clock, 'Jam Pulang', 'class="rich-stat-value">' + jam + '</span>');
+        if (result.lokasiKeterangan) rows += richRow(RICH_ICONS.pin, 'Lokasi', 'class="rich-stat-value">' + result.lokasiKeterangan + '</span>');
+
+        document.getElementById('richQuote').textContent = 'Terima kasih, ' + (nama.split(' ')[0] || nama) + '. Sampai jumpa besok!';
+      }
+
+      document.getElementById('richTime').textContent = jam;
+      document.getElementById('richDate').textContent = tanggal;
+      document.getElementById('richStatCard').innerHTML = rows;
+      try {
+        siapkanBagikanWa({
+          tipe: tipe, nama: nama, tanggal: tanggal, jam: jam, shift: shift,
+          isTerlambat: isTerlambat, keterlambatan: result.keterlambatan || '-',
+          isDaring: isDaring, lokasi: result.lokasiKeterangan || ''
+        });
+      } catch (e) { /* tombol bagikan tidak boleh mengganggu popup absen */ }
+      document.getElementById('richModalOverlay').classList.add('show');
+    }
+
+    // ===================== BAGIKAN KE WHATSAPP =====================
+    // Alur 2 langkah: (1) "Simpan Gambar" mengunduh kartu absen sebagai PNG,
+    // (2) "Buka WhatsApp" membuka wa.me dengan teks absen sudah terisi, guru
+    // tinggal memilih grup dan melampirkan gambar dari Galeri.
+    // Kenapa tidak langsung bagikan gambar (navigator.share)? Halaman Apps
+    // Script berjalan di iframe lintas domain tanpa izin "web-share", jadi
+    // browser menolaknya. Unduhan file (allow-downloads) tetap diizinkan.
+    // Gambar dibuat di belakang layar begitu popup muncul supaya tombol
+    // Simpan langsung siap. Gambar sengaja dibuat terpisah dari popup
+    // (latar solid, tanpa tombol) supaya rapi dan terbaca di grup.
+    var WA_SEKOLAH = 'UPTD SPF SD Inpres Mariso I · Absensi Guru';
+    var WA_STATE = { data: null, url: null, dataUrl: null, nama: '', siap: false, token: 0 };
+    var WA_TEMA = {
+      pagi:  { bg: 'linear-gradient(165deg,#eaf2ff,#d6e7ff 55%,#c6dcff)', ring: 'linear-gradient(135deg,#0a84ff,#5e5ce6)', time: '#0a4a8f', badge: 'rgba(10,132,255,0.16)' },
+      siang: { bg: 'linear-gradient(165deg,#f1ecff,#e2d7ff 55%,#d5c7fa)', ring: 'linear-gradient(135deg,#7c5cbf,#5e5ce6)', time: '#5b3f96', badge: 'rgba(124,92,191,0.16)' },
+      penuh: { bg: 'linear-gradient(165deg,#e9faeb,#d6f2d6 55%,#c4e8c4)', ring: 'linear-gradient(135deg,#30d158,#248a3d)', time: '#206b28', badge: 'rgba(48,209,88,0.18)' },
+      telat: { ring: 'linear-gradient(135deg,#ff453a,#ff375f)', time: '#b3401f', badge: 'rgba(255,69,58,0.16)' }
+    };
+
+    function escWa(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+
+    function buildPesanWa(d) {
+      var statusTeks = d.tipe === 'masuk'
+        ? (d.isTerlambat ? 'Terlambat (' + d.keterlambatan + ')' : 'Tepat Waktu')
+        : 'Selesai';
+      return '*' + (d.tipe === 'masuk' ? 'ABSEN MASUK' : 'ABSEN PULANG') + '*\n' +
+        'Nama: ' + d.nama + '\n' +
+        'Tanggal: ' + d.tanggal + '\n' +
+        'Jam: ' + d.jam + '\n' +
+        'Shift: ' + SHIFT_LABEL[d.shift] + '\n' +
+        'Status: ' + statusTeks +
+        (d.isDaring ? '\nMode: Daring' : '') +
+        (d.lokasi ? '\nLokasi: ' + d.lokasi : '');
+    }
+
+    function buildGambarHtml(d) {
+      var t = WA_TEMA[d.shift] || WA_TEMA.pagi;
+      var telat = d.isTerlambat;
+      var ring = telat ? WA_TEMA.telat.ring : t.ring;
+      var warnaWaktu = telat ? WA_TEMA.telat.time : t.time;
+      var badgeBg = telat ? WA_TEMA.telat.badge : t.badge;
+      var ikon = (d.tipe === 'masuk' ? (telat ? RICH_ICONS.warn : RICH_ICONS.check) : RICH_ICONS.exit)
+        .replace('<svg ', '<svg width="30" height="30" ');
+      var judul = d.tipe === 'masuk' ? (telat ? 'Absen Masuk Terlambat' : 'Absen Masuk Berhasil') : 'Absen Pulang Berhasil';
+      var badgeTeks = d.tipe === 'masuk' ? (telat ? 'Terlambat' : 'Tepat Waktu') : 'Selesai';
+
+      var baris = [
+        ['Nama', d.nama, false],
+        ['Shift', SHIFT_LABEL[d.shift], false]
+      ];
+      if (d.tipe === 'masuk' && telat) baris.push(['Keterlambatan', d.keterlambatan, true]);
+      if (d.lokasi) baris.push(['Lokasi', d.lokasi, false]);
+      if (d.isDaring) baris.push(['Mode', 'Daring (dari luar sekolah)', false]);
+
+      var rowsHtml = baris.map(function (b, i) {
+        var border = i < baris.length - 1 ? 'border-bottom:1px solid rgba(60,60,67,0.12);' : '';
+        return '<div style="display:flex;justify-content:space-between;gap:14px;padding:11px 0;font-size:13px;' + border + '">' +
+          '<span style="color:rgba(28,28,30,0.6);font-weight:600;flex-shrink:0;">' + escWa(b[0]) + '</span>' +
+          '<span style="font-weight:700;text-align:right;color:' + (b[2] ? '#b3401f' : '#1c1c1e') + ';">' + escWa(b[1]) + '</span></div>';
+      }).join('');
+
+      return '<div style="width:360px;box-sizing:border-box;padding:24px 22px 18px;text-align:center;color:#1c1c1e;' +
+        'font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Arial,sans-serif;background:' + t.bg + ';">' +
+        '<div style="font-size:10.5px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:#46506a;margin-bottom:16px;">' + escWa(WA_SEKOLAH) + '</div>' +
+        '<div style="width:60px;height:60px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;color:#fff;background:' + ring + ';">' + ikon + '</div>' +
+        '<div style="font-size:17px;font-weight:700;margin-bottom:6px;">' + judul + '</div>' +
+        '<div style="font-size:36px;font-weight:700;margin-bottom:2px;color:' + warnaWaktu + ';">' + escWa(d.jam) + '</div>' +
+        '<div style="font-size:12.5px;color:rgba(28,28,30,0.6);margin-bottom:14px;">' + escWa(d.tanggal) + '</div>' +
+        '<div style="display:inline-block;padding:6px 16px;border-radius:999px;font-size:12.5px;font-weight:700;margin-bottom:16px;color:' + warnaWaktu + ';background:' + badgeBg + ';">' + badgeTeks + '</div>' +
+        '<div style="background:#fff;border-radius:16px;padding:2px 16px;text-align:left;margin-bottom:12px;">' + rowsHtml + '</div>' +
+        '<div style="font-size:10.5px;color:#5d6578;">Tercatat otomatis oleh sistem</div>' +
+        '</div>';
+    }
+
+    var WA_HINT_AWAL = 'Simpan gambar dulu, lalu buka WhatsApp dan lampirkan dari Galeri. Teks absen sudah terisi otomatis.';
+
+    function setSimpanLabel(teks) {
+      document.getElementById('richSimpanLabel').textContent = teks;
+    }
+
+    // Gambar tidak bisa dibuat (library gagal dimuat / HP terlalu lemah):
+    // sembunyikan tombol Simpan, tombol WhatsApp tetap mengirim teks saja.
+    function waGambarGagal() {
+      WA_STATE.siap = false;
+      document.getElementById('richSimpan').style.display = 'none';
+      var hint = document.getElementById('richWaHint');
+      hint.style.display = 'block';
+      hint.textContent = 'Gambar tidak bisa dibuat di HP ini. Tombol WhatsApp akan mengirim teks absen saja.';
+    }
+
+    function siapkanBagikanWa(d) {
+      if (WA_STATE.url) { try { URL.revokeObjectURL(WA_STATE.url); } catch (e) {} }
+      WA_STATE.data = d;
+      WA_STATE.url = null;
+      WA_STATE.dataUrl = null;
+      WA_STATE.nama = '';
+      WA_STATE.siap = false;
+      var token = ++WA_STATE.token;
+
+      var btnSimpan = document.getElementById('richSimpan');
+      var btnBuka = document.getElementById('richWaBuka');
+      var hint = document.getElementById('richWaHint');
+      var prev = document.getElementById('richWaPreview');
+      prev.style.display = 'none';
+      prev.removeAttribute('src');
+      btnBuka.href = 'https://wa.me/?text=' + encodeURIComponent(buildPesanWa(d));
+      btnBuka.style.display = 'flex';
+      hint.style.display = 'block';
+
+      if (typeof html2canvas === 'undefined') { waGambarGagal(); return; }
+
+      btnSimpan.style.display = 'flex';
+      btnSimpan.disabled = true;
+      setSimpanLabel('Menyiapkan gambar...');
+      hint.textContent = 'Menyiapkan gambar absen...';
+
+      var host = document.getElementById('waRenderHost');
+      host.innerHTML = buildGambarHtml(d);
+      var node = host.firstChild;
+
+      setTimeout(function () {
+        html2canvas(node, { scale: 2, backgroundColor: '#ffffff', useCORS: true, logging: false })
+          .then(function (canvas) {
+            if (token !== WA_STATE.token) return; // popup sudah ditutup/diganti
+            try { WA_STATE.dataUrl = canvas.toDataURL('image/png'); } catch (e) { WA_STATE.dataUrl = null; }
+            canvas.toBlob(function (blob) {
+              if (token !== WA_STATE.token) return;
+              host.innerHTML = '';
+              if (!blob) { waGambarGagal(); return; }
+              var tgl = new Date();
+              var stempel = tgl.getFullYear() + String(tgl.getMonth() + 1).padStart(2, '0') + String(tgl.getDate()).padStart(2, '0');
+              WA_STATE.nama = 'absen-' + d.tipe + '-' + stempel + '.png';
+              WA_STATE.url = URL.createObjectURL(blob);
+              WA_STATE.siap = true;
+              btnSimpan.disabled = false;
+              setSimpanLabel('Simpan Gambar');
+              hint.textContent = WA_HINT_AWAL;
+            }, 'image/png');
+          })
+          .catch(function () {
+            if (token === WA_STATE.token) waGambarGagal();
+          });
+      }, 60);
+    }
+
+    // Langkah 1: unduh gambar. Pratinjau gambar ikut ditampilkan sebagai
+    // cadangan: kalau unduhan otomatis tidak jalan di HP tertentu, guru bisa
+    // tekan-tahan gambar lalu pilih Simpan.
+    function simpanGambarWA() {
+      if (!WA_STATE.siap || !WA_STATE.url) return;
+      try {
+        var a = document.createElement('a');
+        a.href = WA_STATE.url;
+        a.download = WA_STATE.nama || 'absen.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } catch (e) { /* pratinjau di bawah tetap bisa disimpan manual */ }
+
+      var prev = document.getElementById('richWaPreview');
+      if (WA_STATE.dataUrl) {
+        prev.src = WA_STATE.dataUrl;
+        prev.style.display = 'block';
+      }
+      setSimpanLabel('Simpan Ulang Gambar');
+      document.getElementById('richWaHint').textContent =
+        'Gambar disimpan. Sekarang buka WhatsApp, pilih grup, lalu lampirkan gambar dari Galeri. Kalau gambar belum tersimpan, tekan-tahan gambar di atas lalu pilih Simpan.';
+    }
+
+    function closeRichModal() {
+      document.getElementById('richModalOverlay').classList.remove('show');
+    }
+
+    function tickClock() {
+      var d = new Date();
+      document.getElementById('clock').textContent = d.toLocaleTimeString('id-ID');
+    }
+    setInterval(tickClock, 1000);
+    tickClock();
+
+    (function () {
+      var d = new Date();
+      var iso = d.getFullYear() + '-' +
+        String(d.getMonth() + 1).padStart(2, '0') + '-' +
+        String(d.getDate()).padStart(2, '0');
+      document.getElementById('ketTanggal').value = iso;
+      document.getElementById('ketTanggalSampai').value = iso;
+      // Kalau tanggal mulai dimajukan melewati "sampai", ikutkan otomatis.
+      document.getElementById('ketTanggal').addEventListener('change', function () {
+        var sampai = document.getElementById('ketTanggalSampai');
+        if (!sampai.value || sampai.value < this.value) sampai.value = this.value;
+      });
+    })();
+
+    function bukaFormKeterangan() {
+      var pin = document.getElementById('ketPin').value;
+      if (!pin) {
+        showModal('err', 'PIN Kosong', 'Masukkan PIN admin terlebih dahulu.');
+        return;
+      }
+      document.getElementById('ketFields').classList.add('open');
+      document.getElementById('lockHint').style.display = 'none';
+    }
+
+    /** Rapikan nama untuk TAMPILAN saja (mis. "ADE IRWANSYAH, S.KOM" jadi
+     *  "Ade Irwansyah, S.Kom"). Tidak dipakai untuk data yang dikirim ke
+     *  server -- 'nama' asli dari sheet tetap dipakai apa adanya supaya
+     *  tidak mengubah data pencatatan. */
+    function formatNama(str) {
+      if (!str) return str;
+      return str.toLowerCase().replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+    }
+
+    /** Ambil pesan error yang aman ditampilkan -- tidak pernah kosong,
+     *  walau err.message undefined (mis. kegagalan jaringan murni tanpa
+     *  pesan dari server). */
+    function pesanError(err) {
+      return (err && err.message) ? err.message : 'Tidak ada detail dari server. Periksa koneksi internet HP kamu, lalu coba lagi.';
+    }
+
+    function getDeviceId() {
+      var KEY = 'absensi_device_id';
+
+      function readCookie(name) {
+        var match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+        return match ? decodeURIComponent(match[1]) : null;
+      }
+
+      function writeCookie(name, value) {
+        try {
+          document.cookie = name + '=' + encodeURIComponent(value) +
+            '; max-age=' + (365 * 24 * 60 * 60) +
+            '; path=/' +
+            '; SameSite=Lax';
+        } catch (e) {
+          console.warn('[DeviceID] Cookie write error:', e);
+        }
+      }
+
+      var id = null;
+
+      try {
+        id = localStorage.getItem(KEY);
+        if (id) console.log('[DeviceID] Ditemukan di localStorage:', id);
+      } catch (e) {
+        console.warn('[DeviceID] localStorage error:', e);
+        id = null;
+      }
+
+      if (!id) {
+        try {
+          id = sessionStorage.getItem(KEY);
+          if (id) {
+            console.log('[DeviceID] Ditemukan di sessionStorage (restore ke localStorage):', id);
+            try { localStorage.setItem(KEY, id); } catch (e) { }
+          }
+        } catch (e) {
+          console.warn('[DeviceID] sessionStorage error:', e);
+        }
+      }
+
+      if (!id) {
+        id = readCookie(KEY);
+        if (id) {
+          console.log('[DeviceID] Ditemukan di cookie (restore ke localStorage + sessionStorage):', id);
+          try { localStorage.setItem(KEY, id); } catch (e) { }
+          try { sessionStorage.setItem(KEY, id); } catch (e) { }
+        }
+      }
+
+      if (!id) {
+        id = (window.crypto && crypto.randomUUID)
+          ? crypto.randomUUID()
+          : 'dev-' + Date.now() + '-' + Math.random().toString(36).substring(2, 12);
+
+        console.log('[DeviceID] ID baru dibuat:', id);
+
+        try { localStorage.setItem(KEY, id); } catch (e) { console.warn('[DeviceID] Gagal set localStorage:', e); }
+        try { sessionStorage.setItem(KEY, id); } catch (e) { console.warn('[DeviceID] Gagal set sessionStorage:', e); }
+        try { writeCookie(KEY, id); } catch (e) { console.warn('[DeviceID] Gagal set cookie:', e); }
+      } else {
+        try { writeCookie(KEY, id); } catch (e) { }
+        try { sessionStorage.setItem(KEY, id); } catch (e) { }
+      }
+
+      return id;
+    }
+
+    function setStatus(elId, type, msg) {
+      var el = document.getElementById(elId);
+      el.className = 'status ' + type;
+      el.textContent = msg;
+    }
+
+    function setButtonsDisabled(disabled) {
+      document.getElementById('btnMasuk').disabled = disabled;
+      document.getElementById('btnKeluar').disabled = disabled;
+    }
+
+    function fillSelect(selectEl, list) {
+      selectEl.innerHTML = '<option value="">-- Pilih nama --</option>';
+      list.forEach(function (g) {
+        var opt = document.createElement('option');
+        opt.value = g.kode;
+        opt.textContent = g.nama;
+        opt.setAttribute('data-nama', g.nama);
+        selectEl.appendChild(opt);
+      });
+    }
+
+    google.script.run
+      .withSuccessHandler(function (list) {
+        fillSelect(document.getElementById('guruSelect'), list);
+        fillSelect(document.getElementById('ketGuruSelect'), list);
+
+        // Ingat nama guru terakhir yang dipilih di HP ini, supaya tidak perlu
+        // memilih lagi tiap hari. Guru tetap bisa ganti lewat dropdown.
+        var tersimpan = null;
+        try { tersimpan = localStorage.getItem('absensi_guru_terakhir'); } catch (e) { }
+        if (tersimpan) {
+          var sel = document.getElementById('guruSelect');
+          var ada = Array.prototype.some.call(sel.options, function (o) { return o.value === tersimpan; });
+          if (ada) {
+            sel.value = tersimpan;
+            localSudahMasuk = false;
+            localSudahKeluar = false;
+            updateTombolStatus(false);
+            updateRiwayatLink();
+          }
+        }
+      })
+      .withFailureHandler(function (err) {
+        showModal('err', 'Gagal Memuat Data', 'Gagal memuat daftar guru: ' + pesanError(err));
+      })
+      .getDaftarGuru();
+
+    document.getElementById('guruSelect').addEventListener('change', function () {
+        // Reset "pengingat lokal" tiap kali ganti nama di dropdown --
+        // status sudah-absen-atau-belum itu spesifik per guru, jadi tidak
+        // boleh terbawa dari guru sebelumnya yang dipilih di HP yang sama.
+        localSudahMasuk = false;
+        localSudahKeluar = false;
+        try {
+          if (this.value) localStorage.setItem('absensi_guru_terakhir', this.value);
+          else localStorage.removeItem('absensi_guru_terakhir');
+        } catch (e) { }
+        updateTombolStatus(true);
+        updateRiwayatLink();
+      });
+
+    function updateRiwayatLink() {
+      var select = document.getElementById('guruSelect');
+      var kode = select.value;
+      var link = document.getElementById('riwayatLink');
+
+      if (!kode) {
+        link.classList.remove('active');
+        link.removeAttribute('href');
+        link.onclick = function () { return false; };
+        return;
+      }
+
+      var deviceId = getDeviceId();
+      var url = 'riwayat.html?kode=' + encodeURIComponent(kode) +
+        '&dev=' + encodeURIComponent(deviceId || '');
+
+      link.classList.add('active');
+      link.setAttribute('href', url);
+      link.onclick = function () {
+        // Popup singkat supaya jeda layar putih saat pindah ke halaman
+        // Riwayat (proses render Riwayat.html di server) tidak terasa
+        // seperti macet. Tidak return false -- biar navigasi tetap jalan.
+        showLoading('Membuka Riwayat Absensi...');
+      };
+    }
+
+    // "Pengingat lokal" di HP: begitu absen Masuk/Pulang BERHASIL, langsung
+    // dikunci di sini juga -- tidak menunggu/bergantung pengecekan status ke
+    // server sesudahnya. Ini mencegah kasus: absen sukses, tapi pengecekan
+    // status sesudahnya gagal karena jaringan sempat putus, lalu tombol
+    // dianggap "gagal cek, biar aman aktifkan lagi" -- padahal sebenarnya
+    // sudah sukses -- sehingga guru bisa menekan absen lagi tanpa sadar.
+    var localSudahMasuk = false;
+    var localSudahKeluar = false;
+
+    function updateTombolStatus(showPopupJikaSudah) {
+      var select = document.getElementById('guruSelect');
+      var kode = select.value;
+      var btnMasuk = document.getElementById('btnMasuk');
+      var btnKeluar = document.getElementById('btnKeluar');
+
+      if (!kode) {
+        btnMasuk.disabled = false;
+        btnKeluar.disabled = false;
+        document.getElementById('statusAbsen').style.display = 'none';
+        return;
+      }
+
+      setStatus('statusAbsen', 'info', 'Mengecek status absen hari ini...');
+      // Kunci dulu kedua tombol selama pengecekan berjalan -- ini yang
+      // mencegah kejadian "tekan Absen Masuk pas masih loading, dikira
+      // aplikasi macet, padahal sebenarnya sudah tercatat sebelumnya".
+      btnMasuk.disabled = true;
+      btnKeluar.disabled = true;
+      var deviceId = getDeviceId();
+
+      google.script.run
+        .withSuccessHandler(function (status) {
+          if (!status.deviceCocok) {
+            document.getElementById('statusAbsen').style.display = 'none';
+            btnMasuk.disabled = localSudahMasuk;
+            btnKeluar.disabled = localSudahKeluar;
+            return;
+          }
+
+          // Pengingat lokal digabung dengan status dari server -- yang mana
+          // saja yang bilang "sudah", tombolnya tetap terkunci.
+          var sudahMasuk = !!status.sudahMasuk || localSudahMasuk;
+          var sudahKeluar = !!status.sudahKeluar || localSudahKeluar;
+
+          btnMasuk.disabled = sudahMasuk;
+          btnKeluar.disabled = !sudahMasuk || sudahKeluar;
+
+          if (sudahKeluar) {
+            var pesanSudah = 'Sudah absen Masuk (' + (status.jamMasuk || '-') + ') dan Pulang (' + (status.jamKeluar || '-') + ') hari ini.';
+            setStatus('statusAbsen', 'info', pesanSudah);
+            if (showPopupJikaSudah) showSudahAbsenModal(pesanSudah);
+          } else if (sudahMasuk) {
+            var pesanSudah2 = 'Sudah absen Masuk pukul ' + (status.jamMasuk || '-') + '. Absen Pulang saat mau pulang.';
+            setStatus('statusAbsen', 'info', pesanSudah2);
+            if (showPopupJikaSudah) showSudahAbsenModal(pesanSudah2);
+          } else {
+            document.getElementById('statusAbsen').style.display = 'none';
+          }
+        })
+        .withFailureHandler(function () {
+          document.getElementById('statusAbsen').style.display = 'none';
+          // Fail-open HANYA untuk tombol yang belum diketahui sudah dipakai
+          // -- kalau pengingat lokal bilang sudah absen, tombol itu TETAP
+          // terkunci walau pengecekan ke server gagal (lihat komentar di
+          // deklarasi localSudahMasuk/localSudahKeluar di atas).
+          btnMasuk.disabled = localSudahMasuk;
+          btnKeluar.disabled = localSudahKeluar;
+        })
+        .getStatusHariIni(kode, deviceId);
+    }
+
+    function absen(tipe) {
+      var select = document.getElementById('guruSelect');
+      var kode = select.value;
+      var nama = select.options[select.selectedIndex] ?
+        select.options[select.selectedIndex].getAttribute('data-nama') : '';
+
+      if (!kode) { showModal('err', 'Belum Memilih Nama', 'Pilih nama kamu terlebih dahulu.'); return; }
+      if (!navigator.geolocation) { showModal('err', 'GPS Tidak Didukung', 'Browser HP kamu tidak mendukung GPS. Gunakan Chrome/Safari terbaru.'); return; }
+
+      var label = (tipe === 'masuk') ? 'Masuk' : 'Pulang';
+      showConfirm(
+        'Konfirmasi Absen ' + label,
+        'Kamu akan absen ' + label.toLowerCase() + ' atas nama ' + formatNama(nama) + '. Lanjutkan?',
+        function () { doAbsen(tipe, kode, nama); }
+      );
+    }
+
+    function doAbsen(tipe, kode, nama) {
+      var deviceId = getDeviceId();
+      if (!deviceId) {
+        showModal('err', 'Penyimpanan Diblokir', 'Browser memblokir penyimpanan lokal (misal mode incognito ketat). Gunakan browser HP biasa (bukan mode penyamaran).');
+        return;
+      }
+
+      // Catat jam SAAT INI (sebelum GPS dicari & proses loading berjalan)
+      // -- dikirim ke server supaya status Terlambat/Tepat Waktu dihitung
+      // dari jam guru benar-benar menekan tombol, bukan dari jam setelah
+      // loading GPS/jaringan selesai (bisa beda puluhan detik).
+      var waktuKlik = new Date().toISOString();
+
+      setButtonsDisabled(true);
+      setStatus('statusAbsen', 'info', 'Mengambil lokasi GPS, mohon tunggu...');
+      // POPUP loading muncul SEKARANG JUGA, begitu tombol ditekan -- supaya
+      // siapapun yang pegang HP langsung tahu sistem sedang memproses
+      // (bukan macet), tidak cuma teks kecil di bawah tombol.
+      showLoading('Mengambil lokasi GPS, mohon tunggu...');
+
+      navigator.geolocation.getCurrentPosition(
+        function (pos) {
+          var lat = pos.coords.latitude;
+          var lng = pos.coords.longitude;
+          var accuracy = pos.coords.accuracy;
+
+          setStatus('statusAbsen', 'info', 'Lokasi didapat (akurasi kurang lebih ' + Math.round(accuracy) + ' m). Menyimpan absen...');
+          showLoading('Lokasi didapat. Menyimpan absen ke server, mohon tunggu...');
+
+          google.script.run
+            .withSuccessHandler(function (result) {
+              hideLoading();
+              document.getElementById('statusAbsen').style.display = 'none';
+              if (result.ok) {
+                // Kunci pengingat lokal SEKARANG JUGA, sebelum menunggu
+                // updateTombolStatus() -- supaya walau pengecekan status
+                // berikutnya gagal/lambat, tombol yang baru dipakai tidak
+                // ikut aktif lagi.
+                if (tipe === 'masuk') localSudahMasuk = true;
+                else localSudahKeluar = true;
+                showAbsenResult(result, tipe, nama);
+              } else {
+                showModal('err', 'Absen Ditolak', result.message);
+              }
+              updateTombolStatus();
+            })
+            .withFailureHandler(function (err) {
+              // Jaringan bisa saja putus SETELAH data terkirim ke server
+              // (absen sudah tersimpan, cuma jawaban baliknya tidak sampai
+              // ke HP). Jangan langsung bilang "gagal" -- cek dulu status
+              // sebenarnya, supaya guru tidak bingung/menekan tombol lagi
+              // tanpa perlu.
+              showLoading('Koneksi terputus. Mengecek apakah absen sempat tercatat...');
+              setStatus('statusAbsen', 'info', 'Koneksi terputus. Mengecek apakah absen sempat tercatat...');
+              cekUlangSetelahGagalKoneksi(tipe, kode, deviceId);
+            })
+            .recordAttendance(kode, nama, lat, lng, accuracy, tipe, deviceId, waktuKlik, isIOSDevice());
+        },
+        function (err) {
+          hideLoading();
+          setButtonsDisabled(false);
+          var msg = 'Gagal mengambil lokasi GPS.';
+          if (err.code === 1) msg = 'Izin lokasi ditolak. Aktifkan izin lokasi untuk browser ini di pengaturan HP.';
+          else if (err.code === 2) msg = 'Lokasi tidak tersedia. Pastikan GPS HP aktif.';
+          else if (err.code === 3) msg = 'Waktu pengambilan lokasi habis. Coba lagi di area terbuka.';
+          showModal('err', 'Gagal Mengambil Lokasi', msg);
+        },
+        { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 }
+      );
+    }
+
+    /**
+     * Dipanggil kalau request recordAttendance() gagal terkirim/gagal
+     * dapat jawaban (biasanya jaringan putus-nyambung). Cek ulang status
+     * sebenarnya ke server -- ada 2 kemungkinan:
+     *  1. Ternyata SUDAH tercatat (request tadi sebenarnya sukses, cuma
+     *     jawabannya yang hilang) -> beri tahu guru dengan jelas, kunci
+     *     pengingat lokal, JANGAN suruh dia coba lagi.
+     *  2. Memang belum tercatat -> beri tahu jaringan bermasalah,
+     *     persilakan coba lagi.
+     * Kalau pengecekan ini SENDIRI juga gagal (jaringan masih putus total),
+     * baru tampilkan pesan generik dan aktifkan lagi tombolnya.
+     */
+    function cekUlangSetelahGagalKoneksi(tipe, kode, deviceId) {
+      google.script.run
+        .withSuccessHandler(function (status) {
+          hideLoading();
+          document.getElementById('statusAbsen').style.display = 'none';
+          var sudahTercatat = (tipe === 'masuk') ? !!status.sudahMasuk : !!status.sudahKeluar;
+
+          if (status.deviceCocok && sudahTercatat) {
+            if (tipe === 'masuk') localSudahMasuk = true; else localSudahKeluar = true;
+            var jamTercatat = (tipe === 'masuk') ? status.jamMasuk : status.jamKeluar;
+            showModal('ok', 'Absen Berhasil Tercatat', 'Koneksi sempat terputus, tapi absen ' + (tipe === 'masuk' ? 'Masuk' : 'Pulang') + ' kamu berhasil tersimpan pukul ' + jamTercatat + '. Tidak perlu absen ulang.');
+          } else {
+            showModal('err', 'Belum Tersimpan', 'Koneksi terputus dan absen belum sempat tersimpan. Pastikan sinyal/internet stabil, lalu coba absen lagi.');
+          }
+          updateTombolStatus();
+        })
+        .withFailureHandler(function () {
+          hideLoading();
+          document.getElementById('statusAbsen').style.display = 'none';
+          showModal('err', 'Jaringan Bermasalah', 'Tidak bisa terhubung ke server sama sekali. Periksa sinyal/internet HP kamu, lalu coba lagi. Kalau tadi sempat ada respons dari server, cek dulu status di atas sebelum absen ulang supaya tidak dobel.');
+          updateTombolStatus();
+        })
+        .getStatusHariIni(kode, deviceId);
+    }
+
+    // Daftar tanggal (yyyy-MM-dd) dari mulai s/d sampai, opsional lewati Sabtu/Minggu.
+    function buatDaftarTanggal(mulai, sampai, lewatiAkhirPekan) {
+      var hasil = [];
+      var p = mulai.split('-'), q = sampai.split('-');
+      var d = new Date(+p[0], +p[1] - 1, +p[2]);
+      var akhir = new Date(+q[0], +q[1] - 1, +q[2]);
+      while (d <= akhir) {
+        var dow = d.getDay();
+        if (!(lewatiAkhirPekan && (dow === 0 || dow === 6))) {
+          hasil.push(d.getFullYear() + '-' +
+            String(d.getMonth() + 1).padStart(2, '0') + '-' +
+            String(d.getDate()).padStart(2, '0'));
+        }
+        d.setDate(d.getDate() + 1);
+      }
+      return hasil;
+    }
+
+    function simpanKeterangan() {
+      var select = document.getElementById('ketGuruSelect');
+      var kode = select.value;
+      var nama = select.options[select.selectedIndex] ?
+        select.options[select.selectedIndex].getAttribute('data-nama') : '';
+      var mulai = document.getElementById('ketTanggal').value;
+      var sampai = document.getElementById('ketTanggalSampai').value || mulai;
+      var lewati = document.getElementById('ketLewatiAkhirPekan').checked;
+      var kodeKet = document.getElementById('ketKode').value;
+      var pin = document.getElementById('ketPin').value;
+
+      if (!kode) { showModal('err', 'Belum Memilih Guru', 'Pilih nama guru terlebih dahulu.'); return; }
+      if (!mulai) { showModal('err', 'Tanggal Kosong', 'Pilih tanggal mulai terlebih dahulu.'); return; }
+      if (sampai < mulai) { showModal('err', 'Tanggal Tidak Valid', 'Tanggal "Sampai" tidak boleh lebih awal dari tanggal mulai.'); return; }
+      if (!pin) { showModal('err', 'PIN Kosong', 'Masukkan PIN admin.'); return; }
+
+      var daftar = buatDaftarTanggal(mulai, sampai, lewati);
+      if (daftar.length === 0) { showModal('err', 'Tidak Ada Tanggal', 'Rentang yang dipilih hanya berisi Sabtu/Minggu. Matikan "Lewati Sabtu & Minggu" bila memang perlu.'); return; }
+      if (daftar.length > 62) { showModal('err', 'Rentang Terlalu Panjang', 'Maksimal 62 hari sekali simpan. Pecah menjadi beberapa kali.'); return; }
+
+      var deviceId = getDeviceId();
+      if (!deviceId) {
+        showModal('err', 'Penyimpanan Diblokir', 'Browser memblokir penyimpanan lokal (misal mode incognito ketat). Gunakan browser HP biasa (bukan mode penyamaran).');
+        return;
+      }
+
+      var btn = document.getElementById('btnKet');
+      btn.disabled = true;
+
+      var berhasil = 0, gagal = [], gagalBerurutan = 0, pesanTerakhir = '';
+
+      function selesai(dihentikan) {
+        btn.disabled = false;
+        document.getElementById('statusKet').style.display = 'none';
+        var ringkas = berhasil + ' dari ' + daftar.length + ' tanggal tersimpan.';
+        if (gagal.length) {
+          ringkas += '\n\nGagal (' + gagal.length + '):\n' + gagal.slice(0, 8).map(function (g) { return g.tgl + ': ' + g.msg; }).join('\n');
+          if (gagal.length > 8) ringkas += '\n... dan ' + (gagal.length - 8) + ' lainnya.';
+        }
+        if (dihentikan) ringkas += '\n\nProses dihentikan karena kegagalan berulang.';
+        showModal(gagal.length === 0 ? 'ok' : 'err',
+                  gagal.length === 0 ? 'Keterangan Tersimpan' : 'Selesai dengan Catatan',
+                  ringkas);
+        if (berhasil > 0) document.getElementById('ketPin').value = '';
+      }
+
+      function proses(idx) {
+        if (idx >= daftar.length) { selesai(false); return; }
+        setStatus('statusKet', 'info', 'Menyimpan ' + (idx + 1) + ' / ' + daftar.length + '...');
+        var tgl = daftar[idx];
+        google.script.run
+          .withSuccessHandler(function (result) {
+            if (result.ok) { berhasil++; gagalBerurutan = 0; }
+            else {
+              gagal.push({ tgl: tgl, msg: result.message });
+              gagalBerurutan = (result.message === pesanTerakhir) ? gagalBerurutan + 1 : 1;
+              pesanTerakhir = result.message;
+              if (gagalBerurutan >= 2) { selesai(true); return; }
+            }
+            proses(idx + 1);
+          })
+          .withFailureHandler(function (err) {
+            gagal.push({ tgl: tgl, msg: pesanError(err) });
+            selesai(true);
+          })
+          .recordKeterangan(kode, nama, tgl, kodeKet, pin, deviceId);
+      }
+      proses(0);
+    }
+
+    function resetDeviceManual() {
+      var pin = prompt('Masukkan PIN admin untuk reset device:');
+      if (!pin) return;
+
+      var deviceId = getDeviceId();
+      if (!deviceId) {
+        showModal('err', 'Error', 'Device ID tidak terdeteksi.');
+        return;
+      }
+
+      var btn = document.getElementById('btnReset');
+      btn.disabled = true;
+      setStatus('statusReset', 'info', 'Mengirim permintaan reset...');
+
+      google.script.run
+        .withSuccessHandler(function (result) {
+          btn.disabled = false;
+          if (result.ok) {
+            setStatus('statusReset', 'ok', result.message);
+            try { localStorage.removeItem('absensi_device_id'); } catch (e) { }
+            try { sessionStorage.removeItem('absensi_device_id'); } catch (e) { }
+            document.cookie = 'absensi_device_id=; max-age=0; path=/';
+            setTimeout(function () { location.reload(); }, 1500);
+          } else {
+            setStatus('statusReset', 'err', result.message);
+          }
+        })
+        .withFailureHandler(function (err) {
+          btn.disabled = false;
+          setStatus('statusReset', 'err', 'Error: ' + pesanError(err));
+        })
+        .selfResetDevice(pin, deviceId);
+    }
+  </script>
+<script>
+  // Menu admin disembunyikan. Ketuk teks footer 5x berturut-turut
+  // (jeda maks 2 detik) untuk memunculkan: Dashboard, Ajukan Keterangan,
+  // Pengaturan.
+  function bukaKartuKeterangan() {
+    var card = document.getElementById('ketCard');
+    if (card) { card.style.display = 'block'; card.scrollIntoView({ behavior: 'smooth' }); }
+  }
+  (function () {
+    var n = 0, t = null;
+    var el = document.getElementById('footerSecret');
+    if (!el) return;
+    el.addEventListener('click', function () {
+      n++;
+      clearTimeout(t);
+      t = setTimeout(function () { n = 0; }, 2000);
+      if (n >= 5) {
+        n = 0;
+        var m = document.getElementById('adminMenu');
+        if (m) { m.style.display = 'block'; m.scrollIntoView({ behavior: 'smooth' }); }
+      }
+    });
+  })();
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+  }
+</script>
+</body>
+</html>
