@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0a84ff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Absensi Guru">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" href="ikon-192.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <script src="config.js"></script>
+  <script src="api.js"></script>
+  <title>Pengaturan Mode Absen</title>
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    :root {
+      --bg1: #c7d2fe;
+      --bg2: #fbcfe8;
+      --bg3: #bbf7d0;
+      --bg4: #fde68a;
+      --bg5: #a5f3fc;
+      --glass-bg: rgba(255,255,255,0.20);
+      --glass-border: rgba(255,255,255,0.62);
+      --glass-shadow: rgba(31,38,135,0.16);
+      --text-main: #1c1c1e;
+      --text-sub: #6b6b70;
+      --accent-blue: #0a84ff;
+      --accent-blue-2: #5e5ce6;
+      --accent-green: #30d158;
+      --accent-green-2: #248a3d;
+      --accent-orange: #ff9f0a;
+      --accent-orange-2: #ff375f;
+      --accent-red: #ff3b30;
+      --divider: rgba(60,60,67,0.12);
+      --input-bg: rgba(118,118,128,0.08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg1: #2e1065;
+        --bg2: #500724;
+        --bg3: #052e2b;
+        --bg4: #422006;
+        --bg5: #082f49;
+        --glass-bg: rgba(30,30,38,0.30);
+        --glass-border: rgba(255,255,255,0.18);
+        --glass-shadow: rgba(0,0,0,0.45);
+        --text-main: #f2f2f7;
+        --text-sub: #9a9aa2;
+        --divider: rgba(255,255,255,0.10);
+        --input-bg: rgba(118,118,128,0.24);
+      }
+    }
+
+    html, body { height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Arial, sans-serif;
+      margin: 0;
+      padding: 18px;
+      padding-bottom: 64px;
+      color: var(--text-main);
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 8%, var(--bg1) 0%, transparent 42%),
+        radial-gradient(circle at 88% 15%, var(--bg2) 0%, transparent 48%),
+        radial-gradient(circle at 30% 90%, var(--bg3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 88%, var(--bg4) 0%, transparent 45%),
+        radial-gradient(circle at 55% 45%, var(--bg5) 0%, transparent 55%),
+        #f2f3f7;
+      background-attachment: fixed;
+      background-size: 130% 130%;
+      animation: bgDrift 22s ease-in-out infinite alternate;
+      -webkit-font-smoothing: antialiased;
+    }
+    @keyframes bgDrift {
+      0%   { background-position: 0% 0%, 100% 0%, 20% 100%, 100% 100%, 50% 50%; }
+      100% { background-position: 10% 15%, 85% 20%, 35% 85%, 80% 80%, 60% 40%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body { animation: none; }
+    }
+    @media (prefers-color-scheme: dark) {
+      body { background-color: #0b0b0f; }
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      padding: 7px 12px 7px 8px;
+      border-radius: 999px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(24px) saturate(210%) contrast(112%) brightness(1.06);
+      -webkit-backdrop-filter: blur(24px) saturate(210%) contrast(112%) brightness(1.06);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 2px 10px var(--glass-shadow);
+    }
+    .back-link svg { width: 16px; height: 16px; }
+
+    .card {
+      position: relative;
+      background: var(--glass-bg);
+      backdrop-filter: blur(28px) saturate(220%) contrast(115%) brightness(1.08);
+      -webkit-backdrop-filter: blur(28px) saturate(220%) contrast(115%) brightness(1.08);
+      border-radius: 22px;
+      padding: 20px 18px;
+      margin-bottom: 16px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 8px 30px var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.4);
+      overflow: hidden;
+    }
+    @media (prefers-color-scheme: dark) {
+      .card { box-shadow: 0 8px 30px var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.06); }
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      top: -60%; left: -70%;
+      width: 55%; height: 220%;
+      background: linear-gradient(115deg,
+        transparent 0%,
+        rgba(255,255,255,0.05) 35%,
+        rgba(255,255,255,0.55) 48%,
+        rgba(255,255,255,0.10) 60%,
+        transparent 100%);
+      transform: rotate(6deg);
+      pointer-events: none;
+      animation: glassSheen 7s ease-in-out infinite;
+      mix-blend-mode: overlay;
+    }
+    .card::after {
+      content: "";
+      position: absolute; inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(180deg,
+        rgba(255,255,255,0.75) 0%,
+        rgba(255,255,255,0.05) 25%,
+        rgba(255,255,255,0) 65%,
+        rgba(255,255,255,0.30) 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    @keyframes glassSheen {
+      0%, 100% { left: -70%; }
+      50% { left: 115%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .card::before { animation: none; }
+    }
+
+    h1 {
+      font-size: 21px;
+      font-weight: 700;
+      margin: 0 0 4px 0;
+      letter-spacing: -0.02em;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-blue-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .subtitle {
+      color: var(--text-sub);
+      font-size: 13px;
+      line-height: 1.4;
+      margin-bottom: 18px;
+    }
+    h2 {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0 0 10px 0;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
+    }
+
+    .mode-pilihan {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+      background: var(--input-bg);
+      padding: 5px;
+      border-radius: 16px;
+    }
+    .mode-btn {
+      flex: 1;
+      padding: 13px 8px;
+      border-radius: 12px;
+      background: transparent;
+      text-align: center;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      user-select: none;
+      color: var(--text-sub);
+      transition: all .25s cubic-bezier(.4,0,.2,1);
+    }
+    .mode-btn span { font-weight: 400; font-size: 11.5px; opacity: 0.85; }
+    .mode-btn.aktif-normal {
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-green-2));
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(48,209,88,0.35);
+    }
+    .mode-btn.aktif-daring {
+      background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-2));
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(255,159,10,0.35);
+    }
+    .mode-status {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 14px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .badge-normal { background: rgba(48,209,88,0.16); color: var(--accent-green-2); }
+    .badge-daring { background: rgba(255,159,10,0.18); color: #b96400; }
+    @media (prefers-color-scheme: dark) {
+      .badge-daring { color: var(--accent-orange); }
+    }
+
+    .catatan {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-top: 8px;
+      line-height: 1.45;
+    }
+
+    .guru-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 4px;
+      border-bottom: 1px solid var(--divider);
+    }
+    .guru-item:last-child { border-bottom: none; }
+    .guru-nama { font-size: 14.5px; font-weight: 500; }
+    .guru-kode { font-size: 11px; color: var(--text-sub); margin-top: 1px; }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+    .switch input { display: none; }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(120,120,128,0.32);
+      border-radius: 999px;
+      transition: .25s;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 24px; width: 24px;
+      left: 2px; bottom: 2px;
+      background-color: white;
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+      transition: .25s;
+    }
+    input:checked + .slider {
+      background-image: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-2));
+    }
+    input:checked + .slider:before { transform: translateX(20px); }
+
+    input[type=text], input[type=password] {
+      width: 100%;
+      padding: 13px 14px;
+      font-size: 15px;
+      border: 1px solid var(--divider);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      background: var(--input-bg);
+      color: var(--text-main);
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    input[type=text]::placeholder, input[type=password]::placeholder { color: var(--text-sub); }
+    input[type=text]:focus, input[type=password]:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(10,132,255,0.18);
+    }
+    .pin-row { display: flex; gap: 10px; }
+    .pin-row input { margin-bottom: 0; }
+
+    button.aksi {
+      width: 100%;
+      padding: 14px;
+      font-size: 15.5px;
+      font-weight: 700;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-2));
+      color: #fff;
+      cursor: pointer;
+      margin-top: 8px;
+      box-shadow: 0 6px 18px rgba(10,132,255,0.35);
+      transition: transform .15s, box-shadow .15s, opacity .15s;
+    }
+    button.aksi:active { transform: scale(0.98); }
+    button.aksi:disabled {
+      background: linear-gradient(135deg, #9fbfe0, #a6a3ec);
+      box-shadow: none;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    #pesan {
+      margin-top: 12px;
+      padding: 11px 13px;
+      border-radius: 12px;
+      font-size: 13px;
+      display: none;
+      font-weight: 500;
+    }
+    #pesan.ok { display: block; background: rgba(48,209,88,0.16); color: var(--accent-green-2); }
+    #pesan.error { display: block; background: rgba(255,59,48,0.14); color: var(--accent-red); }
+
+    #loading {
+      text-align: center;
+      padding: 60px 0;
+      color: var(--text-sub);
+      font-size: 14px;
+    }
+    #kontenUtama { display: none; }
+
+    .search-box { margin-bottom: 10px; }
+    .empty-guru {
+      text-align: center;
+      padding: 24px 8px;
+      color: var(--text-sub);
+      font-size: 13px;
+    }
+      /* ===== Footer kaca (tetap di bawah layar) ===== */
+    .glass-footer {
+      position: fixed;
+      left: 50%;
+      bottom: 12px;
+      transform: translateX(-50%);
+      z-index: 50;
+      padding: 7px 18px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+      color: rgba(29,29,31,0.65);
+      background: rgba(255,255,255,0.35);
+      -webkit-backdrop-filter: blur(14px) saturate(160%);
+      backdrop-filter: blur(14px) saturate(160%);
+      border: 1px solid rgba(255,255,255,0.55);
+      border-radius: 999px;
+      box-shadow: 0 8px 24px -10px rgba(50,70,90,0.35),
+                  inset 0 1px 0 rgba(255,255,255,0.6);
+      pointer-events: none;
+    }
+    .glass-footer strong { color: rgba(29,29,31,0.85); font-weight: 800; }
+    @media (prefers-color-scheme: dark) {
+      .glass-footer {
+        color: rgba(242,242,247,0.65);
+        background: rgba(30,30,38,0.35);
+        border-color: rgba(255,255,255,0.16);
+        box-shadow: 0 8px 24px -10px rgba(0,0,0,0.6),
+                    inset 0 1px 0 rgba(255,255,255,0.10);
+      }
+      .glass-footer strong { color: rgba(242,242,247,0.9); }
+    }
+  </style>
+</head>
+<body>
+
+  <a class="back-link" id="backLink" href="#" target="_top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+    Kembali ke Halaman Absensi
+  </a>
+
+  <div id="loading">Memuat pengaturan&hellip;</div>
+
+  <div id="kontenUtama">
+
+    <div class="card">
+      <h1>Pengaturan Mode Absen</h1>
+      <div class="subtitle">Ubah mode absen sekolah dan izin daring per guru langsung dari sini &mdash; tidak perlu buka spreadsheet.</div>
+
+      <h2>Mode Absen Sekolah</h2>
+      <div class="mode-status">
+        Status saat ini:
+        <span id="badgeMode" class="badge badge-normal">NORMAL</span>
+      </div>
+      <div class="mode-pilihan">
+        <div class="mode-btn" id="btnModeNormal" onclick="pilihMode('NORMAL')">
+          Normal<br><span>Wajib absen di sekolah</span>
+        </div>
+        <div class="mode-btn" id="btnModeDaring" onclick="pilihMode('DARING')">
+          Daring<br><span>Semua guru boleh absen dari rumah</span>
+        </div>
+      </div>
+      <div class="catatan">Mode DARING otomatis berlaku untuk SEMUA guru (dipakai saat sekolah libur tatap muka). Untuk mengizinkan daring hanya sebagian guru, gunakan daftar di bawah dan biarkan mode sekolah tetap NORMAL.</div>
+    </div>
+
+    <div class="card">
+      <h2>Izin Daring per Guru</h2>
+      <div class="catatan" style="margin-bottom:10px; margin-top:0;">
+        Aktifkan untuk guru tertentu yang diizinkan tetap absen daring meski sekolah sudah mode NORMAL (misalnya sedang dinas luar / sakit tapi tetap presensi).
+      </div>
+      <input type="text" id="cariGuru" class="search-box" placeholder="Cari nama guru...">
+      <div id="daftarGuru"></div>
+    </div>
+
+    <div class="card">
+      <h2>Konfirmasi Perubahan</h2>
+      <div class="pin-row">
+        <input type="password" id="pinAdmin" placeholder="PIN Admin" inputmode="numeric">
+      </div>
+      <button class="aksi" id="btnSimpan" onclick="simpanSemuaPerubahan()">Simpan Perubahan</button>
+      <div id="pesan"></div>
+    </div>
+
+  </div>
+
+<script>
+  var WEBAPP_URL = "index.html";
+  document.getElementById('backLink').href = WEBAPP_URL;
+
+  var dataAwal = null;          // snapshot dari server
+  var modeDipilih = null;       // NORMAL / DARING (state UI sekarang)
+  var izinDiubah = {};          // { kode: true/false } -- hanya yang berubah dari data awal
+
+  function getDeviceId() {
+    var KEY = 'absensi_device_id';
+    var id = null;
+    try { id = localStorage.getItem(KEY); } catch (e) { }
+    if (!id) {
+      try { id = sessionStorage.getItem(KEY); } catch (e) { }
+    }
+    if (!id) {
+      var match = document.cookie.match(new RegExp('(?:^|; )' + KEY + '=([^;]*)'));
+      id = match ? decodeURIComponent(match[1]) : null;
+    }
+    if (!id) {
+      id = (window.crypto && crypto.randomUUID)
+        ? crypto.randomUUID()
+        : 'dev-' + Date.now() + '-' + Math.random().toString(36).substring(2, 12);
+    }
+    try { localStorage.setItem(KEY, id); } catch (e) { }
+    try { sessionStorage.setItem(KEY, id); } catch (e) { }
+    return id;
+  }
+
+  function pesanError(err) {
+    return (err && err.message) ? err.message : 'Tidak ada detail dari server. Periksa koneksi internet, lalu coba lagi.';
+  }
+
+  function tampilkanPesan(teks, jenis) {
+    var el = document.getElementById('pesan');
+    el.textContent = teks;
+    el.className = jenis; // 'ok' atau 'error'
+  }
+
+  window.onload = function () {
+    google.script.run
+      .withSuccessHandler(renderData)
+      .withFailureHandler(function (err) {
+        document.getElementById('loading').textContent =
+          'Gagal memuat data: ' + pesanError(err);
+      })
+      .getPengaturanAbsenData();
+  };
+
+  function renderData(data) {
+    dataAwal = data;
+    modeDipilih = data.modeSekolah;
+    izinDiubah = {};
+
+    updateTampilanMode();
+
+    var wadah = document.getElementById('daftarGuru');
+    wadah.innerHTML = '';
+
+    if (!data.guruList || data.guruList.length === 0) {
+      wadah.innerHTML = '<div class="empty-guru">Belum ada data guru ditemukan di sheet "Data Guru".</div>';
+    } else {
+      data.guruList.forEach(function (g) {
+        var baris = document.createElement('div');
+        baris.className = 'guru-item';
+        baris.setAttribute('data-nama', g.nama.toLowerCase());
+
+        var kiri = document.createElement('div');
+        kiri.innerHTML = '<div class="guru-nama">' + escapeHtml(g.nama) + '</div>' +
+                          '<div class="guru-kode">' + escapeHtml(g.kode) + '</div>';
+
+        var label = document.createElement('label');
+        label.className = 'switch';
+        var input = document.createElement('input');
+        input.type = 'checkbox';
+        input.checked = !!g.izinDaring;
+        input.setAttribute('data-kode', g.kode);
+        input.setAttribute('data-awal', g.izinDaring ? '1' : '0');
+        input.onchange = function () {
+          var kode = this.getAttribute('data-kode');
+          var awal = this.getAttribute('data-awal') === '1';
+          if (this.checked === awal) {
+            delete izinDiubah[kode];
+          } else {
+            izinDiubah[kode] = this.checked;
+          }
+        };
+        var slider = document.createElement('span');
+        slider.className = 'slider';
+        label.appendChild(input);
+        label.appendChild(slider);
+
+        baris.appendChild(kiri);
+        baris.appendChild(label);
+        wadah.appendChild(baris);
+      });
+    }
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('kontenUtama').style.display = 'block';
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function pilihMode(mode) {
+    modeDipilih = mode;
+    updateTampilanMode();
+  }
+
+  function updateTampilanMode() {
+    var btnNormal = document.getElementById('btnModeNormal');
+    var btnDaring = document.getElementById('btnModeDaring');
+    var badge = document.getElementById('badgeMode');
+
+    btnNormal.classList.remove('aktif-normal');
+    btnDaring.classList.remove('aktif-daring');
+
+    if (modeDipilih === 'DARING') {
+      btnDaring.classList.add('aktif-daring');
+      badge.textContent = 'DARING';
+      badge.className = 'badge badge-daring';
+    } else {
+      btnNormal.classList.add('aktif-normal');
+      badge.textContent = 'NORMAL';
+      badge.className = 'badge badge-normal';
+    }
+  }
+
+  document.getElementById('cariGuru').addEventListener('input', function () {
+    var kata = this.value.toLowerCase();
+    var semuaBaris = document.querySelectorAll('#daftarGuru .guru-item');
+    semuaBaris.forEach(function (b) {
+      b.style.display = b.getAttribute('data-nama').indexOf(kata) !== -1 ? 'flex' : 'none';
+    });
+  });
+
+  function simpanSemuaPerubahan() {
+    var pin = document.getElementById('pinAdmin').value;
+    if (!pin) {
+      tampilkanPesan('Masukkan PIN admin terlebih dahulu.', 'error');
+      return;
+    }
+
+    var modeBerubah = dataAwal && (modeDipilih !== dataAwal.modeSekolah);
+    var kodeIzinBerubah = Object.keys(izinDiubah);
+
+    if (!modeBerubah && kodeIzinBerubah.length === 0) {
+      tampilkanPesan('Tidak ada perubahan untuk disimpan.', 'error');
+      return;
+    }
+
+    var btn = document.getElementById('btnSimpan');
+    btn.disabled = true;
+    btn.textContent = 'Menyimpan...';
+    tampilkanPesan('', '');
+
+    var deviceId = getDeviceId();
+    var tugas = [];
+
+    if (modeBerubah) {
+      tugas.push(function (lanjut) {
+        google.script.run
+          .withSuccessHandler(function (res) { lanjut(res); })
+          .withFailureHandler(function (err) { lanjut({ ok: false, message: pesanError(err) }); })
+          .setModeAbsenSekolah(modeDipilih, pin, deviceId);
+      });
+    }
+
+    kodeIzinBerubah.forEach(function (kode) {
+      tugas.push(function (lanjut) {
+        google.script.run
+          .withSuccessHandler(function (res) { lanjut(res); })
+          .withFailureHandler(function (err) { lanjut({ ok: false, message: pesanError(err) }); })
+          .setIzinDaringGuru(kode, izinDiubah[kode], pin, deviceId);
+      });
+    });
+
+    jalankanBerurutan(tugas, function (hasilSemua) {
+      btn.disabled = false;
+      btn.textContent = 'Simpan Perubahan';
+
+      var gagal = hasilSemua.filter(function (h) { return !h.ok; });
+      if (gagal.length > 0) {
+        tampilkanPesan('Sebagian gagal disimpan: ' + gagal.map(function (g) { return g.message; }).join(' | '), 'error');
+        return;
+      }
+
+      tampilkanPesan('Semua perubahan berhasil disimpan.', 'ok');
+      document.getElementById('pinAdmin').value = '';
+
+      // muat ulang data terbaru dari server supaya status "berubah" ter-reset
+      google.script.run
+        .withSuccessHandler(renderData)
+        .getPengaturanAbsenData();
+    });
+  }
+
+  // Jalankan array fungsi(lanjut) satu per satu (menghindari race condition
+  // saat beberapa panggilan google.script.run menulis ke spreadsheet yang sama).
+  function jalankanBerurutan(daftarTugas, selesai) {
+    var hasil = [];
+    function jalan(i) {
+      if (i >= daftarTugas.length) { selesai(hasil); return; }
+      daftarTugas[i](function (r) {
+        hasil.push(r);
+        jalan(i + 1);
+      });
+    }
+    jalan(0);
+  }
+</script>
+<div class="glass-footer">Di Kembangkan Oleh : <strong>Ade Irwansyah</strong></div>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+  }
+</script>
+</body>
+</html>
