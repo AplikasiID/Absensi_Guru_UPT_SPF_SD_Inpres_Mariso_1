@@ -558,6 +558,27 @@
     #loadingOverlay .modal-card { padding: 34px 28px 30px; }
     #loadingDesc { margin-bottom: 0; }
 
+    .info-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(30px) saturate(220%) contrast(115%) brightness(1.08);
+      -webkit-backdrop-filter: blur(30px) saturate(220%) contrast(115%) brightness(1.08);
+      border: 1px solid var(--glass-border);
+      border-radius: 22px;
+      box-shadow: 0 12px 36px var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.4);
+      padding: 14px 16px;
+      margin-bottom: 14px;
+    }
+    .info-card h3 { margin: 0 0 10px; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; color: var(--text-sub); }
+    .st-row { display: flex; gap: 10px; }
+    .st-box { flex: 1; text-align: center; padding: 10px 6px; border-radius: 14px; background: rgba(255,255,255,0.35); }
+    .st-box small { display: block; font-size: 11px; font-weight: 700; color: var(--text-sub); margin-bottom: 4px; }
+    .st-box b { font-size: 18px; }
+    .st-box.ok b { color: #16a34a; }
+    .st-box.no b { color: var(--text-sub); font-weight: 600; font-size: 14px; }
+    .jd-row { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; padding: 6px 0; }
+    .jd-row + .jd-row { border-top: 1px solid var(--divider); }
+    .jd-row span:first-child { font-weight: 700; }
+
     .app-footer {
       margin-top: 18px;
       padding: 14px 16px 16px;
@@ -617,6 +638,20 @@
 
         <div id="statusAbsen" class="status"></div>
       </div>
+    </div>
+
+    <div class="info-card" id="ringkasCard" style="display:none;">
+      <h3>Status Hari Ini</h3>
+      <div class="st-row">
+        <div class="st-box" id="stMasuk"><small>Masuk</small><b>-</b></div>
+        <div class="st-box" id="stPulang"><small>Pulang</small><b>-</b></div>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <h3>Jadwal Absen</h3>
+      <div class="jd-row"><span>Shift Pagi</span><span>Masuk s.d. 07:30 · Pulang 15:00</span></div>
+      <div class="jd-row"><span>Shift Siang</span><span>Masuk s.d. 09:30 · Pulang 17:00</span></div>
     </div>
 
     <div class="card2" id="adminMenu" style="display:none;">
@@ -1394,6 +1429,19 @@
     var localSudahMasuk = false;
     var localSudahKeluar = false;
 
+    function renderRingkas(status) {
+      var card = document.getElementById('ringkasCard');
+      if (!status || !status.deviceCocok) { card.style.display = 'none'; return; }
+      function isi(id, jam) {
+        var el = document.getElementById(id);
+        el.className = 'st-box ' + (jam ? 'ok' : 'no');
+        el.querySelector('b').textContent = jam ? jam + ' \u2713' : 'Belum';
+      }
+      isi('stMasuk', status.jamMasuk || (status.sudahMasuk ? '-' : ''));
+      isi('stPulang', status.jamKeluar || (status.sudahKeluar ? '-' : ''));
+      card.style.display = '';
+    }
+
     function updateTombolStatus(showPopupJikaSudah) {
       var select = document.getElementById('guruSelect');
       var kode = select.value;
@@ -1404,6 +1452,7 @@
         btnMasuk.disabled = false;
         btnKeluar.disabled = false;
         document.getElementById('statusAbsen').style.display = 'none';
+        renderRingkas(null);
         return;
       }
 
@@ -1417,6 +1466,7 @@
 
       google.script.run
         .withSuccessHandler(function (status) {
+          renderRingkas(status);
           if (!status.deviceCocok) {
             document.getElementById('statusAbsen').style.display = 'none';
             btnMasuk.disabled = localSudahMasuk;
