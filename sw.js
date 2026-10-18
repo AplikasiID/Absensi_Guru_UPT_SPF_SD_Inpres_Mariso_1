@@ -1,6 +1,6 @@
 /* Service worker sederhana: network-first untuk halaman, cache hanya sebagai
  * cadangan saat offline. Panggilan ke Apps Script TIDAK pernah di-cache. */
-var CACHE = "absensi-v1";
+var CACHE = "absensi-v2";
 var SHELL = ["./", "./index.html", "./dashboard.html", "./pengaturan.html", "./riwayat.html",
              "./config.js", "./api.js", "./ikon-192.png"];
 
@@ -20,7 +20,9 @@ self.addEventListener("fetch", function (e) {
   var url = new URL(req.url);
   if (url.origin !== location.origin) return; // Apps Script / CDN: biarkan langsung
   e.respondWith(
-    fetch(req).then(function (res) {
+    // no-cache: selalu validasi ke server (304 kalau tidak berubah) supaya tidak
+    // tersaji versi lama dari cache HTTP browser (GitHub Pages: max-age 10 menit).
+    fetch(req, { cache: 'no-cache' }).then(function (res) {
       var copy = res.clone();
       caches.open(CACHE).then(function (c) { c.put(req, copy); });
       return res;
