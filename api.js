@@ -6,6 +6,16 @@
   var cfg = window.APP_CONFIG || {};
   var TIMEOUT_MS = 90000;
 
+  // Buka sambungan ke Apps Script lebih awal (hemat sekitar 0,2-0,5 detik).
+  try {
+    var o = new URL(cfg.API_URL).origin;
+    ['preconnect', 'dns-prefetch'].forEach(function (rel) {
+      var l = document.createElement('link'); l.rel = rel; l.href = o;
+      if (rel === 'preconnect') l.crossOrigin = '';
+      document.head.appendChild(l);
+    });
+  } catch (e) { }
+
   function call(fn, args, ok, fail) {
     function gagal(msg) { if (fail) fail(new Error(msg)); else if (window.console) console.error(msg); }
     if (!cfg.API_URL || /^GANTI/.test(cfg.API_URL)) { gagal('API_URL belum diisi di config.js'); return; }
