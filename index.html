@@ -1285,28 +1285,62 @@
       });
     }
 
+    /* Daftar guru: tampilkan DULU dari simpanan di HP (instan), lalu perbarui
+     * diam-diam dari server. Jadi dropdown & nama yang diingat langsung siap
+     * tanpa menunggu Apps Script. Pertama kali buka (belum ada simpanan)
+     * tetap menunggu server seperti biasa. */
+    var CACHE_GURU_KEY = 'absensi_daftar_guru_v1';
+
+    function terapkanDaftarGuru(list) {
+      var sel = document.getElementById('guruSelect');
+      var sebelumnya = sel.value;
+      fillSelect(sel, list);
+      fillSelect(document.getElementById('ketGuruSelect'), list);
+
+      // Perbarui dari server: pertahankan nama yang sedang terpilih.
+      if (sebelumnya) {
+        var masihAda = Array.prototype.some.call(sel.options, function (o) { return o.value === sebelumnya; });
+        if (masihAda) { sel.value = sebelumnya; return; }
+      }
+
+      // Ingat nama guru terakhir yang dipilih di HP ini, supaya tidak perlu
+      // memilih lagi tiap hari. Guru tetap bisa ganti lewat dropdown.
+      var tersimpan = null;
+      try { tersimpan = localStorage.getItem('absensi_guru_terakhir'); } catch (e) { }
+      if (tersimpan) {
+        var ada = Array.prototype.some.call(sel.options, function (o) { return o.value === tersimpan; });
+        if (ada) {
+          sel.value = tersimpan;
+          localSudahMasuk = false;
+          localSudahKeluar = false;
+          updateTombolStatus(false);
+          updateRiwayatLink();
+        }
+      }
+    }
+
+    var cacheGuruTeks = null;
+    try { cacheGuruTeks = localStorage.getItem(CACHE_GURU_KEY); } catch (e) { }
+    var daftarDariCache = false;
+    if (cacheGuruTeks) {
+      try {
+        var cacheGuru = JSON.parse(cacheGuruTeks);
+        if (Array.isArray(cacheGuru) && cacheGuru.length > 0) {
+          terapkanDaftarGuru(cacheGuru);
+          daftarDariCache = true;
+        }
+      } catch (e) { cacheGuruTeks = null; }
+    }
+
     google.script.run
       .withSuccessHandler(function (list) {
-        fillSelect(document.getElementById('guruSelect'), list);
-        fillSelect(document.getElementById('ketGuruSelect'), list);
-
-        // Ingat nama guru terakhir yang dipilih di HP ini, supaya tidak perlu
-        // memilih lagi tiap hari. Guru tetap bisa ganti lewat dropdown.
-        var tersimpan = null;
-        try { tersimpan = localStorage.getItem('absensi_guru_terakhir'); } catch (e) { }
-        if (tersimpan) {
-          var sel = document.getElementById('guruSelect');
-          var ada = Array.prototype.some.call(sel.options, function (o) { return o.value === tersimpan; });
-          if (ada) {
-            sel.value = tersimpan;
-            localSudahMasuk = false;
-            localSudahKeluar = false;
-            updateTombolStatus(false);
-            updateRiwayatLink();
-          }
-        }
+        var teksBaru = JSON.stringify(list);
+        try { localStorage.setItem(CACHE_GURU_KEY, teksBaru); } catch (e) { }
+        if (daftarDariCache && teksBaru === cacheGuruTeks) return; // sama persis: tidak perlu gambar ulang
+        terapkanDaftarGuru(list);
       })
       .withFailureHandler(function (err) {
+        if (daftarDariCache) return; // sudah tampil dari simpanan; gagal perbarui tidak mengganggu
         showModal('err', 'Gagal Memuat Data', 'Gagal memuat daftar guru: ' + pesanError(err));
       })
       .getDaftarGuru();
