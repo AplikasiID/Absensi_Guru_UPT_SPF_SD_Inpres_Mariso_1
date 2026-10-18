@@ -1429,6 +1429,23 @@
     var localSudahMasuk = false;
     var localSudahKeluar = false;
 
+    // Muat riwayat bulan ini diam-diam supaya halaman Riwayat langsung terbuka.
+    var prefetchDone = {};
+    function prefetchRiwayat(kode, deviceId) {
+      if (prefetchDone[kode]) return;
+      prefetchDone[kode] = true;
+      var d = new Date();
+      var bulan = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+      setTimeout(function () {
+        google.script.run
+          .withSuccessHandler(function (res) {
+            if (res && res.ok) { try { localStorage.setItem('absensi_riwayat_v1_' + kode + '_' + bulan, JSON.stringify(res)); } catch (e) { } }
+          })
+          .withFailureHandler(function () { })
+          .getRiwayatAbsen(kode, deviceId, bulan);
+      }, 1500);
+    }
+
     function renderRingkas(status) {
       var card = document.getElementById('ringkasCard');
       if (!status || !status.deviceCocok) { card.style.display = 'none'; return; }
@@ -1467,6 +1484,7 @@
       google.script.run
         .withSuccessHandler(function (status) {
           renderRingkas(status);
+          if (status.deviceCocok) prefetchRiwayat(kode, deviceId);
           if (!status.deviceCocok) {
             document.getElementById('statusAbsen').style.display = 'none';
             btnMasuk.disabled = localSudahMasuk;
