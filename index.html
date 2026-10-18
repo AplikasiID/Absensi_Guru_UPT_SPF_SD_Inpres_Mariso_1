@@ -569,12 +569,30 @@
       margin-bottom: 14px;
     }
     .info-card h3 { margin: 0 0 10px; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; color: var(--text-sub); }
-    .st-row { display: flex; gap: 10px; }
-    .st-box { flex: 1; text-align: center; padding: 10px 6px; border-radius: 14px; background: rgba(255,255,255,0.35); }
-    .st-box small { display: block; font-size: 11px; font-weight: 700; color: var(--text-sub); margin-bottom: 4px; }
-    .st-box b { font-size: 18px; }
-    .st-box.ok b { color: #16a34a; }
-    .st-box.no b { color: var(--text-sub); font-weight: 600; font-size: 14px; }
+    .st-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .st-date { font-size: 20px; font-weight: 800; color: var(--text-main, #111); }
+    .st-badge { padding: 7px 14px; border-radius: 999px; font-size: 14px; font-weight: 800; background: rgba(120,120,120,0.15); color: var(--text-sub); white-space: nowrap; }
+    .st-badge.ok { background: rgba(34,197,94,0.22); color: #15803d; }
+    .st-badge.late { background: rgba(239,68,68,0.20); color: #b91c1c; }
+    .st-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 10px; color: var(--text-sub); font-size: 15px; }
+    .st-meta svg { width: 20px; height: 20px; }
+    .st-tag { padding: 3px 12px; border-radius: 999px; font-size: 13px; font-weight: 800; }
+    .st-tag.daring { background: rgba(245,158,11,0.22); color: #b45309; }
+    .st-tag.late { background: rgba(239,68,68,0.18); color: #b91c1c; }
+    .st-row { display: flex; margin-top: 12px; border-radius: 18px; background: rgba(255,255,255,0.35); padding: 12px 6px; }
+    .st-box { flex: 1; text-align: center; }
+    .st-box small { display: block; font-size: 14px; color: var(--text-sub); margin-bottom: 2px; }
+    .st-box b { font-size: 22px; font-weight: 800; letter-spacing: 0.01em; }
+    .st-box.no b { color: var(--text-sub); font-weight: 600; font-size: 16px; }
+    .rb-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .rb-head h3 { margin: 0; }
+    .rb-head a { font-size: 13px; font-weight: 700; color: #2563eb; text-decoration: none; }
+    .rb-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .rb-item { text-align: center; padding: 10px 4px; border-radius: 14px; background: rgba(255,255,255,0.35); }
+    .rb-item b { display: block; font-size: 22px; font-weight: 800; }
+    .rb-item small { font-size: 12px; font-weight: 700; color: var(--text-sub); }
+    .rb-item.hadir b { color: #15803d; } .rb-item.terlambat b { color: #b45309; }
+    .rb-item.izin b { color: #2563eb; } .rb-item.alpa b { color: #b91c1c; }
     .jd-row { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; padding: 6px 0; }
     .jd-row + .jd-row { border-top: 1px solid var(--divider); }
     .jd-row span:first-child { font-weight: 700; }
@@ -641,10 +659,29 @@
     </div>
 
     <div class="info-card" id="ringkasCard" style="display:none;">
-      <h3>Status Hari Ini</h3>
+      <div class="st-head">
+        <div class="st-date" id="stTanggal">-</div>
+        <div class="st-badge" id="stBadge">Belum absen</div>
+      </div>
+      <div class="st-meta" id="stMeta" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        <span id="stShift">Shift: -</span>
+        <span class="st-tag daring" id="stDaring" style="display:none;">Daring</span>
+        <span class="st-tag late" id="stTelat" style="display:none;"></span>
+      </div>
       <div class="st-row">
         <div class="st-box" id="stMasuk"><small>Masuk</small><b>-</b></div>
         <div class="st-box" id="stPulang"><small>Pulang</small><b>-</b></div>
+      </div>
+    </div>
+
+    <div class="info-card" id="rbCard" style="display:none;">
+      <div class="rb-head"><h3 id="rbJudul">Ringkasan Bulan Ini</h3><a href="#" id="rbLink">Lihat detail -&gt;</a></div>
+      <div class="rb-grid">
+        <div class="rb-item hadir"><b id="rbHadir">0</b><small>Hadir</small></div>
+        <div class="rb-item terlambat"><b id="rbTelat">0</b><small>Terlambat</small></div>
+        <div class="rb-item izin"><b id="rbIzin">0</b><small>Izin</small></div>
+        <div class="rb-item alpa"><b id="rbAlpa">0</b><small>Alpa</small></div>
       </div>
     </div>
 
@@ -1429,33 +1466,77 @@
     var localSudahMasuk = false;
     var localSudahKeluar = false;
 
-    // Muat riwayat bulan ini diam-diam supaya halaman Riwayat langsung terbuka.
+    // Ringkasan bulan ini: tampil instan dari cache, lalu diperbarui dari server
+    // (hasilnya juga disimpan untuk halaman Riwayat).
     var prefetchDone = {};
+    function bulanIni() {
+      var d = new Date();
+      return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+    }
+    function renderRingkasanBulan(kode, res) {
+      if (document.getElementById('guruSelect').value !== kode) return; // pilihan sudah berganti
+      var r = res && res.ringkasan;
+      if (!r) return;
+      var namaBulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+      document.getElementById('rbJudul').textContent = 'Ringkasan ' + namaBulan[new Date().getMonth()];
+      document.getElementById('rbHadir').textContent = r.hadir;
+      document.getElementById('rbTelat').textContent = r.terlambat;
+      document.getElementById('rbIzin').textContent = r.izin;
+      document.getElementById('rbAlpa').textContent = r.alpa;
+      var link = document.getElementById('rbLink');
+      link.setAttribute('href', 'riwayat.html?kode=' + encodeURIComponent(kode) + '&dev=' + encodeURIComponent(getDeviceId() || ''));
+      document.getElementById('rbCard').style.display = '';
+    }
     function prefetchRiwayat(kode, deviceId) {
+      var kunci = 'absensi_riwayat_v1_' + kode + '_' + bulanIni();
+      try { var c = localStorage.getItem(kunci); if (c) renderRingkasanBulan(kode, JSON.parse(c)); } catch (e) { }
       if (prefetchDone[kode]) return;
       prefetchDone[kode] = true;
-      var d = new Date();
-      var bulan = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
       setTimeout(function () {
         google.script.run
           .withSuccessHandler(function (res) {
-            if (res && res.ok) { try { localStorage.setItem('absensi_riwayat_v1_' + kode + '_' + bulan, JSON.stringify(res)); } catch (e) { } }
+            if (res && res.ok) {
+              try { localStorage.setItem(kunci, JSON.stringify(res)); } catch (e) { }
+              renderRingkasanBulan(kode, res);
+            }
           })
           .withFailureHandler(function () { })
-          .getRiwayatAbsen(kode, deviceId, bulan);
+          .getRiwayatAbsen(kode, deviceId, bulanIni());
       }, 1500);
     }
 
     function renderRingkas(status) {
       var card = document.getElementById('ringkasCard');
-      if (!status || !status.deviceCocok) { card.style.display = 'none'; return; }
+      if (!status || !status.deviceCocok) { card.style.display = 'none'; document.getElementById('rbCard').style.display = 'none'; return; }
+      var hari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+      var bln = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+      var d = new Date();
+      document.getElementById('stTanggal').textContent = hari[d.getDay()] + ', ' + d.getDate() + ' ' + bln[d.getMonth()];
+
       function isi(id, jam) {
         var el = document.getElementById(id);
         el.className = 'st-box ' + (jam ? 'ok' : 'no');
-        el.querySelector('b').textContent = jam ? jam + ' \u2713' : 'Belum';
+        el.querySelector('b').textContent = jam ? jam : 'Belum';
       }
       isi('stMasuk', status.jamMasuk || (status.sudahMasuk ? '-' : ''));
       isi('stPulang', status.jamKeluar || (status.sudahKeluar ? '-' : ''));
+
+      var badge = document.getElementById('stBadge');
+      var meta = document.getElementById('stMeta');
+      var telat = document.getElementById('stTelat');
+      if (status.shiftLabel) {
+        badge.className = 'st-badge ' + (status.terlambat ? 'late' : 'ok');
+        badge.textContent = status.terlambat ? 'Terlambat' : 'Tepat Waktu';
+        document.getElementById('stShift').textContent = 'Shift: ' + status.shiftLabel.replace(/^Shift\s+/i, '');
+        document.getElementById('stDaring').style.display = status.daring ? '' : 'none';
+        if (status.terlambat && status.keterlambatan) { telat.textContent = status.keterlambatan; telat.style.display = ''; }
+        else telat.style.display = 'none';
+        meta.style.display = '';
+      } else {
+        badge.className = 'st-badge';
+        badge.textContent = status.sudahMasuk ? 'Sudah absen' : 'Belum absen';
+        meta.style.display = 'none';
+      }
       card.style.display = '';
     }
 
@@ -1502,11 +1583,11 @@
 
           if (sudahKeluar) {
             var pesanSudah = 'Sudah absen Masuk (' + (status.jamMasuk || '-') + ') dan Pulang (' + (status.jamKeluar || '-') + ') hari ini.';
-            setStatus('statusAbsen', 'info', pesanSudah);
+            document.getElementById('statusAbsen').style.display = 'none'; // sudah tampil di kartu Status Hari Ini
             if (showPopupJikaSudah) showSudahAbsenModal(pesanSudah);
           } else if (sudahMasuk) {
             var pesanSudah2 = 'Sudah absen Masuk pukul ' + (status.jamMasuk || '-') + '. Absen Pulang saat mau pulang.';
-            setStatus('statusAbsen', 'info', pesanSudah2);
+            document.getElementById('statusAbsen').style.display = 'none'; // sudah tampil di kartu Status Hari Ini
             if (showPopupJikaSudah) showSudahAbsenModal(pesanSudah2);
           } else {
             document.getElementById('statusAbsen').style.display = 'none';
@@ -1542,6 +1623,7 @@
     }
 
     function doAbsen(tipe, kode, nama) {
+      prefetchDone[kode] = false; // ringkasan bulan diperbarui setelah absen
       var deviceId = getDeviceId();
       if (!deviceId) {
         showModal('err', 'Penyimpanan Diblokir', 'Browser memblokir penyimpanan lokal (misal mode incognito ketat). Gunakan browser HP biasa (bukan mode penyamaran).');
