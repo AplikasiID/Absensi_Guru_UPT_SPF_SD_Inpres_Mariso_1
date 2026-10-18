@@ -617,18 +617,39 @@
       loadData(defaultBulan);
     }
 
+    function cacheKey(bulanTahun) { return 'absensi_riwayat_v1_' + kode + '_' + bulanTahun; }
+    function bacaCache(bulanTahun) {
+      try { var t = localStorage.getItem(cacheKey(bulanTahun)); return t ? JSON.parse(t) : null; } catch (e) { return null; }
+    }
+    function simpanCache(bulanTahun, result) {
+      try { localStorage.setItem(cacheKey(bulanTahun), JSON.stringify(result)); } catch (e) { }
+    }
+    var reqSeq = 0;
+
+    function tampilkanHasil(result) {
+      if (result.nama) {
+        document.getElementById('guruNama').textContent = result.nama;
+        document.getElementById('guruRow').style.display = 'flex';
+      }
+      renderData(result);
+    }
+
+    // Stale-while-revalidate: tampilkan data tersimpan dulu (instan), lalu
+    // perbarui dari server di belakang layar.
     function loadData(bulanTahun) {
-      document.getElementById('content').innerHTML = '<div class="loading">Memuat riwayat absensi...</div>';
+      var mySeq = ++reqSeq;
+      var cached = bacaCache(bulanTahun);
+      if (cached) tampilkanHasil(cached);
+      else document.getElementById('content').innerHTML = '<div class="loading">Memuat riwayat absensi...</div>';
       google.script.run
         .withSuccessHandler(function (result) {
-          if (!result.ok) { renderError(result.message); return; }
-          if (result.nama) {
-            document.getElementById('guruNama').textContent = result.nama;
-            document.getElementById('guruRow').style.display = 'flex';
-          }
-          renderData(result);
+          if (mySeq !== reqSeq) return; // bulan lain sudah dipilih
+          if (!result.ok) { if (!cached) renderError(result.message); return; }
+          simpanCache(bulanTahun, result);
+          tampilkanHasil(result);
         })
         .withFailureHandler(function (err) {
+          if (mySeq !== reqSeq || cached) return;
           renderError('Terjadi kesalahan: ' + err.message);
         })
         .getRiwayatAbsen(kode, deviceId, bulanTahun);
