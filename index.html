@@ -584,6 +584,13 @@
     .st-box small { display: block; font-size: 14px; color: var(--text-sub); margin-bottom: 2px; }
     .st-box b { font-size: 22px; font-weight: 800; letter-spacing: 0.01em; }
     .st-box.no b { color: var(--text-sub); font-weight: 600; font-size: 16px; }
+    .pg-card { display: flex; gap: 12px; align-items: center; border-radius: 22px; padding: 14px 16px; margin-bottom: 14px; cursor: pointer; border: 1px solid; box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+    .pg-card .pg-i { font-size: 26px; }
+    .pg-card .pg-t { font-size: 15px; font-weight: 800; }
+    .pg-card .pg-s { font-size: 13px; margin-top: 2px; }
+    .pg-card.biru { background: rgba(59,130,246,.15); border-color: rgba(37,99,235,.3); color: #1e3a8a; }
+    .pg-card.kuning { background: rgba(251,191,36,.28); border-color: rgba(217,119,6,.35); color: #78350f; }
+    .pg-card.merah { background: rgba(239,68,68,.18); border-color: rgba(185,28,28,.35); color: #7f1d1d; }
     .rb-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
     .rb-head h3 { margin: 0; }
     .rb-head a { font-size: 13px; font-weight: 700; color: #2563eb; text-decoration: none; }
@@ -656,6 +663,11 @@
 
         <div id="statusAbsen" class="status"></div>
       </div>
+    </div>
+
+    <div class="pg-card" id="pgCard" style="display:none;" onclick="document.getElementById('btnMasuk').scrollIntoView({behavior:'smooth',block:'center'})">
+      <div class="pg-i" id="pgIkon"></div>
+      <div><div class="pg-t" id="pgJudul"></div><div class="pg-s" id="pgIsi"></div></div>
     </div>
 
     <div class="info-card" id="ringkasCard" style="display:none;">
@@ -1505,7 +1517,36 @@
       }, 1500);
     }
 
+    // Kartu pengingat: belum absen masuk (lewat batas) / belum absen pulang.
+    function renderPengingat(status) {
+      var c = document.getElementById('pgCard');
+      c.style.display = 'none';
+      if (!status || !status.deviceCocok || !status.hariKerja || status.ket) return;
+      if (!status.batasMasuk || !status.jamServer) return;
+      if (status.sudahMasuk && status.sudahKeluar) return;
+      var kelas, ikon, judul, isi;
+      var sekarang = status.jamServer;
+      var shift = String(status.shiftNama || '');
+      if (!status.sudahMasuk) {
+        if (sekarang <= status.batasMasuk) return;
+        kelas = 'merah'; ikon = '\u23F0'; judul = 'Kamu belum absen masuk';
+        isi = 'Batas tepat waktu ' + status.batasMasuk + ' sudah lewat. Absen sekarang akan tercatat terlambat.';
+      } else if (sekarang >= status.jamPulang) {
+        kelas = 'kuning'; ikon = '\u26A0\uFE0F'; judul = 'Kamu belum absen pulang';
+        isi = 'Masuk ' + (status.jamMasuk || '-').substring(0, 5) + ' \u00B7 Jam pulang ' + status.jamPulang + ' sudah lewat. Tekan "Absen Pulang" di atas.';
+      } else {
+        kelas = 'biru'; ikon = '\uD83D\uDD52'; judul = 'Jangan lupa absen pulang';
+        isi = 'Jam pulang ' + shift + ': ' + status.jamPulang;
+      }
+      c.className = 'pg-card ' + kelas;
+      document.getElementById('pgIkon').textContent = ikon;
+      document.getElementById('pgJudul').textContent = judul;
+      document.getElementById('pgIsi').textContent = isi;
+      c.style.display = '';
+    }
+
     function renderRingkas(status) {
+      renderPengingat(status);
       var card = document.getElementById('ringkasCard');
       if (!status || !status.deviceCocok) { card.style.display = 'none'; document.getElementById('rbCard').style.display = 'none'; return; }
       var hari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
