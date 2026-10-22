@@ -27,29 +27,38 @@
   .jam .t { font-size: 1.5vw; color: var(--sub); margin-top: .3vw; }
 
   .ringkas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1vw; }
-  .box { background: var(--panel); border-radius: 1.2vw; padding: 1vw 1.4vw; border-left: .5vw solid var(--sub); }
-  .box b { display: block; font-size: 4vw; line-height: 1.05; font-variant-numeric: tabular-nums; }
+  .box { background: var(--panel); border-radius: 1.2vw; padding: .6vw 1.4vw; border-left: .5vw solid var(--sub); }
+  .box b { display: block; font-size: 3.4vw; line-height: 1.05; font-variant-numeric: tabular-nums; }
   .box span { font-size: 1.3vw; color: var(--sub); font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
   .box.hadir { border-color: var(--hijau); } .box.hadir b { color: var(--hijau); }
   .box.belum { border-color: var(--merah); } .box.belum b { color: var(--merah); }
   .box.terlambat { border-color: var(--kuning); } .box.terlambat b { color: var(--kuning); }
   .box.izin { border-color: var(--biru); } .box.izin b { color: var(--biru); }
 
-  main { flex: 1; min-height: 0; overflow: hidden; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(21vw, 1fr)); gap: .8vw; }
-  .g { display: flex; align-items: center; justify-content: space-between; gap: .8vw;
-       background: var(--panel); border-radius: .9vw; padding: .7vw 1vw; border-left: .35vw solid var(--sub); }
-  .g .n { font-size: 1.35vw; font-weight: 700; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .g .i { font-size: 1.1vw; color: var(--sub); white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; }
-  .g .i b { display: block; font-size: 1.2vw; }
-  /* banyak guru (>24): rapatkan supaya semuanya muat di layar */
-  .padat { grid-template-columns: repeat(auto-fill, minmax(18vw, 1fr)); gap: .6vw; }
-  .padat .g { padding-top: .35vw; padding-bottom: .35vw; }
-  .padat .g .n { font-size: 1.2vw; } .padat .g .i, .padat .g .i b { font-size: 1vw; }
+  /* Empat kolom lurus di bawah empat kartu ringkasan (grid & jarak sama persis) */
+  main { flex: 1; min-height: 0; overflow: hidden; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1vw; align-items: start; }
+  .kol { min-width: 0; min-height: 0; max-height: 100%; display: grid; grid-template-columns: 1fr; gap: .5vw; align-content: start; overflow: hidden; }
+  .kol.k2 { grid-template-columns: 1fr 1fr; }
+  .kol .sub { grid-column: 1 / -1; font-size: .95vw; color: var(--sub); text-transform: uppercase; letter-spacing: .06em; font-weight: 700; margin: .5vw 0 0; }
+  .kol .kosong { grid-column: 1 / -1; color: #475569; font-size: 1.2vw; font-weight: 700; padding: .6vw .2vw; }
+  .g { display: flex; align-items: center; justify-content: space-between; gap: .6vw;
+       background: var(--panel); border-radius: .8vw; padding: .55vw .9vw; border-left: .3vw solid var(--sub); min-width: 0; }
+  .g .n { font-size: 1.25vw; font-weight: 700; min-width: 0; line-height: 1.15; overflow-wrap: anywhere; }
+  .g .i { font-size: .9vw; color: var(--sub); white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; line-height: 1.25; }
+  .g .i b { display: block; font-size: 1.15vw; }
+  .g.belum { border-color: var(--merah); background: #2a1620; } .g.belum .i b { color: var(--merah); }
+  .g.tunggu { border-color: #475569; } .g.tunggu .n { color: var(--sub); } .g.tunggu .i b { color: var(--sub); }
   .g.hadir { border-color: var(--hijau); } .g.hadir .i b { color: var(--hijau); }
   .g.terlambat { border-color: var(--kuning); } .g.terlambat .i b { color: var(--kuning); }
-  .g.belum { border-color: var(--merah); } .g.belum .i b { color: var(--merah); }
   .g.izin { border-color: var(--biru); } .g.izin .i b { color: var(--biru); }
+  /* guru yang baru saja absen berkedip */
+  @keyframes kedip { 0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); } 50% { box-shadow: 0 0 1.6vw .3vw rgba(34,197,94,.85); } }
+  .g.baru { animation: kedip 1.2s ease-in-out infinite; }
+
+  /* pengumuman berjalan */
+  #ticker { display: none; background: #1e293b; border-radius: .9vw; overflow: hidden; white-space: nowrap; padding: .6vw 0; border-left: .4vw solid var(--kuning); }
+  #ticker span { display: inline-block; padding-left: 100%; font-size: 1.8vw; font-weight: 700; animation: jalan 30s linear infinite; }
+  @keyframes jalan { from { transform: translateX(0); } to { transform: translateX(-100%); } }
 
   .pesan { height: 100%; display: flex; align-items: center; justify-content: center; text-align: center;
            font-size: 3vw; color: var(--sub); font-weight: 700; }
@@ -85,13 +94,15 @@
   </header>
 
   <section class="ringkas">
-    <div class="box belum"><b id="nBelum">0</b><span>Belum Absen</span></div>
+    <div class="box belum"><b id="nBelum">0</b><span>Belum Absen <em id="subBelum" style="display:block;font-style:normal;font-weight:600;text-transform:none;letter-spacing:0;font-size:.95vw;min-height:1.1vw;"></em></span></div>
     <div class="box hadir"><b id="nHadir">0</b><span>Tepat Waktu</span></div>
     <div class="box terlambat"><b id="nTerlambat">0</b><span>Terlambat</span></div>
     <div class="box izin"><b id="nIzin">0</b><span>Izin / Dinas</span></div>
   </section>
 
   <main id="isi"><div class="pesan">Memuat data...</div></main>
+
+  <div id="ticker"><span id="tickerIsi"></span></div>
 
   <footer>
     <span id="update">&nbsp;</span>
@@ -142,36 +153,100 @@
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
-  var URUTAN = { belum: 0, terlambat: 1, hadir: 2, izin: 3 };
+  var prevStatus = {}, baruSampai = {};
+
+  var KET = { S: 'Sakit', I: 'Izin', A: 'Alpa', DL: 'Dinas Luar', C: 'Cuti' };
+
+  function htmlGuru(g) {
+    var shiftLabel = g.shift === 'siang' ? 'Siang' : (g.shift === 'pagi' ? 'Pagi' : '');
+    var info, kelas = g.status;
+    if (g.status === 'izin') info = '<b>' + esc(g.ket) + '</b>' + esc(KET[String(g.ket).toUpperCase()] || '');
+    else if (g.status === 'belum') { info = '<b>Belum</b>' + esc(shiftLabel); kelas = g.lewat ? 'belum' : 'tunggu'; }
+    else info = '<b>' + esc(String(g.masuk).substring(0, 5)) + '</b>' +
+      (g.keluar ? 'Pulang ' + esc(String(g.keluar).substring(0, 5)) : esc(shiftLabel));
+    var baru = (baruSampai[g.nama] && Date.now() < baruSampai[g.nama]) ? ' baru' : '';
+    return '<div class="g ' + kelas + baru + '"><div class="n">' + esc(g.nama) + '</div><div class="i">' + info + '</div></div>';
+  }
+
+  // Kolom kosong tidak menampilkan tulisan apa pun (tetap menempati lajurnya supaya
+  // kolom lain tetap lurus di bawah kartu masing-masing).
+  function htmlKolom(daftar) {
+    return '<div class="kol">' + daftar.map(htmlGuru).join('') + '</div>';
+  }
+
+  function pasangTicker(daftar) {
+    var t = document.getElementById('ticker');
+    if (!daftar || !daftar.length) { t.style.display = 'none'; return; }
+    var teks = daftar.join('   \u2022   ');
+    var el = document.getElementById('tickerIsi');
+    if (el.textContent !== teks) {
+      el.textContent = teks;
+      el.style.animationDuration = Math.max(20, Math.round(teks.length * 0.28)) + 's';
+    }
+    t.style.display = 'block';
+  }
 
   function render(data) {
     var isi = document.getElementById('isi');
+    pasangTicker(data.pengumuman);
     if (!data.hariKerja) {
       ['nHadir', 'nBelum', 'nTerlambat', 'nIzin'].forEach(function (id) { document.getElementById(id).textContent = '-'; });
+      document.getElementById('subBelum').textContent = '';
       isi.innerHTML = '<div class="pesan">' + esc(data.alasanLibur || 'Hari ini tidak ada absensi') + '</div>';
       return;
     }
-    var h = 0, b = 0, t = 0, iz = 0;
+    // tandai yang baru saja absen (dari belum -> sudah) supaya berkedip 60 detik
     data.guru.forEach(function (g) {
-      if (g.status === 'belum') b++; else if (g.status === 'izin') iz++;
+      var before = prevStatus[g.nama];
+      if (before === 'belum' && (g.status === 'hadir' || g.status === 'terlambat')) baruSampai[g.nama] = Date.now() + 60000;
+      prevStatus[g.nama] = g.status;
+    });
+
+    var h = 0, bMerah = 0, bTunggu = 0, t = 0, iz = 0;
+    data.guru.forEach(function (g) {
+      if (g.status === 'belum') { if (g.lewat) bMerah++; else bTunggu++; }
+      else if (g.status === 'izin') iz++;
       else { h++; if (g.status === 'terlambat') t++; }
     });
-    document.getElementById('nHadir').textContent = h - t; // tepat waktu = sudah absen dikurangi yang terlambat
-    document.getElementById('nBelum').textContent = b;
+    document.getElementById('nBelum').textContent = bMerah;
+    document.getElementById('subBelum').textContent = bTunggu ? '(+' + bTunggu + ' belum waktunya)' : '';
+    document.getElementById('nHadir').textContent = h - t; // tepat waktu
     document.getElementById('nTerlambat').textContent = t;
     document.getElementById('nIzin').textContent = iz;
 
-    var urut = data.guru.slice().sort(function (x, y) {
-      return (URUTAN[x.status] - URUTAN[y.status]) || x.nama.localeCompare(y.nama);
-    });
-    isi.innerHTML = '<div class="grid' + (urut.length > 24 ? ' padat' : '') + '">' + urut.map(function (g) {
-      var info;
-      if (g.status === 'izin') info = '<b>' + esc(g.ket) + '</b>';
-      else if (g.status === 'belum') info = '<b>Belum</b>';
-      else info = '<b>' + esc(String(g.masuk).substring(0, 5)) + '</b>' +
-        (g.keluar ? 'Pulang ' + esc(String(g.keluar).substring(0, 5)) : (g.status === 'terlambat' ? 'Terlambat' : 'Tepat waktu'));
-      return '<div class="g ' + g.status + '"><div class="n">' + esc(g.nama) + '</div><div class="i">' + info + '</div></div>';
-    }).join('') + '</div>';
+    var urutNama = function (x, y) { return x.nama.localeCompare(y.nama); };
+    var urutBaru = function (x, y) { return String(y.masuk).localeCompare(String(x.masuk)) || urutNama(x, y); }; // yang terbaru absen di atas
+    var G = data.guru;
+    var belumMerah = G.filter(function (g) { return g.status === 'belum' && g.lewat; }).sort(urutNama);
+    var belumTunggu = G.filter(function (g) { return g.status === 'belum' && !g.lewat; }).sort(urutNama);
+    var tepat = G.filter(function (g) { return g.status === 'hadir'; }).sort(urutBaru);
+    var telat = G.filter(function (g) { return g.status === 'terlambat'; }).sort(urutBaru);
+    var izinList = G.filter(function (g) { return g.status === 'izin'; }).sort(urutNama);
+
+    var kolBelum = '<div class="kol">' +
+      belumMerah.map(htmlGuru).join('') +
+      (belumTunggu.length ? '<div class="sub">Belum waktunya (' + belumTunggu.length + ')</div>' + belumTunggu.map(htmlGuru).join('') : '') +
+      '</div>';
+    isi.innerHTML = kolBelum + htmlKolom(tepat) + htmlKolom(telat) + htmlKolom(izinList);
+    muatkan();
+  }
+
+  // Kalau satu kolom lebih tinggi dari layar: (1) kecilkan sedikit, (2) bagi jadi
+  // dua lajur, (3) kecilkan lagi sampai muat.
+  function muatkan() {
+    var isi = document.getElementById('isi');
+    isi.style.zoom = 1;
+    var ks = isi.querySelectorAll('.kol');
+    function over() {
+      for (var i = 0; i < ks.length; i++) if (ks[i].scrollHeight > ks[i].clientHeight + 2) return true;
+      return false;
+    }
+    var z = 1;
+    while (over() && z > 0.8) { z -= 0.05; isi.style.zoom = z; }
+    if (over()) {
+      for (var i = 0; i < ks.length; i++) if (ks[i].scrollHeight > ks[i].clientHeight + 2) ks[i].classList.add('k2');
+      while (over() && z > 0.55) { z -= 0.05; isi.style.zoom = z; }
+    }
   }
 
   function muat() {
