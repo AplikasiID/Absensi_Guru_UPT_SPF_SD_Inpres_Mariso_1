@@ -63,7 +63,10 @@
   .pesan { height: 100%; display: flex; align-items: center; justify-content: center; text-align: center;
            font-size: 3vw; color: var(--sub); font-weight: 700; }
   footer { display: flex; justify-content: space-between; font-size: 1vw; color: var(--sub); }
-  #fs, #fs2 { cursor: pointer; background: none; border: 1px solid var(--sub); color: var(--sub); border-radius: .5vw; padding: .2vw .8vw; font-size: 1vw; }
+  .ib { cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 2.6vw; height: 2.6vw; min-width: 28px; min-height: 28px;
+        background: rgba(148,163,184,.12); border: 1px solid #2b3a55; color: var(--sub); border-radius: 50%; padding: 0; margin-left: .6vw; transition: background .15s, color .15s; }
+  .ib:hover, .ib:focus-visible { background: rgba(148,163,184,.28); color: var(--txt); outline: none; }
+  .ib svg { width: 55%; height: 55%; }
 
   #pinBox { position: fixed; inset: 0; background: var(--bg); display: none; align-items: center; justify-content: center; flex-direction: column; gap: 1.2vw; z-index: 5; }
   #pinBox h2 { font-size: 2.4vw; margin: 0; }
@@ -79,7 +82,7 @@
     .box { padding: 8px 12px; border-radius: 12px; } .box b { font-size: 30px; } .box span { font-size: 11px; }
     .grid { grid-template-columns: 1fr; gap: 6px; }
     .g { padding: 8px 12px; border-radius: 10px; } .g .n { font-size: 15px; } .g .i, .g .i b { font-size: 13px; }
-    .pesan { font-size: 20px; } footer, #fs, #fs2 { font-size: 11px; }
+    .pesan { font-size: 20px; } footer { font-size: 11px; }
     #pinBox h2 { font-size: 20px; } #pinBox input { font-size: 22px; width: 60vw; } #pinBox button { font-size: 16px; } #pinErr { font-size: 13px; }
   }
 </style>
@@ -106,7 +109,14 @@
 
   <footer>
     <span id="update">&nbsp;</span>
-    <span><button id="fs" onclick="layarPenuh()">Layar penuh</button> &nbsp; <button class="fs2" id="fs2" onclick="gantiPin()">Ganti PIN</button></span>
+    <span>
+      <button class="ib" id="fs" onclick="layarPenuh()" title="Layar penuh" aria-label="Layar penuh">
+        <svg id="icFs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+      </button>
+      <button class="ib" id="fs2" onclick="gantiPin()" title="Ganti PIN" aria-label="Ganti PIN">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></svg>
+      </button>
+    </span>
   </footer>
 
   <div id="pinBox">
@@ -150,6 +160,13 @@
     var el = document.documentElement;
     if (document.fullscreenElement) document.exitFullscreen(); else if (el.requestFullscreen) el.requestFullscreen();
   }
+  // Ikon berubah: perluas (masuk layar penuh) <-> ciutkan (keluar layar penuh)
+  document.addEventListener('fullscreenchange', function () {
+    document.getElementById('icFs').innerHTML = document.fullscreenElement
+      ? '<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>'
+      : '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>';
+    document.getElementById('fs').title = document.fullscreenElement ? 'Keluar layar penuh' : 'Layar penuh';
+  });
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
