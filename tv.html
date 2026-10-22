@@ -196,11 +196,13 @@
     if (!daftar || !daftar.length) { t.style.display = 'none'; return; }
     var teks = daftar.join('   \u2022   ');
     var el = document.getElementById('tickerIsi');
-    if (el.textContent !== teks) {
-      el.textContent = teks;
-      el.style.animationDuration = Math.max(20, Math.round(teks.length * 0.28)) + 's';
-    }
+    if (el.textContent !== teks) el.textContent = teks;
     t.style.display = 'block';
+    // Kecepatan tetap (bukan tergantung panjang teks): TICKER_VW_PER_DETIK = lebar layar per detik.
+    // Makin kecil angkanya makin lambat. 2.2 = sekitar 42 px/detik di layar 1920 px.
+    var TICKER_VW_PER_DETIK = 2.2;
+    var detik = Math.max(25, Math.round(el.scrollWidth / (window.innerWidth * TICKER_VW_PER_DETIK / 100)));
+    if (el.style.animationDuration !== detik + 's') el.style.animationDuration = detik + 's';
   }
 
   function render(data) {
