@@ -584,6 +584,9 @@
     .st-box small { display: block; font-size: 14px; color: var(--text-sub); margin-bottom: 2px; }
     .st-box b { font-size: 22px; font-weight: 800; letter-spacing: 0.01em; }
     .st-box.no b { color: var(--text-sub); font-weight: 600; font-size: 16px; }
+    .gps-steps { text-align: left; margin: 0 0 18px; padding: 0 0 0 22px; font-size: 14px; font-weight: 600; line-height: 1.5; color: var(--modal-text-sub); }
+    .gps-steps li { margin-bottom: 6px; }
+    .gps-info { font-size: 13px; font-weight: 700; margin: 0 0 12px; color: var(--modal-text-sub); }
     .pg-card { display: flex; gap: 12px; align-items: center; border-radius: 22px; padding: 14px 16px; margin-bottom: 14px; cursor: pointer; border: 1px solid; box-shadow: 0 8px 24px rgba(0,0,0,.08); }
     .pg-card .pg-i { font-size: 26px; }
     .pg-card .pg-t { font-size: 15px; font-weight: 800; }
@@ -786,6 +789,19 @@
       <h3 class="modal-title" id="modalTitle"></h3>
       <p class="modal-desc" id="modalDesc"></p>
       <button class="modal-btn" onclick="closeModal()">Oke</button>
+    </div>
+  </div>
+
+  <div id="gpsHelpOverlay" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-icon err" style="background:rgba(245,158,11,.25); color:#b45309; font-size:30px;">&#128205;</div>
+      <h3 class="modal-title">Lokasi HP Belum Tepat</h3>
+      <p class="gps-info" id="gpsHelpInfo"></p>
+      <ol class="gps-steps" id="gpsHelpSteps"></ol>
+      <div class="modal-actions">
+        <button class="modal-btn secondary" onclick="document.getElementById('gpsHelpOverlay').classList.remove('show')">Tutup</button>
+        <button class="modal-btn" id="gpsHelpRetry">Coba Lagi</button>
+      </div>
     </div>
   </div>
 
@@ -1663,6 +1679,61 @@
       );
     }
 
+    // Panduan sederhana saat lokasi HP kurang tepat (akurasi buruk).
+    function tampilkanBantuanGps(accuracy, tipe, kode, nama) {
+      var ios = isIOSDevice();
+      var langkah = ios ? [
+        'Buka <b>Pengaturan</b> iPhone',
+        'Pilih <b>Privasi &amp; Keamanan</b> \u2192 <b>Layanan Lokasi</b>',
+        'Pilih <b>Safari</b> (atau browser yang dipakai)',
+        'Nyalakan <b>Lokasi Tepat</b>',
+        'Kembali ke aplikasi, tekan <b>Coba Lagi</b>'
+      ] : [
+        'Tarik layar dari atas, nyalakan tombol <b>Lokasi</b> (GPS)',
+        'Buka <b>Pengaturan</b> \u2192 <b>Aplikasi</b> \u2192 pilih <b>Chrome</b> (browser yang dipakai) \u2192 <b>Izin</b> \u2192 <b>Lokasi</b>',
+        'Pilih <b>Izinkan</b> dan nyalakan <b>Gunakan lokasi tepat</b>',
+        'Matikan <b>Penghemat Baterai</b> kalau sedang menyala',
+        'Kembali ke aplikasi, berdiri dekat jendela atau di luar ruangan, tekan <b>Coba Lagi</b>'
+      ];
+      document.getElementById('gpsHelpInfo').textContent =
+        'Sinyal lokasi HP kamu hanya \u00B1' + Math.round(accuracy) + ' m (harus di bawah 500 m). Ikuti langkah ini:';
+      document.getElementById('gpsHelpSteps').innerHTML = langkah.map(function (t) { return '<li>' + t + '</li>'; }).join('');
+      document.getElementById('gpsHelpRetry').onclick = function () {
+        document.getElementById('gpsHelpOverlay').classList.remove('show');
+        doAbsen(tipe, kode, nama);
+      };
+      document.getElementById('gpsHelpOverlay').classList.add('show');
+    }
+
+    // Cari lokasi TERBAIK: tunggu sampai akurasi bagus (<= 50 m) atau maksimal
+    // 15 detik, lalu pakai hasil terbaik. Satu pembacaan pertama sering masih
+    // kasar karena GPS baru "bangun".
+    function ambilLokasiTerbaik(onDone, onError) {
+      var terbaik = null, selesai = false, watchId = null, timer = null;
+      function akhir() {
+        if (selesai) return; selesai = true;
+        if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+        clearTimeout(timer);
+        if (terbaik) onDone(terbaik); else onError({ code: 3 });
+      }
+      watchId = navigator.geolocation.watchPosition(
+        function (pos) {
+          if (!terbaik || pos.coords.accuracy < terbaik.coords.accuracy) terbaik = pos;
+          if (pos.coords.accuracy <= 50) akhir();
+        },
+        function (err) {
+          if (selesai) return;
+          if (terbaik) { akhir(); return; }
+          selesai = true;
+          if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+          clearTimeout(timer);
+          onError(err);
+        },
+        { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 }
+      );
+      timer = setTimeout(akhir, 15000);
+    }
+
     function doAbsen(tipe, kode, nama) {
       prefetchDone[kode] = false; // ringkasan bulan diperbarui setelah absen
       var deviceId = getDeviceId();
@@ -1682,9 +1753,9 @@
       // POPUP loading muncul SEKARANG JUGA, begitu tombol ditekan -- supaya
       // siapapun yang pegang HP langsung tahu sistem sedang memproses
       // (bukan macet), tidak cuma teks kecil di bawah tombol.
-      showLoading('Mengambil lokasi GPS, mohon tunggu...');
+      showLoading('Mencari sinyal GPS terbaik, mohon tunggu (maks. 15 detik)...');
 
-      navigator.geolocation.getCurrentPosition(
+      ambilLokasiTerbaik(
         function (pos) {
           var lat = pos.coords.latitude;
           var lng = pos.coords.longitude;
@@ -1706,7 +1777,8 @@
                 else localSudahKeluar = true;
                 showAbsenResult(result, tipe, nama);
               } else {
-                showModal('err', 'Absen Ditolak', result.message);
+                if (/akurat|presisi/i.test(String(result.message))) tampilkanBantuanGps(accuracy, tipe, kode, nama);
+                else showModal('err', 'Absen Ditolak', result.message);
               }
               updateTombolStatus();
             })
@@ -1730,8 +1802,7 @@
           else if (err.code === 2) msg = 'Lokasi tidak tersedia. Pastikan GPS HP aktif.';
           else if (err.code === 3) msg = 'Waktu pengambilan lokasi habis. Coba lagi di area terbuka.';
           showModal('err', 'Gagal Mengambil Lokasi', msg);
-        },
-        { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 }
+        }
       );
     }
 
