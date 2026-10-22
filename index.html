@@ -1625,8 +1625,10 @@
           if (status.deviceCocok) prefetchRiwayat(kode, deviceId);
           if (!status.deviceCocok) {
             document.getElementById('statusAbsen').style.display = 'none';
-            btnMasuk.disabled = localSudahMasuk;
-            btnKeluar.disabled = localSudahKeluar;
+            // HP tidak cocok, tapi server tetap memberi tahu sudah/belum absen
+            // hari ini -> kunci tombol yang sudah dipakai.
+            btnMasuk.disabled = !!status.sudahMasuk || localSudahMasuk;
+            btnKeluar.disabled = !!status.sudahKeluar || localSudahKeluar;
             return;
           }
 
