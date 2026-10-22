@@ -85,8 +85,8 @@
   </header>
 
   <section class="ringkas">
-    <div class="box hadir"><b id="nHadir">0</b><span>Sudah Absen</span></div>
     <div class="box belum"><b id="nBelum">0</b><span>Belum Absen</span></div>
+    <div class="box hadir"><b id="nHadir">0</b><span>Tepat Waktu</span></div>
     <div class="box terlambat"><b id="nTerlambat">0</b><span>Terlambat</span></div>
     <div class="box izin"><b id="nIzin">0</b><span>Izin / Dinas</span></div>
   </section>
@@ -156,7 +156,7 @@
       if (g.status === 'belum') b++; else if (g.status === 'izin') iz++;
       else { h++; if (g.status === 'terlambat') t++; }
     });
-    document.getElementById('nHadir').textContent = h;
+    document.getElementById('nHadir').textContent = h - t; // tepat waktu = sudah absen dikurangi yang terlambat
     document.getElementById('nBelum').textContent = b;
     document.getElementById('nTerlambat').textContent = t;
     document.getElementById('nIzin').textContent = iz;
@@ -185,6 +185,7 @@
           return;
         }
         render(res);
+        try { localStorage.setItem('absensi_tv_cache', JSON.stringify(res)); } catch (e) { }
         document.getElementById('update').textContent = 'Data diperbarui ' + res.dibuat + ' · otomatis tiap 1 menit';
       })
       .withFailureHandler(function (err) {
@@ -193,6 +194,14 @@
       .getPapanKehadiran(pin);
   }
 
+  // Tampilkan data terakhir yang tersimpan langsung (instan), lalu perbarui dari server.
+  try {
+    var c = JSON.parse(localStorage.getItem('absensi_tv_cache') || 'null');
+    if (c && c.ok && c.tanggal === (function () { var d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); })()) {
+      render(c);
+      document.getElementById('update').textContent = 'Menampilkan data tersimpan (' + c.dibuat + '), memperbarui...';
+    }
+  } catch (e) { }
   muat();
   setInterval(muat, 60000);
 </script>
