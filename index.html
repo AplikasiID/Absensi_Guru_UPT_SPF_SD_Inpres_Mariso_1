@@ -11,6 +11,9 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" href="ikon-192.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   <script src="config.js"></script>
   <script src="api.js"></script>
     <style>
@@ -719,6 +722,175 @@
     .adm-out { text-align: center; margin: 0 0 16px; }
     .adm-out a { font-size: 12.5px; font-weight: 700; color: #94a3b8; text-decoration: none; }
     #adminPinInput { margin-bottom: 6px; }
+    /* ================= POPUP DESAIN BARU (putih bersih + ikon beranimasi) ================= */
+    .modal-overlay { background: rgba(20,25,40,0.6); }
+    .modal-card { background:#fff; border:0; border-radius:24px; padding:26px 22px 22px; box-shadow:0 24px 48px -16px rgba(0,0,0,.5); }
+    .modal-title { font-size:20px; font-weight:800; color:#14213D; text-shadow:none; margin:0 0 8px; }
+    .modal-desc { font-size:14px; font-weight:500; color:#5B6475; text-shadow:none; line-height:1.5; margin:0 0 20px; }
+    .modal-btn { background:#1E3A8A; border-radius:14px; min-height:48px; padding:0 16px; font-family:inherit; font-size:15px; font-weight:800; box-shadow:none; }
+    .modal-btn.secondary { background:#fff; color:#14213D; border:1.5px solid #D5DBE8; }
+    .modal-actions .modal-btn { padding:0 8px; }
+    .modal-icon { width:64px; height:64px; margin:0 auto 14px; }
+    .modal-icon.ok { background:#E3F4E8; color:#176B31; }
+    .modal-icon.err { background:#FFF1D6; color:#7A4A00; }
+    #confirmOverlay .modal-icon { background:#E4EAFA !important; color:#28408F !important; }
+    .loading-spinner { border-color:#E4EAFA; border-top-color:#1E3A8A; }
+
+    /* --- Popup hasil absen --- */
+    #richModalOverlay .rich-card { background:#fff; border:0; border-radius:24px; padding:26px 22px 22px; box-shadow:0 24px 48px -16px rgba(0,0,0,.5); }
+    #richModalOverlay .rich-icon-ring { width:64px; height:64px; margin:0 auto 14px; background:#E3F4E8; color:#176B31; box-shadow:none; }
+    #richModalOverlay .rich-icon-ring svg { width:30px; height:30px; }
+    #richModalOverlay .rich-status-terlambat .rich-icon-ring { background:#FDE8E6; color:#A61B12; }
+    #richModalOverlay .rich-pulang .rich-icon-ring { background:#E4EAFA; color:#28408F; }
+    #richModalOverlay .rich-title { font-size:20px; font-weight:800; color:#14213D; margin:0; }
+    #richModalOverlay .rich-time { font-size:38px; font-weight:800; color:#14213D; margin:10px 0 2px; }
+    #richModalOverlay .rich-status-terlambat .rich-time { color:#A61B12; }
+    #richModalOverlay .rich-date { font-size:13px; font-weight:600; color:#5B6475; margin:0; }
+    #richModalOverlay .rich-badge { margin:12px 0 0; padding:6px 12px; font-size:13px; background:#E3F4E8; color:#176B31; }
+    #richModalOverlay .rich-status-terlambat .rich-badge { background:#FDE8E6; color:#A61B12; }
+    #richModalOverlay .rich-pulang .rich-badge { background:#E4EAFA; color:#28408F; }
+    #richModalOverlay .rich-daring-tag { background:#FFF1D6; color:#7A4A00; margin:12px auto 0; }
+    #richModalOverlay .rich-stat-card { background:#fff; border:1px solid #E6EAF2; border-radius:14px; padding:0; margin:16px 0 0; overflow:hidden; }
+    #richModalOverlay .rich-stat-row { padding:11px 14px; align-items:center; border:0; border-top:1px solid #E6EAF2; }
+    #richModalOverlay .rich-stat-row:first-child { border-top:0; }
+    #richModalOverlay .rich-stat-label { color:#5B6475; padding-top:0; }
+    #richModalOverlay .rich-stat-label svg { opacity:1; }
+    #richModalOverlay .rich-stat-value, #richModalOverlay .rich-stat-value.accent { color:#14213D; font-size:13.5px; }
+    #richModalOverlay .rich-stat-value.warn { color:#A61B12; }
+    #richModalOverlay .rich-stat-value.accent svg { display:none; }
+    #richModalOverlay .rich-quote { font-style:normal; font-size:13px; color:#5B6475; margin:14px 4px 16px; }
+    #richModalOverlay .rich-time-note { margin:14px 0 0; }
+    .rich-wa-row { display:flex; gap:8px; margin-bottom:10px; }
+    #richModalOverlay .rich-wa { flex:1; width:auto; margin:0; min-height:44px; padding:0 8px; border-radius:12px; background:#fff; color:#14213D; border:1.5px solid #D5DBE8; box-shadow:none; font-size:12.5px; line-height:1.2; }
+    #richModalOverlay .rich-wa svg { width:16px; height:16px; }
+    #richModalOverlay .rich-wa-buka svg { color:#25D366; }
+    #richModalOverlay .rich-cta { background:#1E3A8A !important; box-shadow:none !important; border-radius:14px; min-height:48px; padding:0; font-family:inherit; font-size:15px; font-weight:800; }
+
+    /* --- Animasi ikon --- */
+    .pp-ring { position:relative; animation: ppPop .55s cubic-bezier(.34,1.56,.64,1) both; }
+    .pp-ring::after { content:""; position:absolute; inset:0; border-radius:50%; border:3px solid currentColor; opacity:0; pointer-events:none; animation: ppHalo 1.1s ease-out .45s 2; }
+    .pp-ring.pp-late { animation: ppPop .55s cubic-bezier(.34,1.56,.64,1) both, ppWobble .7s ease-in-out 1.05s; }
+    .pp-ring.pp-shake { animation: ppPop .55s cubic-bezier(.34,1.56,.64,1) both, ppShake .5s ease-in-out .5s; }
+    .pp-ring.pp-soft { animation: ppPop .55s cubic-bezier(.34,1.56,.64,1) both; }
+    .pp-ring svg { overflow:visible; }
+    .a-check { stroke-dasharray:24; stroke-dashoffset:24; animation: ppDraw .45s cubic-bezier(.65,0,.35,1) .3s forwards; }
+    .a-hand-m, .a-hand-h { transform-box:view-box; transform-origin:12px 12px; animation: ppSpinBack 1s cubic-bezier(.45,0,.2,1) .3s both; }
+    .a-hand-h { animation-duration:.8s; }
+    .a-arrow { animation: ppArrow 1.1s ease-in-out .45s 2; }
+    .a-bang { transform-box:view-box; transform-origin:12px 12px; animation: ppBang .5s ease-out .35s both; }
+    .a-dot { animation: ppFadeIn .2s ease .7s both; }
+    #gpsHelpOverlay .modal-icon { animation: ppDrop .8s cubic-bezier(.34,1.3,.64,1) both; }
+    #confirmOverlay .modal-icon { animation: ppPop .55s cubic-bezier(.34,1.56,.64,1) both; }
+    #richModalOverlay .rich-time { animation: ppUp .4s ease .3s both; }
+    #richModalOverlay .rich-badge { animation: ppUp .4s ease .42s both; }
+    #richModalOverlay .rich-stat-card { animation: ppUp .4s ease .54s both; }
+    @keyframes ppPop { from { transform:scale(.4); opacity:0; } to { transform:scale(1); opacity:1; } }
+    @keyframes ppHalo { 0% { transform:scale(1); opacity:.45; } 100% { transform:scale(1.6); opacity:0; } }
+    @keyframes ppDraw { to { stroke-dashoffset:0; } }
+    @keyframes ppSpinBack { from { transform:rotate(-340deg); } to { transform:rotate(0); } }
+    @keyframes ppArrow { 0%,100% { transform:translateX(0); } 50% { transform:translateX(3px); } }
+    @keyframes ppWobble { 0%,100% { transform:rotate(0); } 25% { transform:rotate(-9deg); } 75% { transform:rotate(9deg); } }
+    @keyframes ppShake { 0%,100% { transform:translateX(0); } 20% { transform:translateX(-5px); } 40% { transform:translateX(5px); } 60% { transform:translateX(-3px); } 80% { transform:translateX(3px); } }
+    @keyframes ppBang { from { transform:scaleY(0); } to { transform:scaleY(1); } }
+    @keyframes ppFadeIn { from { opacity:0; } to { opacity:1; } }
+    @keyframes ppDrop { 0% { transform:translateY(-22px); opacity:0; } 100% { transform:translateY(0); opacity:1; } }
+    @keyframes ppUp { from { transform:translateY(8px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+    .a-pin { transform-box: view-box; transform-origin: 12px 21px; animation: ppPinDrop .9s cubic-bezier(.34,1.56,.64,1) .25s both; }
+    .a-pinsh { transform-box: fill-box; transform-origin: center; animation: ppPinSh .9s ease-out .25s both; }
+    @keyframes ppPinDrop { 0% { transform: translateY(-16px) scaleY(.85); opacity: 0; } 55% { transform: translateY(0) scaleY(.92); opacity: 1; } 75% { transform: translateY(-3px) scaleY(1.04); } 100% { transform: translateY(0) scaleY(1); opacity: 1; } }
+    @keyframes ppPinSh { 0% { transform: scale(.2); opacity: 0; } 100% { transform: scale(1); opacity: .25; } }
+    @media (prefers-reduced-motion: reduce) { .a-pin, .a-pinsh { animation: none !important; } }
+    @media (prefers-reduced-motion: reduce) {
+      .pp-ring, .pp-ring::after, .a-hand-m, .a-hand-h, .a-arrow, .a-bang, .a-dot,
+      #gpsHelpOverlay .modal-icon, #confirmOverlay .modal-icon,
+      #richModalOverlay .rich-time, #richModalOverlay .rich-badge, #richModalOverlay .rich-stat-card { animation:none !important; }
+      .a-check { animation:none; stroke-dashoffset:0; }
+    }
+
+    /* ===== Seragam dengan halaman Riwayat: font, menu bawah ===== */
+    :root { --rw-bg:#F3F6FB; --rw-card:#fff; --rw-line:#E6EAF2; --rw-muted:#5B6475; --rw-ink:#14213D; }
+    body { font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "SF Pro Display", Roboto, Arial, sans-serif; }
+    button, select, input { font-family: inherit; }
+    .bnav { background: var(--rw-card); border-radius: 22px; box-shadow: 0 8px 24px rgba(30,41,59,.18); padding: 8px 8px 6px; }
+    .bn-row { gap: 4px; }
+    .bnav button { padding: 7px 0; font-size: 12px; font-weight: 700; color: var(--rw-muted); border-radius: 14px; }
+    .bnav button.on { background: #DBE6FB; color: #1E3A8A; }
+    .bnav button .ni { display: flex; justify-content: center; margin-bottom: 3px; font-size: 0; }
+    .bnav button .ni svg { width: 22px; height: 22px; }
+    .bn-credit { font-size: 11px; color: var(--rw-muted); }
+    @media (min-width: 769px) { .ban, .wrap { max-width: 640px; } .bnav { max-width: 616px; } }
+
+    /* ===== MODE GELAP (mengikuti pengaturan HP, sama seperti Riwayat) ===== */
+    @media (prefers-color-scheme: dark) {
+      :root { --rw-bg:#0b0b0f; --rw-card:#1c1c24; --rw-line:rgba(255,255,255,.10); --rw-muted:#A8AFBF; --rw-ink:#F2F2F7;
+        --glass-bg: rgba(28,28,36,.94); --glass-border: rgba(255,255,255,.12); --glass-shadow: rgba(0,0,0,.4);
+        --text-main:#F2F2F7; --text-sub: rgba(242,242,247,.62); --divider: rgba(255,255,255,.10); }
+      body { background: var(--rw-bg); color: var(--rw-ink); }
+      .name-float, .act-card, .tl-card, .info-card, .adm-grid button { background: var(--rw-card); box-shadow: 0 8px 20px rgba(0,0,0,.35); }
+      .name-float select { color: var(--rw-ink); }
+      .name-float select option { color: #14213D; }
+      select, input { background: #262a36; color: var(--rw-ink); border-color: rgba(255,255,255,.12); }
+      .dy { background: var(--rw-card); color: var(--rw-muted); box-shadow: none; }
+      .dy b { color: var(--rw-ink); } .dy i { background: #3a3f4d; }
+      .dy.on { background: #1E3A8A; color: #bfdbfe; } .dy.on b { color: #fff; }
+      .dy i.ok { background: #30d158; } .dy i.late { background: #ff453a; } .dy i.izin { background: #5e8bff; } .dy i.alpa { background: #8b93a5; } .dy i.today { background: #fff; }
+      .act-note, .tl-h, .page-h, .adm-grid button { color: #9DB7FF; }
+      #btnMasuk:disabled, #btnKeluar:disabled { background: #2a2d38; color: #6f7686; }
+      #btnMasuk.done:disabled, #btnKeluar.done:disabled { background: rgba(48,209,88,.18); color: #5EE08A; }
+      .tl-it::before { background: rgba(255,255,255,.14); }
+      .tl-nd { background: #3a3f4d; } .tl-nd.ok { background: #30d158; } .tl-nd.late { background: #ff453a; }
+      .tl-t { color: var(--rw-muted); } .tl-it.done .tl-t { color: var(--rw-ink); } .tl-s { color: var(--rw-muted); }
+      .tl-p.ok { background: rgba(48,209,88,.18); color: #5EE08A; } .tl-p.late { background: rgba(255,69,58,.2); color: #FF8F86; } .tl-p.dr { background: rgba(255,159,10,.2); color: #FFB44D; }
+      .rb-item { background: #262a36; } .rb-item small { color: var(--rw-muted); }
+      .rb-item.hadir b { color: #5EE08A; } .rb-item.terlambat b { color: #FFB44D; } .rb-item.izin b { color: #A9BEFF; } .rb-item.alpa b { color: #FF8F86; }
+      .rb-head a { color: #9DB7FF; }
+      .jd-row span { color: var(--rw-ink); }
+      .pg-card.biru { background: rgba(100,130,255,.2); border-color: rgba(120,150,255,.35); color: #C9D6FF; }
+      .pg-card.kuning { background: rgba(251,191,36,.16); border-color: rgba(251,191,36,.35); color: #FFD98A; }
+      .pg-card.merah { background: rgba(255,69,58,.2); border-color: rgba(255,69,58,.4); color: #FFB3AD; }
+      .adm-seg { background: #262a36; } .adm-seg button { color: var(--rw-muted); }
+      .adm-seg button.on { background: #1E3A8A; color: #fff; box-shadow: none; }
+      .dev-sum, .dev-info, .dev-kosong { color: var(--rw-muted); } .dev-info.ok { color: #5EE08A; }
+      .dev-btn { background: rgba(255,69,58,.18); color: #FF8F86; } .dev-btn:disabled { background: #262a36; color: #6f7686; }
+      .bnav button.on { background: #1E3A8A; color: #fff; }
+      .bn-credit { color: var(--rw-muted); }
+      /* popup */
+      .modal-card, #richModalOverlay .rich-card { background: #1c1c24; box-shadow: 0 24px 48px -16px rgba(0,0,0,.8); }
+      .modal-title, #richModalOverlay .rich-title, #richModalOverlay .rich-time { color: var(--rw-ink); }
+      #richModalOverlay .rich-status-terlambat .rich-time { color: #FF8F86; }
+      .modal-desc, #richModalOverlay .rich-date, #richModalOverlay .rich-quote, #richModalOverlay .rich-stat-label { color: var(--rw-muted); }
+      .modal-btn.secondary, #richModalOverlay .rich-wa { background: #262a36; color: var(--rw-ink); border-color: rgba(255,255,255,.18); }
+      .modal-icon.ok, #richModalOverlay .rich-icon-ring { background: rgba(48,209,88,.18); color: #5EE08A; }
+      .modal-icon.err { background: rgba(255,159,10,.2); color: #FFB44D; }
+      #richModalOverlay .rich-status-terlambat .rich-icon-ring { background: rgba(255,69,58,.2); color: #FF8F86; }
+      #richModalOverlay .rich-pulang .rich-icon-ring { background: rgba(100,130,255,.22); color: #A9BEFF; }
+      #richModalOverlay .rich-badge { background: rgba(48,209,88,.18); color: #5EE08A; }
+      #richModalOverlay .rich-status-terlambat .rich-badge { background: rgba(255,69,58,.2); color: #FF8F86; }
+      #richModalOverlay .rich-pulang .rich-badge { background: rgba(100,130,255,.22); color: #A9BEFF; }
+      #richModalOverlay .rich-stat-card { background: transparent; border-color: rgba(255,255,255,.12); }
+      #richModalOverlay .rich-stat-row { border-color: rgba(255,255,255,.10); }
+      #richModalOverlay .rich-stat-value, #richModalOverlay .rich-stat-value.accent { color: var(--rw-ink); }
+      #richModalOverlay .rich-stat-value.warn { color: #FF8F86; }
+    }
+
+    /* ===== Ikon popup berdenyut terus (popup hasil absen) ===== */
+    #richModalOverlay .rich-icon-ring.pp-ring::after { animation: ppHalo 1.8s ease-out .5s infinite; }
+    #richModalOverlay .rich-icon-ring.pp-ring::before { content:""; position:absolute; inset:0; border-radius:50%; border:3px solid currentColor; opacity:0; pointer-events:none; animation: ppHalo 1.8s ease-out 1.4s infinite; }
+    #richModalOverlay .rich-icon-ring.pp-ring svg { animation: ppBreath 1.8s ease-in-out 1s infinite; }
+    @keyframes ppBreath { 0%,100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+    @media (prefers-reduced-motion: reduce) { #richModalOverlay .rich-icon-ring.pp-ring::after, #richModalOverlay .rich-icon-ring.pp-ring::before, #richModalOverlay .rich-icon-ring.pp-ring svg { animation: none !important; } }
+
+    /* ===== Segarkan saat ganti nama (ringan, hanya CSS) ===== */
+    .name-float { overflow: hidden; }
+    .nm-spin { display: none; position: absolute; right: 44px; top: 17px; width: 16px; height: 16px; border: 2.5px solid #cbd5e1; border-top-color: #1d4ed8; border-radius: 50%; animation: nmSpin .7s linear infinite; }
+    body.memuat .nm-spin { display: block; }
+    .name-float::after { content: ""; position: absolute; left: 0; bottom: 0; height: 3px; width: 40%; border-radius: 3px; background: linear-gradient(90deg, #f59e0b, #16a34a); opacity: 0; }
+    body.memuat .name-float::after { opacity: 1; animation: nmBar .9s ease-in-out infinite; }
+    @keyframes nmSpin { to { transform: rotate(360deg); } }
+    @keyframes nmBar { 0% { transform: translateX(-100%); } 100% { transform: translateX(260%); } }
+    .segar { animation: segarIn .32s ease both; }
+    @keyframes segarIn { from { opacity: .35; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @media (prefers-reduced-motion: reduce) { .segar, .nm-spin, body.memuat .name-float::after { animation: none !important; } }
   </style>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -742,6 +914,7 @@
   <div class="wrap">
     <div class="name-float">
       <label for="guruSelect">Pilih nama</label>
+      <i class="nm-spin" aria-hidden="true"></i>
       <select id="guruSelect">
         <option value="">Memuat daftar guru...</option>
       </select>
@@ -911,9 +1084,9 @@
 
   <nav class="bnav" id="bnav">
     <div class="bn-row">
-    <button type="button" class="on" id="navAbsen"><span class="ni">&#127968;</span>Absen</button>
-    <button type="button" id="navRiwayat"><span class="ni">&#128344;</span>Riwayat</button>
-      <button type="button" id="navAdmin" style="display:none;"><span class="ni">&#128737;&#65039;</span>Admin</button>
+    <button type="button" class="on" id="navAbsen"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></span>Absen</button>
+    <button type="button" id="navRiwayat"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>Riwayat</button>
+      <button type="button" id="navAdmin" style="display:none;"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></span>Admin</button>
     </div>
     <div class="bn-credit" id="footerSecret">Dikembangkan oleh: Ade Irwansyah</div>
   </nav>
@@ -937,13 +1110,17 @@
       <div class="modal-icon" id="modalIcon"></div>
       <h3 class="modal-title" id="modalTitle"></h3>
       <p class="modal-desc" id="modalDesc"></p>
-      <button class="modal-btn" onclick="closeModal()">Oke</button>
+      <button class="modal-btn" id="modalOk" onclick="closeModal()">Oke</button>
+      <div class="modal-actions" id="modalActions" style="display:none;">
+        <button class="modal-btn secondary" onclick="closeModal()">Tutup</button>
+        <button class="modal-btn" id="modalRetry">Coba lagi</button>
+      </div>
     </div>
   </div>
 
   <div id="gpsHelpOverlay" class="modal-overlay">
     <div class="modal-card">
-      <div class="modal-icon err" style="background:rgba(245,158,11,.25); color:#b45309; font-size:30px;">&#128205;</div>
+      <div class="modal-icon err" style="background:#FFF1D6; color:#7A4A00; font-size:30px;">&#128205;</div>
       <h3 class="modal-title">Lokasi HP Belum Tepat</h3>
       <p class="gps-info" id="gpsHelpInfo"></p>
       <ol class="gps-steps" id="gpsHelpSteps"></ol>
@@ -990,6 +1167,7 @@
       <div class="rich-stat-card" id="richStatCard"></div>
       <p class="rich-quote" id="richQuote"></p>
       <p class="rich-time-note" id="richTimeNote"></p>
+      <div class="rich-wa-row">
       <button type="button" class="rich-wa rich-wa-simpan" id="richSimpan" onclick="simpanGambarWA()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M5 21h14"/></svg>
         <span id="richSimpanLabel">Simpan Gambar</span>
@@ -998,6 +1176,7 @@
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3.5A11.8 11.8 0 0 0 12 0C5.4 0 .1 5.3.1 11.9c0 2.1.5 4.1 1.6 5.9L0 24l6.4-1.7a11.9 11.9 0 0 0 5.6 1.4c6.6 0 11.9-5.3 11.9-11.9 0-3.2-1.2-6.2-3.4-8.3zM12 21.7c-1.8 0-3.6-.5-5.1-1.4l-.4-.2-3.8 1 1-3.7-.2-.4a9.8 9.8 0 0 1-1.5-5.1C2 6.5 6.5 2 12 2c2.6 0 5.1 1 6.9 2.9a9.7 9.7 0 0 1 2.9 6.9c0 5.5-4.5 9.9-9.8 9.9zm5.4-7.4c-.3-.1-1.8-.9-2-1s-.5-.1-.7.1-.8 1-.9 1.1-.3.2-.6.1a8 8 0 0 1-4-3.5c-.3-.5.3-.5.9-1.6.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4s-1 1-1 2.4 1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3 1.8.8 2.5.8 3.4.7.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4s-.3-.2-.6-.3z"/></svg>
         Buka WhatsApp
       </a>
+      </div>
       <p class="rich-wa-hint" id="richWaHint"></p>
       <img class="rich-wa-preview" id="richWaPreview" alt="Gambar absen">
       <button class="rich-cta" id="richCta" onclick="closeRichModal()">Oke</button>
@@ -1052,10 +1231,27 @@
     // "Sudah Absen Hari Ini".
     var ICON_OK_ANIM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline class="check-path" points="20 6 9 17 4 12"></polyline></svg>';
 
-    function showModal(type, title, message) {
+    // Ikon popup beranimasi (centang menggambar diri, jam berputar, panah keluar, tanda seru).
+    // Animasinya diatur di CSS (.pp-ring, .a-*) dan otomatis mati kalau HP minta "kurangi gerakan".
+    function ppSvg(inner, sw) {
+      return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (sw || 2.4) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + inner + '</svg>';
+    }
+    var ANIM = {
+      check: ppSvg('<path class="a-check" pathLength="24" d="M5 12.5l4.5 4.5L19 7.5"/>', 2.8),
+      clock: ppSvg('<circle cx="12" cy="12" r="9"/><path class="a-hand-m" d="M12 12V7"/><path class="a-hand-h" d="M12 12l3.2 2"/>', 2.2),
+      exit: ppSvg('<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><g class="a-arrow"><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></g>', 2.2),
+      alert: ppSvg('<circle cx="12" cy="12" r="9"/><path class="a-bang" d="M12 7.5v5.5"/><path class="a-dot" d="M12 16.5h.01"/>', 2.6),
+      pin: ppSvg('<ellipse class="a-pinsh" cx="12" cy="21.4" rx="3.6" ry="1" fill="currentColor" stroke="none" opacity=".25"/><g class="a-pin"><path d="M12 20.5s-6.5-5.6-6.5-10.6a6.5 6.5 0 0 1 13 0c0 5-6.5 10.6-6.5 10.6z"/><circle cx="12" cy="9.8" r="2.4"/></g>', 2.2)
+    };
+
+    function showModal(type, title, message, opts) {
+      opts = opts || {};
       var icon = document.getElementById('modalIcon');
-      icon.className = 'modal-icon ' + (type === 'ok' ? 'ok' : 'err');
-      icon.innerHTML = type === 'ok' ? ICON_OK : ICON_ERR;
+      icon.className = 'modal-icon pp-ring ' + (type === 'ok' ? 'ok' : (opts.pin ? 'err pp-soft' : 'err pp-shake'));
+      icon.innerHTML = type === 'ok' ? ANIM.check : (opts.pin ? ANIM.pin : ANIM.alert);
+      document.getElementById('modalOk').style.display = opts.retry ? 'none' : '';
+      document.getElementById('modalActions').style.display = opts.retry ? '' : 'none';
+      document.getElementById('modalRetry').onclick = function () { closeModal(); if (opts.retry) opts.retry(); };
       document.getElementById('modalTitle').textContent = title;
       document.getElementById('modalDesc').textContent = message;
       document.getElementById('modalOverlay').classList.add('show');
@@ -1083,8 +1279,8 @@
     // bukan sekadar teks status biasa.
     function showSudahAbsenModal(message) {
       var icon = document.getElementById('modalIcon');
-      icon.className = 'modal-icon ok-animated';
-      icon.innerHTML = ICON_OK_ANIM;
+      icon.className = 'modal-icon pp-ring ok';
+      icon.innerHTML = ANIM.check;
       document.getElementById('modalTitle').textContent = 'Sudah Absen Hari Ini';
       document.getElementById('modalDesc').textContent = message;
       document.getElementById('modalOverlay').classList.add('show');
@@ -1152,7 +1348,8 @@
       var isDaring = result.modeAbsen === 'DARING';
 
       var card = document.getElementById('richCard');
-      card.className = 'rich-card rich-bg-' + shift + ' rich-accent-' + shift + (isTerlambat ? ' rich-status-terlambat' : '');
+      card.className = 'rich-card rich-bg-' + shift + ' rich-accent-' + shift + (isTerlambat ? ' rich-status-terlambat' : '') + (tipe === 'masuk' ? '' : ' rich-pulang');
+      document.getElementById('richIconRing').className = 'rich-icon-ring pp-ring' + (isTerlambat ? ' pp-late' : '');
 
       var daringTag = document.getElementById('richDaringTag');
       if (isDaring) {
@@ -1173,17 +1370,15 @@
       }
 
       var rows = richRow(RICH_ICONS.person, 'Nama', 'class="rich-stat-value">' + nama + '</span>') +
-                 richRow(RICH_ICONS.shift, 'Shift', 'class="rich-stat-value accent">' + RICH_ICONS.dot + ' ' + SHIFT_LABEL[shift] + '</span>');
+                 richRow(RICH_ICONS.shift, 'Shift', 'class="rich-stat-value accent">' + SHIFT_LABEL[shift].replace(/^Shift /, '') + '</span>');
 
       if (tipe === 'masuk') {
-        document.getElementById('richIconRing').innerHTML = isTerlambat ? RICH_ICONS.warn : RICH_ICONS.check;
+        document.getElementById('richIconRing').innerHTML = isTerlambat ? ANIM.clock : ANIM.check;
         document.getElementById('richTitle').textContent = isTerlambat ? 'Absen Masuk Terlambat' : 'Absen Masuk Berhasil';
-        document.getElementById('richBadge').innerHTML = (isTerlambat ? RICH_ICONS.warn : RICH_ICONS.clock) + (isTerlambat ? ' Terlambat' : ' Tepat Waktu');
+        document.getElementById('richBadge').innerHTML = RICH_ICONS.clock + (isTerlambat ? ' Terlambat' : ' Tepat Waktu');
 
         if (isTerlambat) {
           rows += richRow(RICH_ICONS.timer, 'Keterlambatan', 'class="rich-stat-value warn">' + (result.keterlambatan || '-') + '</span>');
-        } else {
-          rows += richRow(RICH_ICONS.clock, 'Jam Masuk', 'class="rich-stat-value">' + jam + '</span>');
         }
         if (result.lokasiKeterangan) rows += richRow(RICH_ICONS.pin, 'Lokasi', 'class="rich-stat-value">' + result.lokasiKeterangan + '</span>');
 
@@ -1197,11 +1392,9 @@
         }
 
       } else {
-        document.getElementById('richIconRing').innerHTML = RICH_ICONS.exit;
+        document.getElementById('richIconRing').innerHTML = ANIM.exit;
         document.getElementById('richTitle').textContent = 'Absen Pulang Berhasil';
         document.getElementById('richBadge').innerHTML = RICH_ICONS.check + ' Selesai';
-
-        rows += richRow(RICH_ICONS.clock, 'Jam Pulang', 'class="rich-stat-value">' + jam + '</span>');
         if (result.lokasiKeterangan) rows += richRow(RICH_ICONS.pin, 'Lokasi', 'class="rich-stat-value">' + result.lokasiKeterangan + '</span>');
 
         document.getElementById('richQuote').textContent = 'Terima kasih, ' + (nama.split(' ')[0] || nama) + '. Sampai jumpa besok!';
@@ -1260,41 +1453,39 @@
     }
 
     function buildGambarHtml(d) {
-      var t = WA_TEMA[d.shift] || WA_TEMA.pagi;
       var telat = d.isTerlambat;
-      var ring = telat ? WA_TEMA.telat.ring : t.ring;
-      var warnaWaktu = telat ? WA_TEMA.telat.time : t.time;
-      var badgeBg = telat ? WA_TEMA.telat.badge : t.badge;
-      var ikon = (d.tipe === 'masuk' ? (telat ? RICH_ICONS.warn : RICH_ICONS.check) : RICH_ICONS.exit)
+      var pulang = d.tipe !== 'masuk';
+      var w = telat ? { bg: '#FDE8E6', fg: '#A61B12' } : pulang ? { bg: '#E4EAFA', fg: '#28408F' } : { bg: '#E3F4E8', fg: '#176B31' };
+      var ikon = (pulang ? RICH_ICONS.exit : (telat ? RICH_ICONS.clock : RICH_ICONS.check))
         .replace('<svg ', '<svg width="30" height="30" ');
-      var judul = d.tipe === 'masuk' ? (telat ? 'Absen Masuk Terlambat' : 'Absen Masuk Berhasil') : 'Absen Pulang Berhasil';
-      var badgeTeks = d.tipe === 'masuk' ? (telat ? 'Terlambat' : 'Tepat Waktu') : 'Selesai';
+      var judul = pulang ? 'Absen Pulang Berhasil' : (telat ? 'Absen Masuk Terlambat' : 'Absen Masuk Berhasil');
+      var badgeTeks = pulang ? 'Selesai' : (telat ? 'Terlambat' : 'Tepat waktu');
 
       var baris = [
         ['Nama', d.nama, false],
-        ['Shift', SHIFT_LABEL[d.shift], false]
+        ['Shift', SHIFT_LABEL[d.shift].replace(/^Shift /, ''), false]
       ];
       if (d.tipe === 'masuk' && telat) baris.push(['Keterlambatan', d.keterlambatan, true]);
       if (d.lokasi) baris.push(['Lokasi', d.lokasi, false]);
       if (d.isDaring) baris.push(['Mode', 'Daring (dari luar sekolah)', false]);
 
       var rowsHtml = baris.map(function (b, i) {
-        var border = i < baris.length - 1 ? 'border-bottom:1px solid rgba(60,60,67,0.12);' : '';
-        return '<div style="display:flex;justify-content:space-between;gap:14px;padding:11px 0;font-size:13px;' + border + '">' +
-          '<span style="color:rgba(28,28,30,0.6);font-weight:600;flex-shrink:0;">' + escWa(b[0]) + '</span>' +
-          '<span style="font-weight:700;text-align:right;color:' + (b[2] ? '#b3401f' : '#1c1c1e') + ';">' + escWa(b[1]) + '</span></div>';
+        var border = i > 0 ? 'border-top:1px solid #E6EAF2;' : '';
+        return '<div style="display:flex;justify-content:space-between;gap:14px;padding:11px 14px;font-size:13px;' + border + '">' +
+          '<span style="color:#5B6475;font-weight:600;flex-shrink:0;">' + escWa(b[0]) + '</span>' +
+          '<span style="font-weight:700;text-align:right;color:' + (b[2] ? '#A61B12' : '#14213D') + ';">' + escWa(b[1]) + '</span></div>';
       }).join('');
 
-      return '<div style="width:360px;box-sizing:border-box;padding:24px 22px 18px;text-align:center;color:#1c1c1e;' +
-        'font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Arial,sans-serif;background:' + t.bg + ';">' +
-        '<div style="font-size:10.5px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:#46506a;margin-bottom:16px;">' + escWa(WA_SEKOLAH) + '</div>' +
-        '<div style="width:60px;height:60px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;color:#fff;background:' + ring + ';">' + ikon + '</div>' +
-        '<div style="font-size:17px;font-weight:700;margin-bottom:6px;">' + judul + '</div>' +
-        '<div style="font-size:36px;font-weight:700;margin-bottom:2px;color:' + warnaWaktu + ';">' + escWa(d.jam) + '</div>' +
-        '<div style="font-size:12.5px;color:rgba(28,28,30,0.6);margin-bottom:14px;">' + escWa(d.tanggal) + '</div>' +
-        '<div style="display:inline-block;padding:6px 16px;border-radius:999px;font-size:12.5px;font-weight:700;margin-bottom:16px;color:' + warnaWaktu + ';background:' + badgeBg + ';">' + badgeTeks + '</div>' +
-        '<div style="background:#fff;border-radius:16px;padding:2px 16px;text-align:left;margin-bottom:12px;">' + rowsHtml + '</div>' +
-        '<div style="font-size:10.5px;color:#5d6578;">Tercatat otomatis oleh sistem</div>' +
+      return '<div style="width:360px;box-sizing:border-box;padding:24px 22px 18px;text-align:center;color:#14213D;' +
+        'font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Arial,sans-serif;background:#ffffff;">' +
+        '<div style="font-size:10.5px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:#5B6475;margin-bottom:16px;">' + escWa(WA_SEKOLAH) + '</div>' +
+        '<div style="width:60px;height:60px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;color:' + w.fg + ';background:' + w.bg + ';">' + ikon + '</div>' +
+        '<div style="font-size:18px;font-weight:800;margin-bottom:6px;">' + judul + '</div>' +
+        '<div style="font-size:36px;font-weight:800;margin-bottom:2px;color:' + (telat ? '#A61B12' : '#14213D') + ';">' + escWa(d.jam) + '</div>' +
+        '<div style="font-size:12.5px;font-weight:600;color:#5B6475;margin-bottom:12px;">' + escWa(d.tanggal) + '</div>' +
+        '<div style="display:inline-block;padding:6px 14px;border-radius:999px;font-size:12.5px;font-weight:700;margin-bottom:14px;color:' + w.fg + ';background:' + w.bg + ';">' + badgeTeks + '</div>' +
+        '<div style="border:1px solid #E6EAF2;border-radius:14px;text-align:left;margin-bottom:12px;overflow:hidden;">' + rowsHtml + '</div>' +
+        '<div style="font-size:10.5px;color:#5B6475;">Tercatat otomatis oleh sistem</div>' +
         '</div>';
     }
 
@@ -1969,6 +2160,7 @@
                 showAbsenResult(result, tipe, nama);
               } else {
                 if (/akurat|presisi/i.test(String(result.message))) tampilkanBantuanGps(accuracy, tipe, kode, nama);
+                else if (/area|lokasi|jarak|radius|sekolah|gps/i.test(String(result.message))) showModal('err', 'Absen Ditolak', result.message, { pin: true, retry: function () { absen(tipe); } });
                 else showModal('err', 'Absen Ditolak', result.message);
               }
               updateTombolStatus();
@@ -2193,7 +2385,10 @@
     setTimeout(function () { sp.style.display = 'none'; }, 450);
     try { sessionStorage.setItem('sp_seen', '1'); } catch (e) { }
   }
-  if (seen) sp.style.display = 'none';
+  // Aplikasi yang dipasang di layar utama sudah punya layar pembuka bawaan HP (logo ikon), jadi tidak perlu ganda.
+  var terpasang = false;
+  try { terpasang = (window.navigator.standalone === true) || (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches); } catch (e) { }
+  if (seen || terpasang) sp.style.display = 'none';
   else { setTimeout(tutupSplash, 1300); sp.addEventListener('click', tutupSplash); }
 
   // Sapaan sesuai jam + nama depan guru terpilih
@@ -2213,7 +2408,25 @@
     $('greetSub').textContent = HARI[d.getDay()] + ', ' + d.getDate() + ' ' + BULAN[d.getMonth()] + ' ' + d.getFullYear();
   }
   sapa(); setInterval(sapa, 2000);
-  $('guruSelect').addEventListener('change', function () { sapa(); renderMinggu(); renderGarisWaktu(window.__lastStatus || null); labelTombol(); });
+  // Segarkan saat ganti nama: status guru sebelumnya langsung dibersihkan (tidak tertinggal),
+  // ada indikator memuat singkat, lalu isi baru muncul dengan animasi halus.
+  var tMuat = null;
+  function segarkan() {
+    ['weekStrip', 'tlCard', 'rbCard'].forEach(function (id) {
+      var el = $(id); if (!el) return;
+      el.classList.remove('segar'); void el.offsetWidth; el.classList.add('segar');
+    });
+  }
+  function selesaiMuat() { clearTimeout(tMuat); document.body.classList.remove('memuat'); }
+  $('guruSelect').addEventListener('change', function () {
+    window.__lastStatus = null;
+    $('tlCard').style.display = 'none';
+    sapa(); renderMinggu(); labelTombol(); segarkan();
+    if (this.value) {
+      document.body.classList.add('memuat');
+      clearTimeout(tMuat); tMuat = setTimeout(selesaiMuat, 6000);
+    } else selesaiMuat();
+  });
 
   // Menu bawah
   function tab(t) {
@@ -2300,7 +2513,7 @@
 
   // Sambungkan ke fungsi lama tanpa mengubah logikanya
   var _rr = window.renderRingkas;
-  window.renderRingkas = function (status) { window.__lastStatus = status; _rr(status); renderGarisWaktu(status); labelTombol(); };
+  window.renderRingkas = function (status) { window.__lastStatus = status; _rr(status); renderGarisWaktu(status); labelTombol(); selesaiMuat(); segarkan(); };
   var _rb = window.renderRingkasanBulan;
   window.renderRingkasanBulan = function (kode, res) { _rb(kode, res); renderMinggu(); };
   setInterval(renderMinggu, 20000);
