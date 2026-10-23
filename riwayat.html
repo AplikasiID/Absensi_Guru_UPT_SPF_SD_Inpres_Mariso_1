@@ -599,6 +599,11 @@
     .more-btn { display:block; width:100%; min-height:46px; margin-top:16px; border-radius:14px; border:1.5px solid #1E3A8A; background:transparent; color:#1E3A8A; font:700 14px "Plus Jakarta Sans",sans-serif; cursor:pointer; }
     @media (prefers-color-scheme: dark) { .more-btn { border-color:#7FA0FF; color:#9DB7FF; } }
     .loading { color:var(--rw-muted); }
+    .topbar { margin-bottom:12px; }
+    .guru-row { margin:0 0 14px; font-size:13px; opacity:.95; align-items:flex-start; flex-wrap:nowrap; }
+    .guru-row svg { flex:0 0 auto; margin-top:2px; }
+    .guru-row .guru-lbl { white-space:nowrap; }
+    .guru-row b { min-width:0; overflow-wrap:anywhere; }
     /* navigasi bawah */
     .bnav { background:var(--rw-card); border-radius:22px; box-shadow:0 8px 24px rgba(30,41,59,.18); padding:8px 8px 6px; }
     .bn-row { gap:4px; }
@@ -609,8 +614,7 @@
     .bn-credit { font-size:11px; color:var(--rw-muted); }
     @media (prefers-color-scheme: dark) { .bnav a.on { background:#1E3A8A; color:#fff; } }
     @media (min-width: 769px) {
-      .sticky-top > * { width:100%; max-width:680px; margin-left:auto; margin-right:auto; }
-      #content { max-width:680px; margin:0 auto; }
+      .page-shell { max-width: 640px; }
     }
   </style>
 </head>
@@ -626,10 +630,6 @@
           </a>
           <div class="title-block">
             <h1>Riwayat Absensi</h1>
-      <div class="guru-row" id="guruRow" style="display:none;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>
-        Guru Pengajar: <b id="guruNama">-</b>
-      </div>
           </div>
         </div>
         <div class="month-picker" id="monthPicker">
@@ -639,6 +639,11 @@
         </div>
       </div>
 
+
+            <div class="guru-row" id="guruRow" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>
+        <span class="guru-lbl">Guru:</span> <b id="guruNama">-</b>
+      </div>
 
       <div class="summary-grid" id="summaryGrid"></div>
       <div id="syncInfo" style="font-size:12px; font-weight:600; margin-top:8px; min-height:16px; color:var(--text-sub);"></div>
@@ -962,6 +967,7 @@
         : s.getDate() + ' ' + MONTH_NAMES_ID[s.getMonth()].substring(0, 3) + ' \u2013 ' + e.getDate() + ' ' + MONTH_NAMES_ID[e.getMonth()].substring(0, 3);
       return { key: key, label: 'Pekan ' + label };
     }
+    function jamPendek(t) { return t ? String(t).replace(/^(\d{1,2}:\d{2}):\d{2}$/, '$1') : '-'; }
     function rowHtml(row) {
       var HARI_SINGKAT = ["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
       var d = new Date(row.tanggal + "T00:00:00");
@@ -972,9 +978,8 @@
         time = 'Tidak ada jam';
         sub = 'Surat/keterangan admin';
       } else {
-        time = (row.jamMasuk || '-') + ' \u2013 ' + (row.jamKeluar || '-');
+        time = jamPendek(row.jamMasuk) + ' \u2013 ' + jamPendek(row.jamKeluar);
         sub = shiftLabel ? 'Shift ' + shiftLabel : (row.jamMasuk || row.jamKeluar ? '' : 'Tanpa data absensi');
-        if (k === 's-late' && row.telatMenit > 0) sub += (sub ? ', ' : '') + 'telat ' + formatTelat(row.telatMenit);
       }
       return '<div class="rw ' + k + '">' +
         '<div class="rw-date"><div class="rw-d">' + d.getDate() + '</div><div class="rw-h">' + HARI_SINGKAT[d.getDay()] + '</div></div>' +
