@@ -617,6 +617,11 @@
     @media (min-width: 769px) {
       .page-shell { max-width: 640px; }
     }
+
+    /* Saat memuat, ringkasan masih kosong -> margin negatif membuat header menyusut & judul tertimpa garis.
+       Beri tinggi cadangan supaya header sama persis sebelum/sesudah data muncul. */
+    .summary-grid:empty { min-height: 64px; display: block !important; }
+    .sticky-top { min-height: 0; flex-shrink: 0; }
   </style>
 </head>
 <body>
