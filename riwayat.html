@@ -924,7 +924,6 @@
       renderList();
     }
 
-    var HARI_SINGKAT = ["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
     function sKelas(row) {
       if (row.ket) return row.ket === 'A' ? 's-alpa' : 's-izin';
       if (row.status === 'Terlambat' || row.status === 'Sangat Terlambat') return 's-late';
@@ -964,6 +963,7 @@
       return { key: key, label: 'Pekan ' + label };
     }
     function rowHtml(row) {
+      var HARI_SINGKAT = ["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
       var d = new Date(row.tanggal + "T00:00:00");
       var k = sKelas(row);
       var shiftLabel = formatShift(row.shift);
