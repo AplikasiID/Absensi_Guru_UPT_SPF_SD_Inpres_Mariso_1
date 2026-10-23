@@ -1520,6 +1520,7 @@
       try { var c = localStorage.getItem(kunci); if (c) renderRingkasanBulan(kode, JSON.parse(c)); } catch (e) { }
       if (prefetchDone[kode]) return;
       prefetchDone[kode] = true;
+      prefetchBulanLalu(kode, deviceId);
       setTimeout(function () {
         google.script.run
           .withSuccessHandler(function (res) {
@@ -1531,6 +1532,28 @@
           .withFailureHandler(function () { })
           .getRiwayatAbsen(kode, deviceId, bulanIni());
       }, 1500);
+    }
+
+    // Siapkan juga bulan lalu & 2 bulan lalu di latar belakang (setelah bulan ini),
+    // supaya saat guru membuka Riwayat lalu pindah bulan, datanya sudah ada di HP.
+    function prefetchBulanLalu(kode, deviceId) {
+      var d = new Date(), daftar = [];
+      for (var k = 1; k <= 2; k++) {
+        var x = new Date(d.getFullYear(), d.getMonth() - k, 1);
+        daftar.push(x.getFullYear() + '-' + ('0' + (x.getMonth() + 1)).slice(-2));
+      }
+      daftar.forEach(function (bt, idx) {
+        var kunci = 'absensi_riwayat_v1_' + kode + '_' + bt;
+        try { var c = JSON.parse(localStorage.getItem(kunci) || 'null'); if (c && c._savedAt && Date.now() - c._savedAt < 3600000) return; } catch (e) { }
+        setTimeout(function () {
+          google.script.run
+            .withSuccessHandler(function (res) {
+              if (res && res.ok) { try { res._savedAt = Date.now(); localStorage.setItem(kunci, JSON.stringify(res)); } catch (e) { } }
+            })
+            .withFailureHandler(function () { })
+            .getRiwayatAbsen(kode, deviceId, bt);
+        }, 6000 + idx * 4000);
+      });
     }
 
     // Kartu pengingat: belum absen masuk (lewat batas) / belum absen pulang.
