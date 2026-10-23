@@ -695,6 +695,11 @@
     .adm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
     .adm-grid button { background: #fff; color: #1e3a8a; border-radius: 22px; padding: 22px 8px; font-size: 14px; font-weight: 800; box-shadow: 0 8px 20px rgba(30,58,138,.10); }
     .adm-grid .ai { display: block; font-size: 30px; margin-bottom: 6px; }
+    .adm-seg { display: flex; gap: 4px; background: #e2e8f0; border-radius: 16px; padding: 4px; margin: 0 0 14px; }
+    .adm-seg button { flex: 1; background: transparent; color: #64748b; border-radius: 12px; padding: 9px 4px; font-size: 12.5px; font-weight: 800; box-shadow: none; }
+    .adm-seg button.on { background: #fff; color: #1e3a8a; box-shadow: 0 2px 8px rgba(30,58,138,.15); }
+    .adm-pane { display: none; }
+    .adm-pane.on { display: block; }
     .adm-out { text-align: center; margin: 0 0 16px; }
     .adm-out a { font-size: 12.5px; font-weight: 700; color: #94a3b8; text-decoration: none; }
     #adminPinInput { margin-bottom: 6px; }
@@ -786,15 +791,22 @@
 
     <div id="viewAdmin" style="display:none;">
       <div class="page-h">Menu Admin</div>
+      <div class="adm-seg" id="admSeg">
+        <button type="button" class="on" data-sub="menu">&#128202; Menu</button>
+        <button type="button" data-sub="ket">&#128221; Keterangan</button>
+        <button type="button" data-sub="dev">&#128241; Perangkat</button>
+      </div>
+
+      <div class="adm-pane on" id="admPaneMenu">
       <div class="adm-grid">
         <button type="button" onclick="window.location.href='dashboard.html'"><span class="ai">&#128202;</span>Dashboard</button>
         <button type="button" onclick="window.location.href='pengaturan.html'"><span class="ai">&#9881;&#65039;</span>Pengaturan</button>
-        <button type="button" onclick="bukaKartuKeterangan()"><span class="ai">&#128221;</span>Ajukan Keterangan</button>
         <button type="button" onclick="window.location.href='tv.html'"><span class="ai">&#128250;</span>Layar TV</button>
       </div>
-      <div class="adm-out"><a href="#" id="admKeluar">Keluar dari mode admin</a></div>
+      </div>
 
-    <div class="card2" id="ketCard" style="display:none;">
+      <div class="adm-pane" id="admPaneKet">
+    <div class="card2" id="ketCard">
       <h2>Ajukan Keterangan Tidak Masuk</h2>
       <p class="sub">Khusus admin/operator sekolah. Masukkan PIN admin untuk membuka form.</p>
 
@@ -839,12 +851,6 @@
 
         <div id="statusKet" class="status"></div>
 
-        <details>
-          <summary>Reset Perangkat (Advanced)</summary>
-          <p class="hint-small">Gunakan kalau ada masalah dengan HP ini (mis. guru ganti HP dan perlu didaftarkan ulang). Perlu PIN admin.</p>
-          <button id="btnReset" onclick="resetDeviceManual()">Reset Device Saya Sekarang</button>
-          <div id="statusReset" class="status" style="margin-top:10px;"></div>
-        </details>
       </div>
 
       <div class="lock-hint" id="lockHint">
@@ -854,6 +860,18 @@
         Form terkunci sampai PIN dimasukkan
       </div>
     </div>
+      </div>
+
+      <div class="adm-pane" id="admPaneDev">
+        <div class="card2">
+          <h2>Reset Perangkat</h2>
+          <p class="hint-small">Gunakan kalau ada masalah dengan HP ini (mis. guru ganti HP dan perlu didaftarkan ulang). Perlu PIN admin.</p>
+          <button id="btnReset" onclick="resetDeviceManual()">Reset Device Saya Sekarang</button>
+          <div id="statusReset" class="status" style="margin-top:10px;"></div>
+        </div>
+      </div>
+
+      <div class="adm-out"><a href="#" id="admKeluar">Keluar dari mode admin</a></div>
 
     </div>
   </div>
@@ -2110,8 +2128,7 @@
   // (jeda maks 2 detik) untuk memunculkan: Dashboard, Ajukan Keterangan,
   // Pengaturan.
   function bukaKartuKeterangan() {
-    var card = document.getElementById('ketCard');
-    if (card) { card.style.display = 'block'; card.scrollIntoView({ behavior: 'smooth' }); }
+    if (window.admSub) window.admSub('ket');
   }
   (function () {
     var n = 0, t = null;
@@ -2270,6 +2287,15 @@
     $('navAdmin').classList.toggle('on', t === 'admin');
     try { window.scrollTo(0, 0); } catch (e) { }
   }
+  window.admSub = function (k) {
+    var peta = { menu: 'admPaneMenu', ket: 'admPaneKet', dev: 'admPaneDev' };
+    for (var id in peta) $(peta[id]).classList.toggle('on', id === k);
+    var bs = $('admSeg').querySelectorAll('button');
+    for (var i = 0; i < bs.length; i++) bs[i].classList.toggle('on', bs[i].getAttribute('data-sub') === k);
+  };
+  $('admSeg').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-sub]'); if (b) window.admSub(b.getAttribute('data-sub'));
+  });
   function pasangNavAdmin() { $('navAdmin').style.display = adaFlag() ? '' : 'none'; }
   $('navAbsen').addEventListener('click', function () { tampilTab('absen'); });
   $('navAdmin').addEventListener('click', function () { tampilTab('admin'); });
