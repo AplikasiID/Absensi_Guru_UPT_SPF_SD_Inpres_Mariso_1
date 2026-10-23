@@ -765,10 +765,13 @@
       alpa: 'Tidak ada alpa tercatat bulan ini \u2014 mantap!'
     };
 
+    var BATAS_AWAL = 15, tampilBatas = BATAS_AWAL;
+
     function renderData(result) {
       var r = result.ringkasan;
       lastRows = result.rows;
       activeFilter = null;
+      tampilBatas = BATAS_AWAL;
 
       var summaryHtml = '';
       summaryHtml += summaryCard('hadir', r.hadir, 'Hadir');
@@ -782,7 +785,9 @@
 
     function renderList() {
       var allRows = lastRows;
-      var rows = activeFilter ? allRows.filter(function (row) { return rowMatchesFilter(row, activeFilter); }) : allRows;
+      var rowsSemua = activeFilter ? allRows.filter(function (row) { return rowMatchesFilter(row, activeFilter); }) : allRows;
+      var rows = rowsSemua.slice(0, tampilBatas);
+      var sisa = rowsSemua.length - rows.length;
 
       // Tandai kotak ringkasan yang sedang aktif sebagai filter
       document.querySelectorAll('.summary-card').forEach(function (card) {
@@ -854,7 +859,13 @@
       });
       html += '</div>';
 
+      if (sisa > 0) {
+        html += '<button id="btnLagi" style="display:block;margin:6px auto 0;padding:12px 22px;border:0;border-radius:14px;background:#2563eb;color:#fff;font:700 14px inherit;font-family:inherit;cursor:pointer;">Tampilkan lebih banyak (' + sisa + ' hari lagi)</button>';
+      }
+
       document.getElementById('content').innerHTML = html;
+      var bl = document.getElementById('btnLagi');
+      if (bl) bl.onclick = function () { tampilBatas += 15; renderList(); };
     }
 
     // Klik kotak ringkasan = filter daftar riwayat menurut kategori itu.
@@ -865,6 +876,7 @@
       var key = ['hadir', 'terlambat', 'izin', 'alpa'].filter(function (k) { return card.classList.contains(k); })[0];
       if (!key) return;
       activeFilter = (activeFilter === key) ? null : key;
+      tampilBatas = BATAS_AWAL;
       renderList();
     });
 
