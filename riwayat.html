@@ -540,7 +540,7 @@
       }
     }
     body { font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "SF Pro Display", Roboto, Arial, sans-serif; background: var(--rw-bg); color: var(--rw-ink); }
-    .sticky-top { background:#1E3A8A; border-radius:0 0 24px 24px; box-shadow:0 8px 20px rgba(30,58,138,.22); padding:calc(16px + env(safe-area-inset-top,0px)) 16px 20px; }
+    .sticky-top { background:#1E3A8A; border-radius:0 0 24px 24px; box-shadow:0 8px 20px rgba(30,58,138,.22); padding:calc(16px + env(safe-area-inset-top,0px)) 16px 0; }
     .sticky-top::after { height:4px; background:linear-gradient(90deg,#F59E0B 50%,#16A34A 50%); border-radius:0 0 24px 24px; }
     .brand-row { gap:10px; margin-bottom:16px; }
     .brand-row img { width:38px; }
@@ -553,7 +553,7 @@
     .month-picker { min-height:44px; padding:0 14px; border-radius:12px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.45); box-shadow:none; color:#fff; font-size:13.5px; font-weight:700; white-space:nowrap; }
     .month-picker svg { color:#fff; width:18px; height:18px; }
     /* ringkasan: satu kartu, empat angka */
-    .summary-grid, .summary-grid.compact { gap:0 !important; margin-bottom:0 !important; background:var(--rw-card); border-radius:16px; box-shadow:0 6px 18px rgba(0,0,0,.18); overflow:hidden; }
+    .summary-grid, .summary-grid.compact { gap:0 !important; margin-bottom:-30px !important; position:relative; z-index:2; background:var(--rw-card); border-radius:16px; box-shadow:0 6px 18px rgba(30,58,138,.18); overflow:hidden; }
     .summary-grid .summary-card, .summary-grid.compact .summary-card { background:transparent !important; box-shadow:none !important; border-radius:0 !important; border:0 !important; border-right:1px solid var(--rw-line) !important; padding:12px 4px 10px !important; }
     .summary-grid .summary-card:last-child { border-right:0 !important; }
     .summary-card::before { display:none; }
@@ -599,11 +599,12 @@
     .more-btn { display:block; width:100%; min-height:46px; margin-top:16px; border-radius:14px; border:1.5px solid #1E3A8A; background:transparent; color:#1E3A8A; font:700 14px "Plus Jakarta Sans",sans-serif; cursor:pointer; }
     @media (prefers-color-scheme: dark) { .more-btn { border-color:#7FA0FF; color:#9DB7FF; } }
     .loading { color:var(--rw-muted); }
-    .topbar { margin-bottom:12px; }
-    .guru-row { margin:0 0 14px; font-size:13px; opacity:.95; align-items:flex-start; flex-wrap:nowrap; }
-    .guru-row svg { flex:0 0 auto; margin-top:2px; }
-    .guru-row .guru-lbl { white-space:nowrap; }
-    .guru-row b { min-width:0; overflow-wrap:anywhere; }
+    .topbar { margin-bottom:18px; }
+    .title-block .guru-row { display:block; margin:4px 0 0; font-size:13px; line-height:1.35; opacity:.92; }
+    .title-block .guru-row b { font-weight:700; }
+    .scroll-area { padding-top:48px; }
+    #syncInfo { display:none !important; }
+    .title-block .guru-row svg { display:inline-block; width:15px; height:15px; vertical-align:-2px; margin-right:6px; }
     /* navigasi bawah */
     .bnav { background:var(--rw-card); border-radius:22px; box-shadow:0 8px 24px rgba(30,41,59,.18); padding:8px 8px 6px; }
     .bn-row { gap:4px; }
@@ -630,6 +631,9 @@
           </a>
           <div class="title-block">
             <h1>Riwayat Absensi</h1>
+            <div class="guru-row" id="guruRow" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>Guru: <b id="guruNama">-</b>
+      </div>
           </div>
         </div>
         <div class="month-picker" id="monthPicker">
@@ -639,17 +643,11 @@
         </div>
       </div>
 
-
-            <div class="guru-row" id="guruRow" style="display:none;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>
-        <span class="guru-lbl">Guru:</span> <b id="guruNama">-</b>
-      </div>
-
       <div class="summary-grid" id="summaryGrid"></div>
-      <div id="syncInfo" style="font-size:12px; font-weight:600; margin-top:8px; min-height:16px; color:var(--text-sub);"></div>
     </div>
 
     <div class="scroll-area" id="scrollArea">
+      <div id="syncInfo" style="font-size:12px; font-weight:600; margin-top:8px; min-height:16px; color:var(--text-sub);"></div>
       <div id="content">
         <div class="loading">Memuat riwayat absensi...</div>
       </div>
@@ -786,7 +784,7 @@
     function tampilkanHasil(result) {
       if (result.nama) {
         document.getElementById('guruNama').textContent = result.nama;
-        document.getElementById('guruRow').style.display = 'flex';
+        document.getElementById('guruRow').style.display = 'block';
       }
       renderData(result);
     }
