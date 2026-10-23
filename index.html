@@ -1564,7 +1564,24 @@
     function renderRingkas(status) {
       renderPengingat(status);
       var card = document.getElementById('ringkasCard');
-      if (!status || !status.deviceCocok) { card.style.display = 'none'; document.getElementById('rbCard').style.display = 'none'; return; }
+      if (!status || !status.deviceCocok) {
+        card.style.display = 'none'; document.getElementById('rbCard').style.display = 'none';
+        // HP belum dikenali untuk nama ini: jelaskan kenapa kartu status/ringkasan tidak tampil
+        // dan apa yang harus dilakukan (jam & detail sengaja disembunyikan dari HP yang tidak dikenali).
+        if (status && status.deviceCocok === false) {
+          var info;
+          if (status.sudahMasuk && status.sudahKeluar) info = 'Absen hari ini sudah lengkap. Kartu status tampil lagi setelah HP ini terdaftar (otomatis saat absen masuk berikutnya).';
+          else if (status.sudahMasuk) info = 'Kamu sudah absen masuk hari ini. Tekan Absen Pulang saat pulang \u2014 HP ini otomatis terdaftar, lalu kartu status tampil.';
+          else info = 'Tekan Absen Masuk \u2014 HP ini otomatis terdaftar untuk namamu, lalu kartu status tampil.';
+          var pc = document.getElementById('pgCard');
+          pc.className = 'pg-card biru';
+          document.getElementById('pgIkon').textContent = '\uD83D\uDCF1';
+          document.getElementById('pgJudul').textContent = 'HP ini belum dikenali untuk nama ini';
+          document.getElementById('pgIsi').textContent = info;
+          pc.style.display = '';
+        }
+        return;
+      }
       var hari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
       var bln = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
       var d = new Date();
