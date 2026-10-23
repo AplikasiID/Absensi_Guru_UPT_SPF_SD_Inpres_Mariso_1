@@ -730,6 +730,9 @@
     .adm-sum-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px 0; font-size: 11.5px; font-weight: 600; color: #64748b; }
     .adm-sum-foot button { background: #eef2ff; color: #1e3a8a; border-radius: 10px; padding: 7px 12px; font-size: 12px; font-weight: 800; box-shadow: none; min-height: 34px; }
     .adm-grp { font-size: 12px; font-weight: 800; letter-spacing: .08em; color: #64748b; margin: 16px 4px 8px; }
+    #admPaneMenu { padding-top: 6px; }
+    #admPaneMenu .adm-grp:first-child { margin-top: 22px; }
+    #viewAdmin { padding-top: 4px; }
     .adm-pill, .adm-gt { display: none; }
     body.mode-admin .adm-pill { display: inline-flex; }
     body.mode-admin .adm-gt { display: block; }
@@ -1026,17 +1029,6 @@
     <div id="viewAdmin" style="display:none;">
       <div class="page-h" id="admJudul">Menu Admin</div>
       <div class="adm-pane on" id="admPaneMenu">
-      <div class="adm-date" id="admTgl">Kelola absensi sekolah</div>
-      <div class="adm-sum" id="admSum">
-        <div class="adm-sum-grid">
-          <div><b id="sumHadir" style="color:#176b31">-</b><span>Hadir</span></div>
-          <div><b id="sumBelum" style="color:#a61b12">-</b><span>Belum</span></div>
-          <div><b id="sumTelat" style="color:#b45309">-</b><span>Terlambat</span></div>
-          <div><b id="sumIzin" style="color:#28408f">-</b><span>Izin</span></div>
-        </div>
-        <div class="adm-sum-foot"><span id="sumInfo">Ketuk Muat untuk melihat hari ini</span><button type="button" id="btnSum">Muat</button></div>
-      </div>
-
       <div class="adm-grp">AKSI CEPAT</div>
       <div class="adm-tiles">
         <button type="button" class="adm-tile" onclick="window.location.href='dashboard.html'"><span class="adm-ic biru"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><b>Dashboard</b><small>Grafik &amp; rekap</small></button>
@@ -2629,7 +2621,6 @@
           try { localStorage.setItem(KUNCI, '1'); } catch (e) { }
           window.__admPin = pin;
           tutup(); pasangNavAdmin(); tampilTab('admin'); window.admSub('menu');
-          if (window.admMuatRingkas) window.admMuatRingkas(true);
         } else $('adminPinMsg').textContent = (r && r.message) || 'PIN salah.';
       })
       .withFailureHandler(function () { btn.disabled = false; $('adminPinMsg').style.color = '#dc2626'; $('adminPinMsg').textContent = 'Tidak bisa terhubung. Coba lagi.'; })
@@ -2658,36 +2649,6 @@
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
   }
-</script>
-<script>
-// ===== Ringkasan hari ini (Admin > Menu) =====
-(function () {
-  var $ = function (id) { return document.getElementById(id); };
-  var HARI = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-  var BLN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-  var n = new Date();
-  $('admTgl').textContent = HARI[n.getDay()] + ', ' + n.getDate() + ' ' + BLN[n.getMonth()] + ' ' + n.getFullYear();
-  function isi(h, b, t, i) { $('sumHadir').textContent = h; $('sumBelum').textContent = b; $('sumTelat').textContent = t; $('sumIzin').textContent = i; }
-  window.admMuatRingkas = function (diam) {
-    var pin = window.__admPin;
-    if (!pin) { if (diam) return; pin = (window.prompt('Masukkan PIN admin untuk melihat ringkasan hari ini:') || '').trim(); if (!pin) return; }
-    var btn = $('btnSum'); btn.disabled = true; $('sumInfo').textContent = 'Memuat...';
-    google.script.run
-      .withSuccessHandler(function (res) {
-        btn.disabled = false; btn.textContent = 'Segarkan';
-        if (!res || !res.ok) { window.__admPin = ''; isi('-', '-', '-', '-'); $('sumInfo').textContent = (res && res.message) || 'Gagal memuat.'; return; }
-        window.__admPin = pin;
-        if (!res.hariKerja) { isi('-', '-', '-', '-'); $('sumInfo').textContent = res.alasanLibur || 'Bukan hari kerja'; return; }
-        var h = 0, b = 0, t = 0, z = 0;
-        (res.guru || []).forEach(function (g) { if (g.status === 'hadir') h++; else if (g.status === 'terlambat') t++; else if (g.status === 'izin') z++; else b++; });
-        isi(h, b, t, z);
-        var d = new Date(); $('sumInfo').textContent = 'Diperbarui ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
-      })
-      .withFailureHandler(function () { btn.disabled = false; $('sumInfo').textContent = 'Tidak bisa terhubung. Coba lagi.'; })
-      .getPapanKehadiran(pin);
-  };
-  $('btnSum').addEventListener('click', function () { window.admMuatRingkas(false); });
-})();
 </script>
 <script>
 // ===== Daftar perangkat semua guru (Admin > Perangkat) =====
