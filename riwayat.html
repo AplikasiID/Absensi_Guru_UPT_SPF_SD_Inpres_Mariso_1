@@ -622,6 +622,12 @@
        Beri tinggi cadangan supaya header sama persis sebelum/sesudah data muncul. */
     .summary-grid:empty { min-height: 64px; display: block !important; }
     .sticky-top { min-height: 0; flex-shrink: 0; }
+
+    /* jam dengan detik: sedikit lebih ringkas supaya muat di layar sempit */
+    .rw-time { font-size: 14.5px; letter-spacing: -.01em; white-space: normal; }
+    .rw-time .tj { display: inline-block; white-space: nowrap; }
+    .rw-badge { flex: 0 0 auto; }
+    @media (max-width: 350px) { .rw-time { font-size: 13px; } .rw { gap: 10px; padding: 12px 10px; } .rw-badge { padding: 5px 8px; } }
   </style>
 </head>
 <body>
@@ -970,7 +976,7 @@
         : s.getDate() + ' ' + MONTH_NAMES_ID[s.getMonth()].substring(0, 3) + ' \u2013 ' + e.getDate() + ' ' + MONTH_NAMES_ID[e.getMonth()].substring(0, 3);
       return { key: key, label: 'Pekan ' + label };
     }
-    function jamPendek(t) { return t ? String(t).replace(/^(\d{1,2}:\d{2}):\d{2}$/, '$1') : '-'; }
+    function jamPendek(t) { if (!t) return '-'; var m = String(t).match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?/); return m ? ('0' + m[1]).slice(-2) + ':' + m[2] + ':' + (m[3] || '00') : String(t); }
     function rowHtml(row) {
       var HARI_SINGKAT = ["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
       var d = new Date(row.tanggal + "T00:00:00");
@@ -981,7 +987,7 @@
         time = 'Tidak ada jam';
         sub = 'Surat/keterangan admin';
       } else {
-        time = jamPendek(row.jamMasuk) + ' \u2013 ' + jamPendek(row.jamKeluar);
+        time = '<span class="tj">' + jamPendek(row.jamMasuk) + '</span> <span class="tj">\u2013 ' + (row.jamKeluar ? jamPendek(row.jamKeluar) : 'belum pulang') + '</span>';
         sub = shiftLabel ? 'Shift ' + shiftLabel : (row.jamMasuk || row.jamKeluar ? '' : 'Tanpa data absensi');
       }
       return '<div class="rw ' + k + '">' +
@@ -1063,5 +1069,20 @@
   }
 </script>
 <script>try{if(localStorage.getItem('absensi_admin_ok')==='1')document.getElementById('navAdminLink').style.display='';}catch(e){}</script>
+<script>
+// Ruang bawah daftar = tinggi menu bawah yang SEBENARNYA (ikut ukuran huruf HP), supaya tombol/baris terakhir tidak tertutup.
+(function () {
+  var nav = document.querySelector('.bnav'), sa = document.getElementById('scrollArea');
+  if (!nav || !sa) return;
+  function atur() {
+    var h = Math.ceil(nav.getBoundingClientRect().height) + 10 + 28;
+    sa.style.setProperty('padding-bottom', 'calc(' + h + 'px + env(safe-area-inset-bottom, 0px))', 'important');
+  }
+  atur();
+  if (window.ResizeObserver) new ResizeObserver(atur).observe(nav);
+  window.addEventListener('resize', atur);
+  window.addEventListener('load', atur);
+})();
+</script>
 </body>
 </html>
