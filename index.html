@@ -891,6 +891,10 @@
     .segar { animation: segarIn .32s ease both; }
     @keyframes segarIn { from { opacity: .35; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     @media (prefers-reduced-motion: reduce) { .segar, .nm-spin, body.memuat .name-float::after { animation: none !important; } }
+
+    /* Jam di spanduk dibesarkan */
+    .ban .clock { font-size: 25px; font-weight: 800; letter-spacing: .01em; font-variant-numeric: tabular-nums; line-height: 1; padding: 8px 12px; border-radius: 14px; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.28); opacity: 1; white-space: nowrap; }
+    @media (max-width: 350px) { .ban .clock { font-size: 21px; padding: 7px 9px; } }
   </style>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
