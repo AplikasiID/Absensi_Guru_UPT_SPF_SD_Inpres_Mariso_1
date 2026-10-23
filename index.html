@@ -322,6 +322,22 @@
     summary { font-size: 13px; color: var(--accent-blue); cursor: pointer; font-weight: 700; margin-bottom: 12px; }
     details p.hint-small { font-size: 12px; color: #666; margin: 8px 0; }
 
+    /* ===== Daftar perangkat semua guru (tab Admin > Perangkat) ===== */
+    #btnDevMuat { flex-shrink: 0; width: 48px; border-radius: 14px; background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-2)); color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(10,132,255,0.3); }
+    #btnDevMuat svg { width: 19px; height: 19px; }
+    #devBox { display: none; margin-top: 16px; }
+    #devBox.open { display: block; }
+    #devCari { margin-bottom: 8px; }
+    .dev-sum { font-size: 12.5px; font-weight: 600; color: #5b6475; margin: 0 2px 6px; }
+    .dev-row { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-top: 1px solid var(--divider); }
+    .dev-main { flex: 1; min-width: 0; }
+    .dev-nama { font-size: 14px; font-weight: 800; line-height: 1.3; word-break: break-word; }
+    .dev-info { font-size: 12px; font-weight: 600; margin-top: 2px; color: #5b6475; }
+    .dev-info.ok { color: #176b31; }
+    .dev-btn { flex-shrink: 0; padding: 8px 14px; border-radius: 12px; background: #fde8e6; color: #a61b12; font-size: 12.5px; font-weight: 800; box-shadow: none; }
+    .dev-btn:disabled { background: #eef0f4; color: #8a93a3; opacity: 1; }
+    .dev-kosong { text-align: center; font-size: 13px; color: #5b6475; padding: 18px 0 6px; }
+
     .modal-overlay {
       display: none;
       position: fixed;
@@ -868,6 +884,23 @@
           <p class="hint-small">Gunakan kalau ada masalah dengan HP ini (mis. guru ganti HP dan perlu didaftarkan ulang). Perlu PIN admin.</p>
           <button id="btnReset" onclick="resetDeviceManual()">Reset Device Saya Sekarang</button>
           <div id="statusReset" class="status" style="margin-top:10px;"></div>
+        </div>
+
+        <div class="card2" id="devCard">
+          <h2>Perangkat Semua Guru</h2>
+          <p class="hint-small">Lihat guru mana yang sudah punya HP terdaftar, lalu reset kalau ada guru yang ganti HP. Masukkan PIN admin untuk membuka daftar.</p>
+          <div class="pin-row">
+            <input type="password" id="devPin" inputmode="numeric" placeholder="Masukkan PIN admin" autocomplete="off">
+            <button type="button" id="btnDevMuat" aria-label="Muat daftar perangkat">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+            </button>
+          </div>
+          <div id="devStatus" class="status"></div>
+          <div id="devBox">
+            <input type="search" id="devCari" placeholder="Cari nama guru" autocomplete="off">
+            <div class="dev-sum" id="devSum"></div>
+            <div id="devList"></div>
+          </div>
         </div>
       </div>
 
@@ -2337,6 +2370,93 @@
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
   }
+</script>
+<script>
+// ===== Daftar perangkat semua guru (Admin > Perangkat) =====
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var pinMem = '', rows = [];
+
+  function esc(x) {
+    return String(x == null ? '' : x).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  function gambar() {
+    var q = ($('devCari').value || '').trim().toLowerCase();
+    var tampil = rows.filter(function (r) { return !q || r.nama.toLowerCase().indexOf(q) !== -1; });
+    var n = rows.filter(function (r) { return r.terdaftar; }).length;
+    $('devSum').textContent = n + ' dari ' + rows.length + ' guru sudah punya HP terdaftar';
+    if (!tampil.length) {
+      $('devList').innerHTML = '<div class="dev-kosong">' + (rows.length ? 'Nama tidak ditemukan.' : 'Belum ada data guru.') + '</div>';
+      return;
+    }
+    $('devList').innerHTML = tampil.map(function (r) {
+      var info = r.terdaftar
+        ? '<div class="dev-info ok">Terdaftar' + (r.sejak ? ' sejak ' + esc(r.sejak) : '') + '</div>'
+        : '<div class="dev-info">Belum ada HP terdaftar</div>';
+      return '<div class="dev-row"><div class="dev-main"><div class="dev-nama">' + esc(r.nama) + '</div>' + info + '</div>' +
+        '<button type="button" class="dev-btn" data-kode="' + esc(r.kode) + '"' + (r.terdaftar ? '' : ' disabled') + '>Reset</button></div>';
+    }).join('');
+  }
+
+  function muat() {
+    var pin = $('devPin').value.trim() || pinMem;
+    if (!pin) { setStatus('devStatus', 'err', 'Isi PIN admin dulu.'); return; }
+    var id = getDeviceId();
+    if (!id) { setStatus('devStatus', 'err', 'Device ID tidak terdeteksi.'); return; }
+    var btn = $('btnDevMuat'); btn.disabled = true;
+    setStatus('devStatus', 'info', 'Memuat daftar perangkat...');
+    google.script.run
+      .withSuccessHandler(function (res) {
+        btn.disabled = false;
+        if (!res || !res.ok) { setStatus('devStatus', 'err', (res && res.message) || 'Gagal memuat daftar.'); return; }
+        pinMem = pin; $('devPin').value = '';
+        rows = res.rows || [];
+        $('devStatus').className = 'status'; $('devStatus').textContent = '';
+        $('devBox').classList.add('open');
+        gambar();
+      })
+      .withFailureHandler(function (err) {
+        btn.disabled = false;
+        setStatus('devStatus', 'err', 'Error: ' + pesanError(err));
+      })
+      .getDaftarPerangkatGuru(pin, id);
+  }
+
+  function reset(kode, tombol) {
+    var r = rows.filter(function (x) { return x.kode === kode; })[0];
+    if (!r) return;
+    if (!confirm('Reset HP terdaftar untuk ' + r.nama + '?\n\nGuru ini harus absen lagi dari HP barunya, dan HP itu akan otomatis terdaftar.')) return;
+    tombol.disabled = true; tombol.textContent = 'Memproses...';
+    setStatus('devStatus', 'info', 'Mereset perangkat ' + r.nama + '...');
+    google.script.run
+      .withSuccessHandler(function (res) {
+        if (res && res.ok) {
+          r.terdaftar = false; r.sejak = '';
+          setStatus('devStatus', 'ok', 'HP ' + r.nama + ' berhasil direset. Guru bisa absen dari HP barunya.');
+          gambar();
+        } else {
+          setStatus('devStatus', 'err', (res && res.message) || 'Reset gagal.');
+          gambar();
+        }
+      })
+      .withFailureHandler(function (err) {
+        setStatus('devStatus', 'err', 'Error: ' + pesanError(err));
+        gambar();
+      })
+      .resetDevice(r.kode, pinMem, getDeviceId());
+  }
+
+  $('btnDevMuat').addEventListener('click', muat);
+  $('devPin').addEventListener('keydown', function (e) { if (e.key === 'Enter') muat(); });
+  $('devCari').addEventListener('input', gambar);
+  $('devList').addEventListener('click', function (e) {
+    var t = e.target.closest ? e.target.closest('.dev-btn') : null;
+    if (t && !t.disabled) reset(t.getAttribute('data-kode'), t);
+  });
+})();
 </script>
 </body>
 </html>
