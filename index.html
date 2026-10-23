@@ -22,7 +22,7 @@
       --bg3: #bbf7d0;
       --bg4: #fde68a;
       --bg5: #a5f3fc;
-      --glass-bg: rgba(255,255,255,0.20);
+      --glass-bg: rgba(255,255,255,0.80);
       --glass-border: rgba(255,255,255,0.62);
       --glass-shadow: rgba(31,38,135,0.16);
       --modal-bg: rgba(255,255,255,0.82);
@@ -54,7 +54,6 @@
         radial-gradient(circle at 55% 45%, var(--bg5) 0%, transparent 55%),
         #f2f3f7;
       background-attachment: fixed;
-      animation: bgDrift 22s ease-in-out infinite alternate;
       background-size: 130% 130%;
       -webkit-font-smoothing: antialiased;
     }
@@ -71,8 +70,6 @@
     .card {
       position: relative;
       background: var(--glass-bg);
-      backdrop-filter: blur(30px) saturate(220%) contrast(115%) brightness(1.08);
-      -webkit-backdrop-filter: blur(30px) saturate(220%) contrast(115%) brightness(1.08);
       border: 1px solid var(--glass-border);
       border-radius: 30px;
       padding: 28px 22px 24px;
@@ -94,7 +91,6 @@
         transparent 100%);
       transform: rotate(6deg);
       pointer-events: none;
-      animation: glassSheen 7s ease-in-out infinite;
       mix-blend-mode: overlay;
     }
     .card::after {
@@ -170,8 +166,6 @@
 
     .panel {
       background: rgba(255,255,255,0.55);
-      backdrop-filter: blur(20px) saturate(200%) contrast(112%) brightness(1.06);
-      -webkit-backdrop-filter: blur(20px) saturate(200%) contrast(112%) brightness(1.06);
       border: 1px solid rgba(255,255,255,0.5);
       border-radius: 20px;
       padding: 16px 16px 14px;
@@ -240,8 +234,6 @@
     .card2 {
       position: relative;
       background: var(--glass-bg);
-      backdrop-filter: blur(30px) saturate(220%) contrast(115%) brightness(1.08);
-      -webkit-backdrop-filter: blur(30px) saturate(220%) contrast(115%) brightness(1.08);
       border: 1px solid var(--glass-border);
       border-radius: 24px;
       padding: 20px 18px;
@@ -263,7 +255,6 @@
         transparent 100%);
       transform: rotate(6deg);
       pointer-events: none;
-      animation: glassSheen 8s ease-in-out infinite;
       animation-delay: -2s;
       mix-blend-mode: overlay;
     }
@@ -335,9 +326,7 @@
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(20, 20, 30, 0.35);
-      backdrop-filter: blur(10px) saturate(190%) contrast(110%) brightness(1.05);
-      -webkit-backdrop-filter: blur(10px) saturate(190%) contrast(110%) brightness(1.05);
+      background: rgba(20, 20, 30, 0.55);
       align-items: center;
       justify-content: center;
       z-index: 1000;
@@ -346,8 +335,6 @@
     .modal-overlay.show { display: flex; }
     .modal-card {
       background: var(--modal-bg);
-      backdrop-filter: blur(34px) saturate(180%) contrast(105%);
-      -webkit-backdrop-filter: blur(34px) saturate(180%) contrast(105%);
       border: 1px solid var(--glass-border);
       border-radius: 26px;
       padding: 32px 28px 28px;
@@ -431,8 +418,6 @@
       text-align: center;
       box-shadow: 0 25px 50px -18px rgba(20,20,40,0.35);
       animation: modalPop 0.18s ease-out;
-      backdrop-filter: blur(34px) saturate(220%) contrast(115%) brightness(1.08);
-      -webkit-backdrop-filter: blur(34px) saturate(220%) contrast(115%) brightness(1.08);
       border: 1px solid rgba(255,255,255,0.55);
     }
     .rich-icon-ring {
@@ -560,8 +545,6 @@
 
     .info-card {
       background: var(--glass-bg);
-      backdrop-filter: blur(30px) saturate(220%) contrast(115%) brightness(1.08);
-      -webkit-backdrop-filter: blur(30px) saturate(220%) contrast(115%) brightness(1.08);
       border: 1px solid var(--glass-border);
       border-radius: 22px;
       box-shadow: 0 12px 36px var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.4);
@@ -611,8 +594,6 @@
       margin-top: 18px;
       padding: 14px 16px 16px;
       background: var(--glass-bg);
-      backdrop-filter: blur(30px) saturate(220%) contrast(115%) brightness(1.08);
-      -webkit-backdrop-filter: blur(30px) saturate(220%) contrast(115%) brightness(1.08);
       border: 1px solid var(--glass-border);
       border-radius: 22px;
       box-shadow: 0 12px 36px var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.4);
