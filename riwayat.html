@@ -121,7 +121,7 @@
       flex: 1 1 auto;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      padding: 16px 20px calc(84px + env(safe-area-inset-bottom, 0px));
+      padding: 16px 20px calc(28px + env(safe-area-inset-bottom, 0px));
     }
 
     /* ===== Top bar ===== */
@@ -348,8 +348,6 @@
       box-shadow: 0 6px 20px var(--glass-shadow);
       margin-bottom: 14px;
       overflow: hidden;
-      content-visibility: auto;
-      contain-intrinsic-size: 0 150px;
     }
     /* Kartu berwarna menurut status */
     .day-card { border-left-width: 5px; }
@@ -457,11 +455,9 @@
     .modal-btn svg { width: 16px; height: 16px; }
       /* ===== Footer kaca (tetap di bawah layar) ===== */
     .glass-footer {
-      position: fixed;
-      left: 50%;
-      bottom: 12px;
-      transform: translateX(-50%);
-      z-index: 50;
+      position: static;
+      width: fit-content;
+      margin: 16px auto 0;
       padding: 7px 18px;
       font-size: 11px;
       font-weight: 600;
@@ -519,6 +515,7 @@
       <div id="content">
         <div class="loading">Memuat riwayat absensi...</div>
       </div>
+      <div class="glass-footer">Di Kembangkan Oleh : <strong>Ade Irwansyah</strong></div>
     </div>
   </div>
 
@@ -727,7 +724,10 @@
       var lastState = false;
       var scrollTimer = null;
       scrollArea.addEventListener('scroll', function () {
-        var isScrolled = scrollArea.scrollTop > 8;
+        // Histeresis: mengecil setelah gulir > 60px, baru membesar lagi saat benar-benar di paling atas.
+        // (Sebelumnya ambang tunggal 8px membuat tampilan berkedip di dasar daftar.)
+        var st = scrollArea.scrollTop;
+        var isScrolled = lastState ? st > 2 : st > 60;
         if (isScrolled !== lastState) {
           lastState = isScrolled;
           var grid = document.getElementById('summaryGrid');
@@ -885,7 +885,6 @@
     function iconClock() { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>'; }
     function iconFile() { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>'; }
   </script>
-<div class="glass-footer">Di Kembangkan Oleh : <strong>Ade Irwansyah</strong></div>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
