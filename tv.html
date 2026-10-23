@@ -53,6 +53,7 @@
   .g.izin { border-color: var(--biru); } .g.izin .i b { color: var(--biru); }
   /* guru yang baru saja absen berkedip */
   @keyframes kedip { 0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); } 50% { box-shadow: 0 0 1.6vw .3vw rgba(34,197,94,.85); } }
+  .subb { display: block; font-style: normal; font-weight: 600; text-transform: none; letter-spacing: 0; font-size: .95vw; min-height: 1.1vw; }
   .g.baru { animation: kedip 1.2s ease-in-out infinite; }
 
   /* pengumuman berjalan */
@@ -75,13 +76,24 @@
   #pinErr { color: var(--merah); font-size: 1.4vw; min-height: 1.6vw; }
 
   @media (max-width: 800px) {
+    html, body { height: auto; min-height: 100%; }
     body { padding: 12px; gap: 10px; overflow: auto; }
     .brand img { height: 48px; width: 48px; } .brand b { font-size: 18px; } .brand small { font-size: 10px; }
     .jam .j { font-size: 34px; } .jam .t { font-size: 12px; }
     .ringkas { grid-template-columns: repeat(2, 1fr); gap: 8px; }
     .box { padding: 8px 12px; border-radius: 12px; } .box b { font-size: 30px; } .box span { font-size: 11px; }
-    .grid { grid-template-columns: 1fr; gap: 6px; }
-    .g { padding: 8px 12px; border-radius: 10px; } .g .n { font-size: 15px; } .g .i, .g .i b { font-size: 13px; }
+    .subb { font-size: 10px; min-height: 12px; }
+    /* HP: empat kolom disusun ke bawah (satu lajur penuh), dengan judul tiap bagian */
+    main { flex: none; display: block; overflow: visible; }
+    .kol { display: flex; flex-direction: column; gap: 6px; max-height: none; overflow: visible; margin-bottom: 14px; }
+    .kol:empty { display: none; }
+    .kol::before { content: attr(data-judul); font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--sub); margin: 2px 0 2px; }
+    .kol .sub { font-size: 11px; margin-top: 6px; }
+    .g { padding: 9px 12px; border-radius: 10px; gap: 10px; }
+    .g .n { font-size: 15px; overflow-wrap: break-word; }
+    .g .i { font-size: 11px; } .g .i b { font-size: 14px; }
+    #ticker span { font-size: 15px; } #ticker { padding: 8px 0; border-radius: 10px; }
+    .ib { width: 34px; height: 34px; margin-left: 8px; }
     .pesan { font-size: 20px; } footer { font-size: 11px; }
     #pinBox h2 { font-size: 20px; } #pinBox input { font-size: 22px; width: 60vw; } #pinBox button { font-size: 16px; } #pinErr { font-size: 13px; }
   }
@@ -97,7 +109,7 @@
   </header>
 
   <section class="ringkas">
-    <div class="box belum"><b id="nBelum">0</b><span>Belum Absen <em id="subBelum" style="display:block;font-style:normal;font-weight:600;text-transform:none;letter-spacing:0;font-size:.95vw;min-height:1.1vw;"></em></span></div>
+    <div class="box belum"><b id="nBelum">0</b><span>Belum Absen <em id="subBelum" class="subb"></em></span></div>
     <div class="box hadir"><b id="nHadir">0</b><span>Tepat Waktu</span></div>
     <div class="box terlambat"><b id="nTerlambat">0</b><span>Terlambat</span></div>
     <div class="box izin"><b id="nIzin">0</b><span>Izin / Dinas</span></div>
@@ -187,8 +199,8 @@
 
   // Kolom kosong tidak menampilkan tulisan apa pun (tetap menempati lajurnya supaya
   // kolom lain tetap lurus di bawah kartu masing-masing).
-  function htmlKolom(daftar) {
-    return '<div class="kol">' + daftar.map(htmlGuru).join('') + '</div>';
+  function htmlKolom(daftar, judul) {
+    return '<div class="kol" data-judul="' + esc(judul + ' (' + daftar.length + ')') + '">' + daftar.map(htmlGuru).join('') + '</div>';
   }
 
   function pasangTicker(daftar) {
@@ -227,8 +239,8 @@
       else if (g.status === 'izin') iz++;
       else { h++; if (g.status === 'terlambat') t++; }
     });
-    document.getElementById('nBelum').textContent = bMerah;
-    document.getElementById('subBelum').textContent = bTunggu ? '(+' + bTunggu + ' belum waktunya)' : '';
+    document.getElementById('nBelum').textContent = bMerah + bTunggu; // semua yang belum absen
+    document.getElementById('subBelum').textContent = bMerah ? bMerah + ' sudah lewat batas masuk' : (bTunggu ? 'belum ada yang lewat batas masuk' : '');
     document.getElementById('nHadir').textContent = h - t; // tepat waktu
     document.getElementById('nTerlambat').textContent = t;
     document.getElementById('nIzin').textContent = iz;
@@ -242,11 +254,14 @@
     var telat = G.filter(function (g) { return g.status === 'terlambat'; }).sort(urutBaru);
     var izinList = G.filter(function (g) { return g.status === 'izin'; }).sort(urutNama);
 
-    var kolBelum = '<div class="kol">' +
+    // Kolom Belum Absen berisi SEMUA yang belum absen: yang sudah lewat batas (merah) di atas,
+    // lalu yang belum lewat batas (abu-abu). Judul pemisah hanya muncul kalau keduanya ada.
+    var kolBelum = '<div class="kol" data-judul="Belum absen (' + (belumMerah.length + belumTunggu.length) + ')">' +
       belumMerah.map(htmlGuru).join('') +
-      (belumTunggu.length ? '<div class="sub">Belum waktunya (' + belumTunggu.length + ')</div>' + belumTunggu.map(htmlGuru).join('') : '') +
+      ((belumTunggu.length && belumMerah.length) ? '<div class="sub">Belum lewat batas masuk (' + belumTunggu.length + ')</div>' : '') +
+      belumTunggu.map(htmlGuru).join('') +
       '</div>';
-    isi.innerHTML = kolBelum + htmlKolom(tepat) + htmlKolom(telat) + htmlKolom(izinList);
+    isi.innerHTML = kolBelum + htmlKolom(tepat, 'Tepat waktu') + htmlKolom(telat, 'Terlambat') + htmlKolom(izinList, 'Izin / dinas');
     muatkan();
   }
 
@@ -255,6 +270,7 @@
   function muatkan() {
     var isi = document.getElementById('isi');
     isi.style.zoom = 1;
+    if (window.matchMedia('(max-width: 800px)').matches) return; // HP: daftar disusun ke bawah, tidak perlu dikecilkan
     var ks = isi.querySelectorAll('.kol');
     function over() {
       for (var i = 0; i < ks.length; i++) if (ks[i].scrollHeight > ks[i].clientHeight + 2) return true;
