@@ -2584,6 +2584,21 @@
 })();
 </script>
 <script>
+// Ruang bawah halaman = tinggi menu bawah yang SEBENARNYA (ikut ukuran huruf HP).
+(function () {
+  var nav = document.querySelector('.bnav');
+  if (!nav) return;
+  function atur() {
+    var h = Math.ceil(nav.getBoundingClientRect().height) + 10 + 28;
+    document.body.style.setProperty('padding-bottom', 'calc(' + h + 'px + env(safe-area-inset-bottom, 0px))', 'important');
+  }
+  atur();
+  if (window.ResizeObserver) new ResizeObserver(atur).observe(nav);
+  window.addEventListener('resize', atur);
+  window.addEventListener('load', atur);
+})();
+</script>
+<script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
   }
