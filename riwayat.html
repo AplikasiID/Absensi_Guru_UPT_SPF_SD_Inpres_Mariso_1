@@ -124,7 +124,7 @@
       flex: 1 1 auto;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      padding: 16px 20px 56px;
+      padding: 16px 20px calc(84px + env(safe-area-inset-bottom, 0px));
     }
 
     /* ===== Top bar ===== */
@@ -520,6 +520,7 @@
       </div>
 
       <div class="summary-grid" id="summaryGrid"></div>
+      <div id="syncInfo" style="font-size:12px; font-weight:600; margin-top:8px; min-height:16px; color:var(--text-sub);"></div>
     </div>
 
     <div class="scroll-area" id="scrollArea">
@@ -622,9 +623,26 @@
       try { var t = localStorage.getItem(cacheKey(bulanTahun)); return t ? JSON.parse(t) : null; } catch (e) { return null; }
     }
     function simpanCache(bulanTahun, result) {
-      try { localStorage.setItem(cacheKey(bulanTahun), JSON.stringify(result)); } catch (e) { }
+      try { result._savedAt = Date.now(); localStorage.setItem(cacheKey(bulanTahun), JSON.stringify(result)); } catch (e) { }
     }
     var reqSeq = 0;
+
+    function jamTeks(ms) {
+      var d = new Date(ms || Date.now());
+      return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+    }
+    function setSync(teks, merah, bisaUlang) {
+      var el = document.getElementById('syncInfo');
+      el.style.color = merah ? '#dc2626' : '';
+      el.textContent = teks || '';
+      if (bisaUlang) {
+        var a = document.createElement('a');
+        a.href = '#'; a.textContent = ' Coba lagi';
+        a.style.cssText = 'color:#2563eb; font-weight:800; text-decoration:none;';
+        a.onclick = function (e) { e.preventDefault(); loadData(document.getElementById('monthInput').value); };
+        el.appendChild(a);
+      }
+    }
 
     function tampilkanHasil(result) {
       if (result.nama) {
@@ -634,23 +652,29 @@
       renderData(result);
     }
 
-    // Stale-while-revalidate: tampilkan data tersimpan dulu (instan), lalu
-    // perbarui dari server di belakang layar.
+    // Stale-while-revalidate: tampilkan data tersimpan dulu (instan), lalu perbarui dari
+    // server. Status pembaruan SELALU ditampilkan (supaya data lama tidak dikira data terbaru).
     function loadData(bulanTahun) {
       var mySeq = ++reqSeq;
       var cached = bacaCache(bulanTahun);
-      if (cached) tampilkanHasil(cached);
-      else document.getElementById('content').innerHTML = '<div class="loading">Memuat riwayat absensi...</div>';
+      if (cached) { tampilkanHasil(cached); setSync('Memperbarui data...', false); }
+      else { document.getElementById('content').innerHTML = '<div class="loading">Memuat riwayat absensi...</div>'; setSync('', false); }
       google.script.run
         .withSuccessHandler(function (result) {
           if (mySeq !== reqSeq) return; // bulan lain sudah dipilih
-          if (!result.ok) { if (!cached) renderError(result.message); return; }
+          if (!result.ok) {
+            if (!cached) { renderError(result.message); return; }
+            setSync('Gagal memperbarui: ' + (result.message || 'HP tidak dikenali') + ' (data tersimpan pukul ' + jamTeks(cached._savedAt) + ').', true, true);
+            return;
+          }
           simpanCache(bulanTahun, result);
           tampilkanHasil(result);
+          setSync('Data terbaru, diperbarui pukul ' + jamTeks(Date.now()) + '.', false);
         })
         .withFailureHandler(function (err) {
-          if (mySeq !== reqSeq || cached) return;
-          renderError('Terjadi kesalahan: ' + err.message);
+          if (mySeq !== reqSeq) return;
+          if (!cached) { renderError('Terjadi kesalahan: ' + (err && err.message)); return; }
+          setSync('Tidak bisa terhubung ke server \u2014 menampilkan data tersimpan pukul ' + jamTeks(cached._savedAt) + '. Mungkin belum lengkap.', true, true);
         })
         .getRiwayatAbsen(kode, deviceId, bulanTahun);
     }
