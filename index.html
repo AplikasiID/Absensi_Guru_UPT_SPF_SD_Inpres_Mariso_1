@@ -994,6 +994,12 @@ body.adm-sub .adm-pill { display: none !important; }
   .pin-chip { background: rgba(34,197,94,.18); color: #5EE08A; }
   .ket-chk { color: #F2F2F7; }
 }
+
+/* ===== Spanduk (header) tetap menempel di atas saat di-scroll: tab Absen & Admin ===== */
+.ban { position: sticky; top: 0; z-index: 30; padding-bottom: 22px; }
+/* Dulu kartu "Pilih nama" menimpa bagian bawah spanduk; karena spanduk kini menempel
+   (dan harus di atas isi halaman), kartu dipindah ke bawah spanduk, tidak menimpa lagi. */
+.name-float { margin-top: 14px; }
 </style>
 </head>
 <body>
