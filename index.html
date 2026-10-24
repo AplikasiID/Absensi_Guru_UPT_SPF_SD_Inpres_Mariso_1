@@ -2058,8 +2058,8 @@
             document.getElementById('statusAbsen').style.display = 'none';
             // HP tidak cocok, tapi server tetap memberi tahu sudah/belum absen
             // hari ini -> kunci tombol yang sudah dipakai.
-            btnMasuk.disabled = !!status.sudahMasuk || localSudahMasuk;
-            btnKeluar.disabled = !!status.sudahKeluar || localSudahKeluar;
+            btnMasuk.disabled = status.hariKerja === false || !!status.sudahMasuk || localSudahMasuk;
+            btnKeluar.disabled = status.hariKerja === false || !!status.sudahKeluar || localSudahKeluar;
             return;
           }
 
@@ -2068,8 +2068,9 @@
           var sudahMasuk = !!status.sudahMasuk || localSudahMasuk;
           var sudahKeluar = !!status.sudahKeluar || localSudahKeluar;
 
-          btnMasuk.disabled = sudahMasuk;
-          btnKeluar.disabled = !sudahMasuk || sudahKeluar;
+          var libur = status.hariKerja === false;
+          btnMasuk.disabled = libur || sudahMasuk;
+          btnKeluar.disabled = libur || !sudahMasuk || sudahKeluar;
 
           if (sudahKeluar) {
             var pesanSudah = 'Sudah absen Masuk (' + (status.jamMasuk || '-') + ') dan Pulang (' + (status.jamKeluar || '-') + ') hari ini.';
@@ -2102,6 +2103,7 @@
         select.options[select.selectedIndex].getAttribute('data-nama') : '';
 
       if (!kode) { showModal('err', 'Belum Memilih Nama', 'Pilih nama kamu terlebih dahulu.'); return; }
+      if (window.__lastStatus && window.__lastStatus.hariKerja === false) { showModal('err', 'Hari Libur', 'Hari ini hari libur, tidak ada absen.'); return; }
       if (!navigator.geolocation) { showModal('err', 'GPS Tidak Didukung', 'Browser HP kamu tidak mendukung GPS. Gunakan Chrome/Safari terbaru.'); return; }
 
       var label = (tipe === 'masuk') ? 'Masuk' : 'Pulang';
@@ -2554,7 +2556,8 @@
     bk.querySelector('.bt-txt').textContent = (kode && sudahK) ? 'Sudah Pulang' : 'Absen Pulang';
     var n = 'Pilih nama untuk mulai';
     if (kode) {
-      if (sudahM && sudahK) n = 'Absensi hari ini lengkap. Sampai jumpa besok!';
+      if (st && st.hariKerja === false) n = 'Hari libur, tidak ada absen hari ini';
+      else if (sudahM && sudahK) n = 'Absensi hari ini lengkap. Sampai jumpa besok!';
       else if (sudahM) n = st && st.jamPulang ? 'Absen pulang aktif mulai ' + st.jamPulang : 'Sudah absen masuk. Absen pulang saat pulang.';
       else n = st && st.batasMasuk ? 'Absen masuk paling lambat ' + st.batasMasuk : 'Tekan Absen Masuk saat tiba di sekolah';
     }
