@@ -624,6 +624,12 @@
     .summary-grid:empty { min-height: 64px; display: block !important; }
     .sticky-top { min-height: 0; flex-shrink: 0; }
 
+    /* Tombol/kartu paling bawah sering tertutup menu bawah: tinggi halaman memakai tinggi layar yang
+       BENAR-BENAR terlihat (diukur JS, --appH) dan ada ruang cadangan di akhir daftar (--navh). */
+    html, body { height: var(--appH, 100dvh) !important; }
+    .page-shell { height: var(--appH, 100dvh) !important; }
+    #content::after { content: ""; display: block; height: calc(var(--navh, 100px) + 28px + env(safe-area-inset-bottom, 0px)); }
+
     /* jam dengan detik: sedikit lebih ringkas supaya muat di layar sempit */
     .rw-time { font-size: 14.5px; letter-spacing: -.01em; white-space: normal; }
     .rw-time .tj { display: inline-block; white-space: nowrap; }
@@ -1071,18 +1077,25 @@
 </script>
 <script>try{if(localStorage.getItem('absensi_admin_ok')==='1')document.getElementById('navAdminLink').style.display='';}catch(e){}</script>
 <script>
-// Ruang bawah daftar = tinggi menu bawah yang SEBENARNYA (ikut ukuran huruf HP), supaya tombol/baris terakhir tidak tertutup.
+// Ruang bawah daftar = tinggi menu bawah yang SEBENARNYA + tinggi layar yang benar-benar terlihat,
+// supaya tombol/baris terakhir tidak tertutup menu bawah.
 (function () {
   var nav = document.querySelector('.bnav'), sa = document.getElementById('scrollArea');
+  var root = document.documentElement;
   if (!nav || !sa) return;
   function atur() {
-    var h = Math.ceil(nav.getBoundingClientRect().height) + 10 + 28;
-    sa.style.setProperty('padding-bottom', 'calc(' + h + 'px + env(safe-area-inset-bottom, 0px))', 'important');
+    var tinggiNav = Math.ceil(nav.getBoundingClientRect().height) + 10;
+    root.style.setProperty('--navh', tinggiNav + 'px');
+    var layar = window.innerHeight || document.documentElement.clientHeight;
+    if (layar > 200) root.style.setProperty('--appH', layar + 'px');
+    sa.style.setProperty('padding-bottom', 'calc(' + (tinggiNav + 28) + 'px + env(safe-area-inset-bottom, 0px))', 'important');
   }
   atur();
   if (window.ResizeObserver) new ResizeObserver(atur).observe(nav);
   window.addEventListener('resize', atur);
+  window.addEventListener('orientationchange', function () { setTimeout(atur, 300); });
   window.addEventListener('load', atur);
+  setTimeout(atur, 600);
 })();
 </script>
 </body>
