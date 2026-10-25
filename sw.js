@@ -1,6 +1,8 @@
-/* Service worker sederhana: network-first untuk halaman, cache hanya sebagai
- * cadangan saat offline. Panggilan ke Apps Script TIDAK pernah di-cache. */
-var CACHE = "absensi-v2";
+/* Service worker: halaman langsung tampil dari cache (cepat), lalu diperbarui di
+ * belakang layar untuk pembukaan berikutnya (stale-while-revalidate). Kalau belum
+ * ada di cache (pertama kali), diambil dari jaringan. Panggilan ke Apps Script
+ * TIDAK pernah di-cache. */
+var CACHE = "absensi-v3";
 var SHELL = ["./", "./index.html", "./dashboard.html", "./pengaturan.html", "./riwayat.html",
              "./config.js", "./api.js", "./ikon-192.png"];
 
@@ -20,12 +22,17 @@ self.addEventListener("fetch", function (e) {
   var url = new URL(req.url);
   if (url.origin !== location.origin) return; // Apps Script / CDN: biarkan langsung
   e.respondWith(
-    // no-cache: selalu validasi ke server (304 kalau tidak berubah) supaya tidak
-    // tersaji versi lama dari cache HTTP browser (GitHub Pages: max-age 10 menit).
-    fetch(req, { cache: 'no-cache' }).then(function (res) {
-      var copy = res.clone();
-      caches.open(CACHE).then(function (c) { c.put(req, copy); });
-      return res;
-    }).catch(function () { return caches.match(req); })
+    caches.match(req).then(function (cached) {
+      // no-cache: validasi ke server (304 kalau tidak berubah), hasilnya disimpan untuk pembukaan berikutnya.
+      var jaringan = fetch(req, { cache: 'no-cache' }).then(function (res) {
+        if (res && res.ok) {
+          var copy = res.clone();
+          caches.open(CACHE).then(function (c) { c.put(req, copy); });
+        }
+        return res;
+      }).catch(function () { return cached; });
+      e.waitUntil(jaringan.catch(function () {})); // jaga agar pembaruan di belakang layar selesai
+      return cached || jaringan;
+    })
   );
 });
