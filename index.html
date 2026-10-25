@@ -13,7 +13,8 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet"></noscript>
   <script src="config.js"></script>
   <script src="api.js"></script>
     <style>
@@ -960,7 +961,7 @@
     @media (max-width: 350px) { .ban .clock { font-size: 21px; padding: 7px 9px; } }
   </style>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 /* ===== Admin sub-halaman: tombol kembali di spanduk, kartu putih, form 2 langkah ===== */
 .adm-bpill { display: none; align-items: center; gap: 6px; color: #fff; font-size: 13px; font-weight: 800; padding: 7px 14px 7px 9px; border-radius: 999px; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.34); box-shadow: none; margin: 0 0 12px; }
@@ -2512,7 +2513,7 @@ body.adm-sub .adm-pill { display: none !important; }
   var terpasang = false;
   try { terpasang = (window.navigator.standalone === true) || (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches); } catch (e) { }
   if (seen || terpasang) sp.style.display = 'none';
-  else { setTimeout(tutupSplash, 1300); sp.addEventListener('click', tutupSplash); }
+  else { setTimeout(tutupSplash, 800); sp.addEventListener('click', tutupSplash); }
 
   // Sapaan sesuai jam + nama depan guru terpilih
   function namaDepan() {
