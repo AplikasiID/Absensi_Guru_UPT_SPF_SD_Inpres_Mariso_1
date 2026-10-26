@@ -1193,6 +1193,7 @@ body.adm-sub .adm-pill { display: none !important; }
     <div class="bn-row">
     <button type="button" class="on" id="navAbsen"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></span>Absen</button>
     <button type="button" id="navRiwayat"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>Riwayat</button>
+    <button type="button" id="navGrafik"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20v-9M12 20V4M19 20v-6"/></svg></span>Grafik</button>
       <button type="button" id="navAdmin" style="display:none;"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></span>Admin</button>
     </div>
     <div class="bn-credit" id="footerSecret">Dikembangkan oleh: Ade Irwansyah</div>
@@ -2563,6 +2564,13 @@ body.adm-sub .adm-pill { display: none !important; }
     var l = $('riwayatLink');
     if (l.getAttribute('href')) l.click();
     else showModal('err', 'Pilih Nama Dulu', 'Pilih namamu di bagian atas, lalu buka Riwayat.');
+  };
+
+  $('navGrafik').onclick = function () {
+    var kode = $('guruSelect').value;
+    if (!kode) { showModal('err', 'Pilih Nama Dulu', 'Pilih namamu di bagian atas, lalu buka Grafik.'); return; }
+    showLoading('Membuka Grafik...');
+    window.location.href = 'grafik.html?kode=' + encodeURIComponent(kode) + '&dev=' + encodeURIComponent(getDeviceId() || '');
   };
 
   // Deretan hari minggu ini (Senin-Jumat) dari data riwayat yang tersimpan di HP
