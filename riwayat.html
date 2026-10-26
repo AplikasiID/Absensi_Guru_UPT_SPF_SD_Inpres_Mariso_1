@@ -676,6 +676,7 @@
     <div class="bn-row">
     <a href="index.html"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></span>Absen</a>
     <a href="#" class="on" onclick="return false;" aria-current="page"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>Riwayat</a>
+    <a href="#" id="navGrafikLink"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20v-9M12 20V4M19 20v-6"/></svg></span>Grafik</a>
     <a href="index.html#admin" id="navAdminLink" style="display:none;"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></span>Admin</a>
     </div>
     <div class="bn-credit">Dikembangkan oleh: Ade Irwansyah</div>
@@ -752,6 +753,8 @@
       kode = location.parameter.kode;
       deviceId = location.parameter.dev;
       bulanAwal = location.parameter.bulan; // opsional, format yyyy-MM
+      var ng = document.getElementById('navGrafikLink');
+      if (kode && ng) ng.href = 'grafik.html?kode=' + encodeURIComponent(kode) + '&dev=' + encodeURIComponent(deviceId || '');
       init();
     });
 
