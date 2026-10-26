@@ -1,20 +1,23 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" translate="no">
 <head>
 <meta charset="UTF-8">
+<meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Papan Kehadiran Guru</title>
 <link rel="icon" type="image/png" href="ikon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 <script src="config.js"></script>
 <script src="api.js"></script>
 <style>
   * { box-sizing: border-box; }
   :root {
-    --bg: #0b1220; --panel: #131c2e; --txt: #f1f5f9; --sub: #94a3b8;
-    --hijau: #22c55e; --kuning: #f59e0b; --merah: #ef4444; --biru: #60a5fa;
+    --bg: #0B1530; --panel: #14234A; --txt: #F1F5FF; --sub: #A9B6D6;
+    --hijau: #4ADE80; --kuning: #FBBF24; --merah: #FF8A80; --biru: #7DB2FF;
   }
   html, body { margin: 0; height: 100%; background: var(--bg); color: var(--txt);
-    font-family: Inter, Roboto, "Segoe UI", Arial, sans-serif; }
+    font-family: "Plus Jakarta Sans", Inter, Roboto, "Segoe UI", Arial, sans-serif; }
   body { display: flex; flex-direction: column; padding: 1.2vw 1.6vw; gap: 1.2vw; overflow: hidden; }
 
   header { display: flex; align-items: center; justify-content: space-between; gap: 2vw; }
@@ -27,13 +30,14 @@
   .jam .t { font-size: 1.5vw; color: var(--sub); margin-top: .3vw; }
 
   .ringkas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1vw; }
-  .box { background: var(--panel); border-radius: 1.2vw; padding: .6vw 1.4vw; border-left: .5vw solid var(--sub); }
+  .box { background: var(--panel); border-radius: 1.4vw; padding: .8vw 1.5vw; }
   .box b { display: block; font-size: 3.4vw; line-height: 1.05; font-variant-numeric: tabular-nums; }
   .box span { font-size: 1.3vw; color: var(--sub); font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
-  .box.hadir { border-color: var(--hijau); } .box.hadir b { color: var(--hijau); }
-  .box.belum { border-color: var(--merah); } .box.belum b { color: var(--merah); }
-  .box.terlambat { border-color: var(--kuning); } .box.terlambat b { color: var(--kuning); }
-  .box.izin { border-color: var(--biru); } .box.izin b { color: var(--biru); }
+  .box.hadir { background: rgba(74,222,128,.12); } .box.hadir b { color: var(--hijau); }
+  .box.belum { background: rgba(255,138,128,.14); } .box.belum b { color: var(--merah); }
+  .box.terlambat { background: rgba(251,191,36,.12); } .box.terlambat b { color: var(--kuning); }
+  .box.izin { background: rgba(125,178,255,.12); } .box.izin b { color: var(--biru); }
+  .box span { color: #C7D2EE; }
 
   /* Empat kolom lurus di bawah empat kartu ringkasan (grid & jarak sama persis) */
   main { flex: 1; min-height: 0; overflow: hidden; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1vw; align-items: start; }
@@ -42,22 +46,28 @@
   .kol .sub { grid-column: 1 / -1; font-size: .95vw; color: var(--sub); text-transform: uppercase; letter-spacing: .06em; font-weight: 700; margin: .5vw 0 0; }
   .kol .kosong { grid-column: 1 / -1; color: #475569; font-size: 1.2vw; font-weight: 700; padding: .6vw .2vw; }
   .g { display: flex; align-items: center; justify-content: space-between; gap: .6vw;
-       background: var(--panel); border-radius: .8vw; padding: .55vw .9vw; border-left: .3vw solid var(--sub); min-width: 0; }
+       background: var(--panel); border-radius: 1vw; padding: .55vw .9vw; min-width: 0; --c: var(--sub); --t: rgba(169,182,214,.14); }
+  .g .av { flex: 0 0 auto; width: 2.7vw; height: 2.7vw; border-radius: 50%; background: var(--t); color: var(--c); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1vw; }
+  .g .n { flex: 1; }
+  .g .dur { display: flex; align-items: center; gap: .6vw; margin-top: .35vw; }
+  .g .dur span { font-size: .95vw; font-weight: 700; color: var(--c); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .g .bar { flex: 1; height: .35vw; border-radius: .2vw; background: rgba(255,255,255,.10); overflow: hidden; }
+  .g .bar i { display: block; height: 100%; border-radius: .2vw; background: var(--c); }
   .g .n { font-size: 1.25vw; font-weight: 700; min-width: 0; line-height: 1.15; overflow-wrap: anywhere; }
   .g .i { font-size: .9vw; color: var(--sub); white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; line-height: 1.25; }
   .g .i b { display: block; font-size: 1.15vw; }
-  .g.belum { border-color: var(--merah); background: #2a1620; } .g.belum .i b { color: var(--merah); }
-  .g.tunggu { border-color: #475569; } .g.tunggu .n { color: var(--sub); } .g.tunggu .i b { color: var(--sub); }
-  .g.hadir { border-color: var(--hijau); } .g.hadir .i b { color: var(--hijau); }
-  .g.terlambat { border-color: var(--kuning); } .g.terlambat .i b { color: var(--kuning); }
-  .g.izin { border-color: var(--biru); } .g.izin .i b { color: var(--biru); }
+  .g.belum { --c: var(--merah); --t: rgba(255,138,128,.16); background: #2A1A2E; } .g.belum .i b { color: var(--merah); }
+  .g.tunggu .n { color: var(--sub); } .g.tunggu .i b { color: var(--sub); }
+  .g.hadir { --c: var(--hijau); --t: rgba(74,222,128,.14); } .g.hadir .i b { color: var(--hijau); }
+  .g.terlambat { --c: var(--kuning); --t: rgba(251,191,36,.14); } .g.terlambat .i b { color: var(--kuning); }
+  .g.izin { --c: var(--biru); --t: rgba(125,178,255,.14); } .g.izin .i b { color: var(--biru); }
   /* guru yang baru saja absen berkedip */
   @keyframes kedip { 0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); } 50% { box-shadow: 0 0 1.6vw .3vw rgba(34,197,94,.85); } }
   .subb { display: block; font-style: normal; font-weight: 600; text-transform: none; letter-spacing: 0; font-size: .95vw; min-height: 1.1vw; }
   .g.baru { animation: kedip 1.2s ease-in-out infinite; }
 
   /* pengumuman berjalan */
-  #ticker { display: none; background: #1e293b; border-radius: .9vw; overflow: hidden; white-space: nowrap; padding: .6vw 0; border-left: .4vw solid var(--kuning); }
+  #ticker { display: none; background: #14234A; border-radius: .9vw; overflow: hidden; white-space: nowrap; padding: .6vw 0; border-left: .4vw solid var(--kuning); }
   #ticker span { display: inline-block; padding-left: 100%; font-size: 1.8vw; font-weight: 700; animation: jalan 30s linear infinite; }
   @keyframes jalan { from { transform: translateX(0); } to { transform: translateX(-100%); } }
 
@@ -90,7 +100,7 @@
     .kol::before { content: attr(data-judul); font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--sub); margin: 2px 0 2px; }
     .kol .sub { font-size: 11px; margin-top: 6px; }
     .g { padding: 9px 12px; border-radius: 10px; gap: 10px; }
-    .g .n { font-size: 15px; overflow-wrap: break-word; }
+    .g .n { font-size: 15px; overflow-wrap: break-word; } .g .av { width: 34px; height: 34px; font-size: 12px; } .g .bar { height: 4px; } .g .dur { margin-top: 5px; gap: 8px; } .g .dur span { font-size: 12px; }
     .g .i { font-size: 11px; } .g .i b { font-size: 14px; }
     #ticker span { font-size: 15px; } #ticker { padding: 8px 0; border-radius: 10px; }
     .ib { width: 34px; height: 34px; margin-left: 8px; }
@@ -186,6 +196,21 @@
 
   var KET = { S: 'Sakit', I: 'Izin', A: 'Alpa', DL: 'Dinas Luar', C: 'Cuti' };
 
+  // Total jam kerja = jam pulang dikurangi jam masuk (dihitung sampai detik, ditampilkan jam + menit penuh).
+  function detikDari(t) {
+    var p = String(t || '').split(':');
+    if (p.length < 2) return null;
+    var h = parseInt(p[0], 10), m = parseInt(p[1], 10), d = p.length > 2 ? parseInt(p[2], 10) : 0;
+    if (isNaN(h) || isNaN(m)) return null;
+    return h * 3600 + m * 60 + (isNaN(d) ? 0 : d);
+  }
+  function teksDurasi(masuk, keluar) {
+    var a = detikDari(masuk), b = detikDari(keluar);
+    if (a === null || b === null || b <= a) return '';
+    var mnt = Math.floor((b - a) / 60);
+    return Math.floor(mnt / 60) + ' jam ' + (mnt % 60) + ' mnt';
+  }
+
   function htmlGuru(g) {
     var shiftLabel = g.shift === 'siang' ? 'Siang' : (g.shift === 'pagi' ? 'Pagi' : '');
     var info, kelas = g.status;
@@ -194,7 +219,14 @@
     else info = '<b>' + esc(String(g.masuk).substring(0, 5)) + '</b>' +
       (g.keluar ? 'Pulang ' + esc(String(g.keluar).substring(0, 5)) : esc(shiftLabel));
     var baru = (baruSampai[g.nama] && Date.now() < baruSampai[g.nama]) ? ' baru' : '';
-    return '<div class="g ' + kelas + baru + '"><div class="n">' + esc(g.nama) + '</div><div class="i">' + info + '</div></div>';
+    var kata = String(g.nama).replace(/[,.].*$/, '').trim().split(/\s+/);
+    var ini = ((kata[0] || '?').charAt(0) + (kata.length > 1 ? kata[1].charAt(0) : '')).toUpperCase();
+    var bar = '';
+    if (g.status !== 'izin' && g.status !== 'belum' && g.keluar) {
+      var a = detikDari(g.masuk), b = detikDari(g.keluar);
+      if (a !== null && b !== null && b > a) bar = '<div class="dur"><span>' + esc(teksDurasi(g.masuk, g.keluar)) + '</span><div class="bar"><i style="width:' + Math.min(100, Math.round((b - a) / 28800 * 100)) + '%"></i></div></div>';
+    }
+    return '<div class="g ' + kelas + baru + '"><div class="av">' + esc(ini) + '</div><div class="n">' + esc(g.nama) + bar + '</div><div class="i">' + info + '</div></div>';
   }
 
   // Kolom kosong tidak menampilkan tulisan apa pun (tetap menempati lajurnya supaya
