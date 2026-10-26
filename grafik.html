@@ -659,6 +659,9 @@
     .gcard h2 { margin:0; font-size:16px; font-weight:800; color:var(--rw-ink); }
     .gcard .gsub { margin:2px 0 0; font-size:12px; font-weight:500; color:var(--rw-muted); }
     .gsvg { display:block; width:100%; margin-top:12px; }
+    .gscroll { margin-top:12px; max-height:300px; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; touch-action:pan-y; border-radius:10px; }
+    .gscroll .gsvg { margin-top:0; }
+    .gscroll .gaxis { position:sticky; top:0; z-index:2; background:var(--rw-card); }
     .gleg { display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:8px; font-size:12px; font-weight:600; color:var(--rw-muted); }
     .gleg > div { display:flex; align-items:center; gap:6px; }
     .gsw { display:inline-block; width:14px; height:8px; border-radius:4px; box-sizing:border-box; }
@@ -719,6 +722,7 @@
       </div>
 
       <div class="summary-grid" id="summaryGrid"></div>
+    </div>
 
     <div class="scroll-area" id="scrollArea">
       <div id="syncInfo" style="font-size:12px; font-weight:600; margin-top:8px; min-height:16px; color:var(--text-sub);"></div>
@@ -926,12 +930,16 @@
       // 10 hari terakhir yang ada absen masuknya (urut dari lama ke baru)
       var hari = rows.filter(function (x) { return !x.ket && hhmm(x.jamMasuk) !== null; })
         .sort(function (a, b) { return a.tanggal < b.tanggal ? -1 : (a.tanggal > b.tanggal ? 1 : 0); })
-        .slice(-10);
+        ;
+      var hari10 = hari.slice(-10);
 
       var html = kartuDonut(r, total);
-      if (hari.length) { html += kartuBatang(hari) + kartuJam(hari, result.jadwal); }
+      if (hari.length) { html += kartuBatang(hari10) + kartuJam(hari, result.jadwal); }
       html += '<div class="gcard" id="cardBanding" style="display:none;"></div>';
       box.innerHTML = html;
+      // grafik jam/durasi kerja: tampilkan hari terbaru di bawah, sisanya bisa digeser ke atas
+      var gs = box.querySelector('.gscroll');
+      if (gs) gs.scrollTop = gs.scrollHeight;
       muatPerbandingan(bulanAktif);
     }
 
@@ -1019,10 +1027,10 @@
       function X(m) { var v = X0 + (m - aStart) / (aEnd - aStart) * W; return Math.max(X0, Math.min(X0 + W, v)); }
       function f1(v) { return v.toFixed(1); }
       var n = items.length, axisY = 34 + 20 * (n - 1) + 14, s = '';
-      var stepT = (aEnd - aStart) <= 480 ? 60 : 120;
+      var stepT = (aEnd - aStart) <= 480 ? 60 : 120, sumbu = '';
       for (var t = Math.ceil(aStart / stepT) * stepT; t <= aEnd; t += stepT) {
         s += '<line x1="' + f1(X(t)) + '" y1="20" x2="' + f1(X(t)) + '" y2="' + axisY + '" class="s-track" stroke-width="1"/>';
-        s += '<text x="' + f1(X(t)) + '" y="14" text-anchor="middle" class="tx">' + ('0' + Math.floor(t / 60)).slice(-2) + ':' + ('0' + (t % 60)).slice(-2) + '</text>';
+        sumbu += '<text x="' + f1(X(t)) + '" y="14" text-anchor="middle" class="tx">' + ('0' + Math.floor(t / 60)).slice(-2) + ':' + ('0' + (t % 60)).slice(-2) + '</text>';
       }
       s += '<line x1="' + X0 + '" y1="' + axisY + '" x2="' + (X0 + W) + '" y2="' + axisY + '" class="s-axis" stroke-width="1"/>';
       var ket = [];
@@ -1063,9 +1071,11 @@
         '<div><span class="gchip">P</span>Pagi</div>' +
         '<div><span class="gchip s">S</span>Siang</div>' +
         (adaPenuh ? '<div><span class="gchip">F</span>Penuh</div>' : '') + '</div>';
-      return '<div class="gcard"><h2>Jam masuk dan pulang</h2><p class="gsub">Tanda kecil di tiap baris = batas masuk dan jam pulang shift hari itu</p>' +
-        '<svg class="gsvg" role="img" aria-label="Grafik jam masuk dan pulang per hari. ' + (ket.length ? esc(ket.join(', ')) : 'Semua hari lengkap') + '" viewBox="0 0 318 ' + (axisY + 8) + '">' + s + '</svg>' +
-        legendA + legendB + '</div>';
+      return '<div class="gcard"><h2>Jam masuk dan pulang</h2><p class="gsub">Durasi kerja per hari (' + n + ' hari). Geser ke atas/bawah untuk melihat hari lainnya. Tanda kecil = batas masuk dan jam pulang shift.</p>' +
+        '<div class="gscroll" tabindex="0">' +
+        '<svg class="gsvg gaxis" aria-hidden="true" viewBox="0 0 318 20">' + sumbu + '</svg>' +
+        '<svg class="gsvg gbody" role="img" aria-label="Grafik jam masuk dan pulang per hari. ' + (ket.length ? esc(ket.join(', ')) : 'Semua hari lengkap') + '" viewBox="0 20 318 ' + (axisY + 8 - 20) + '">' + s + '</svg>' +
+        '</div>' + legendA + legendB + '</div>';
     }
 
     // ---- Perbandingan dengan 2 bulan sebelumnya (diambil dari simpanan HP dulu, sisanya dari server pelan-pelan) ----
