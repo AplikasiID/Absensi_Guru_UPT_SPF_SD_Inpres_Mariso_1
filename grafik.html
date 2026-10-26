@@ -664,6 +664,9 @@
     .sk-b { height:110px; border-radius:14px; background:var(--g-track); margin-top:14px; animation:skp 1.2s ease-in-out infinite; }
     .w40 { width:40%; } .w70 { width:70%; }
     @keyframes skp { 0%,100% { opacity:.55; } 50% { opacity:1; } }
+    .gbar-wrap { display:flex; margin-top:12px; }
+    .gbar-y { flex:0 0 30px; display:block; }
+    .gbar-scroll { flex:1; min-width:0; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; }
     .gsvg { display:block; width:100%; margin-top:12px; }
     /* ===== Daftar durasi kerja (gaya sama dengan halaman Riwayat) ===== */
     .gj-list { margin-top:12px; max-height:340px; overflow-y:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--rw-line); border-radius:14px; }
@@ -804,6 +807,14 @@
       if (isNaN(h) || isNaN(m)) return null;
       return h * 60 + m;
     }
+    function dtk(t) {
+      if (!t) return null;
+      var p = String(t).split(':');
+      if (p.length < 2) return null;
+      var h = parseInt(p[0], 10), m = parseInt(p[1], 10), d = p.length > 2 ? parseInt(p[2], 10) : 0;
+      if (isNaN(h) || isNaN(m)) return null;
+      return h * 3600 + m * 60 + (isNaN(d) ? 0 : d);
+    }
     function fmtDurasi(m) {
       var j = Math.floor(m / 60), s = Math.round(m - j * 60);
       if (s === 60) { j += 1; s = 0; }
@@ -934,8 +945,8 @@
       var sd = 0, nd = 0, st = 0, nt = 0;
       rows.forEach(function (row) {
         if (row.ket) return;
-        var m = hhmm(row.jamMasuk), p = hhmm(row.jamKeluar);
-        if (m !== null && p !== null && p > m) { sd += p - m; nd++; }
+        var m = dtk(row.jamMasuk), p = dtk(row.jamKeluar);
+        if (m !== null && p !== null && p > m) { sd += (p - m) / 60; nd++; }
         var t = telatOf(row);
         if (t > 0) { st += t; nt++; }
       });
@@ -952,9 +963,11 @@
       var hari10 = hari.slice(-10);
 
       var html = kartuDonut(r, total);
-      if (hari.length) { html += kartuBatang(hari10) + kartuJam(hari, result.jadwal); }
+      if (hari.length) { html += kartuBatang(hari) + kartuJam(hari, result.jadwal); }
       html += '<div class="gcard" id="cardBanding" style="display:none;"></div>';
       box.innerHTML = html;
+      var gb = document.getElementById('gbarScroll');
+      if (gb) gb.scrollLeft = gb.scrollWidth; // hari terbaru terlihat dulu, geser ke kiri untuk hari sebelumnya
       muatPerbandingan(bulanAktif);
     }
 
@@ -993,29 +1006,29 @@
       function hitung() { yMax = Math.max(step, Math.ceil(maxV / step) * step); }
       hitung();
       while (yMax / step > 3) { step += 15; hitung(); }
-      var L = 30, R = 316, base = 130, H = 120, scale = H / yMax;
-      var slot = (R - L) / n, bw = Math.min(16, slot * 0.6);
-      var s = '';
+      var base = 130, H = 110, scale = H / yMax, slot = 34, bw = 18, W = n * slot + 8;
+      var sy = '', s = '';
       for (var v = 0; v <= yMax; v += step) {
         var y = base - v * scale;
-        s += '<line x1="' + L + '" y1="' + y + '" x2="' + R + '" y2="' + y + '" class="' + (v === 0 ? 's-axis' : 's-track') + '" stroke-width="1"/>';
-        s += '<text x="' + (L - 8) + '" y="' + (y + 4) + '" text-anchor="end" class="tx">' + v + '</text>';
+        s += '<line x1="0" y1="' + y + '" x2="' + W + '" y2="' + y + '" class="' + (v === 0 ? 's-axis' : 's-track') + '" stroke-width="1"/>';
+        sy += '<text x="26" y="' + (y + 4) + '" text-anchor="end" class="tx">' + v + '</text>';
       }
       var desk = [];
       rows.forEach(function (r, i) {
-        var x = L + slot * i + (slot - bw) / 2, cx = x + bw / 2, t = telatOf(r);
+        var x = 4 + slot * i + (slot - bw) / 2, cx = x + bw / 2, t = telatOf(r);
         if (t > 0) {
           var h = Math.max(3, t * scale);
-          s += '<rect x="' + x.toFixed(1) + '" y="' + (base - h).toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + h.toFixed(1) + '" rx="4" class="f-late"/>';
+          s += '<rect x="' + x.toFixed(1) + '" y="' + (base - h).toFixed(1) + '" width="' + bw + '" height="' + h.toFixed(1) + '" rx="4" class="f-late"/>';
           s += '<text x="' + cx.toFixed(1) + '" y="' + (base - h - 4).toFixed(1) + '" text-anchor="middle" class="tx tx-b tx-late" style="font-size:11px">' + Math.round(t) + '</text>';
           desk.push(r.tanggal.slice(8) + ' ' + Math.round(t) + ' menit');
         } else {
-          s += '<rect x="' + x.toFixed(1) + '" y="' + (base - 2) + '" width="' + bw.toFixed(1) + '" height="2" rx="1" class="f-mute"/>';
+          s += '<rect x="' + x.toFixed(1) + '" y="' + (base - 2) + '" width="' + bw + '" height="2" rx="1" class="f-mute"/>';
         }
         s += '<text x="' + cx.toFixed(1) + '" y="' + (base + 18) + '" text-anchor="middle" class="tx">' + parseInt(r.tanggal.slice(8), 10) + '</text>';
       });
-      return '<div class="gcard"><h2>Keterlambatan per hari</h2><p class="gsub">Menit setelah batas masuk, ' + n + ' hari kerja terakhir</p>' +
-        '<svg class="gsvg" role="img" aria-label="Diagram batang keterlambatan per hari. ' + (desk.length ? 'Terlambat: ' + desk.join(', ') : 'Tidak ada keterlambatan') + '" viewBox="0 0 318 160">' + s + '</svg></div>';
+      return '<div class="gcard"><h2>Keterlambatan per hari</h2><p class="gsub">Menit setelah batas masuk, ' + n + ' hari kerja. Geser ke samping untuk melihat hari lainnya.</p>' +
+        '<div class="gbar-wrap"><svg class="gbar-y" aria-hidden="true" width="30" height="160" viewBox="0 0 30 160">' + sy + '</svg>' +
+        '<div class="gbar-scroll" id="gbarScroll"><svg role="img" aria-label="Diagram batang keterlambatan per hari. ' + (desk.length ? 'Terlambat: ' + desk.join(', ') : 'Tidak ada keterlambatan') + '" width="' + W + '" height="160" viewBox="0 0 ' + W + ' 160" style="display:block">' + s + '</svg></div></div></div>';
     }
 
     function kartuJam(rows, jadwal) {
@@ -1026,20 +1039,20 @@
         return { batas: hhmm(j.batasMasuk), pulang: hhmm(j.jamPulang) };
       }
       var today = ymd(new Date());
-      function jp(t) { var m = String(t).match(/^(\d{1,2}):(\d{2})/); return m ? ('0' + m[1]).slice(-2) + ':' + m[2] : String(t); }
+      function jp(t) { var m = String(t).match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?/); return m ? ('0' + m[1]).slice(-2) + ':' + m[2] + ':' + (m[3] || '00') : String(t); }
       var HARI = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
       var urut = rows.slice().sort(function (a, b) { return a.tanggal < b.tanggal ? 1 : (a.tanggal > b.tanggal ? -1 : 0); });
       var html = urut.map(function (r) {
-        var j = jdw(r.shift), m = hhmm(r.jamMasuk), p = hhmm(r.jamKeluar);
+        var j = jdw(r.shift), m = dtk(r.jamMasuk), p = dtk(r.jamKeluar);
         var d = new Date(r.tanggal + 'T00:00:00'), late = adaTelat(r);
         var sh = r.shift === 'S' ? 'Siang' : (r.shift === 'P' ? 'Pagi' : 'Penuh');
         var waktu, sub, badge, pct = 0;
         if (p !== null && p > m) {
-          var dur = p - m, plan = Math.max(60, (j.pulang || p) - (j.batas || m));
+          var dur = Math.floor((p - m) / 60), plan = Math.max(60, (j.pulang || p / 60) - (j.batas || m / 60));
           waktu = jp(r.jamMasuk) + ' \u2013 ' + jp(r.jamKeluar);
           badge = Math.floor(dur / 60) + ' jam ' + (dur % 60) + ' mnt';
           pct = Math.min(100, Math.round(dur / plan * 100));
-          sub = 'Shift ' + sh + (late ? ' \u00b7 terlambat' : '') + (j.pulang && p < j.pulang ? ' \u00b7 pulang cepat' : '');
+          sub = 'Shift ' + sh + (late ? ' \u00b7 terlambat' : '') + (j.pulang && p / 60 < j.pulang ? ' \u00b7 pulang cepat' : '');
         } else {
           waktu = jp(r.jamMasuk) + ' \u2013 belum pulang';
           badge = '-';
