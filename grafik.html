@@ -653,15 +653,32 @@
     .summary-grid .summary-card { cursor:default; }
     .summary-grid .summary-card .num { font-size:21px !important; }
     .summary-card.k-ok .num { color:var(--g-tok); }
-    .summary-card.k-info .num { color:var(--g-info); }
+    .summary-card.k-info .num { color:var(--rw-ink); }
     .summary-card.k-late .num { color:var(--g-tl); }
     .gcard { background:var(--rw-card); border:1px solid var(--rw-line); border-radius:20px; padding:18px; margin-bottom:14px; }
     .gcard h2 { margin:0; font-size:16px; font-weight:800; color:var(--rw-ink); }
     .gcard .gsub { margin:2px 0 0; font-size:12px; font-weight:500; color:var(--rw-muted); }
+
+    .sk-l { height:12px; border-radius:6px; background:var(--g-track); margin-bottom:10px; animation:skp 1.2s ease-in-out infinite; }
+    .sk-b { height:110px; border-radius:14px; background:var(--g-track); margin-top:14px; animation:skp 1.2s ease-in-out infinite; }
+    .w40 { width:40%; } .w70 { width:70%; }
+    @keyframes skp { 0%,100% { opacity:.55; } 50% { opacity:1; } }
     .gsvg { display:block; width:100%; margin-top:12px; }
-    .gscroll { margin-top:12px; max-height:300px; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; touch-action:pan-y; border-radius:10px; }
-    .gscroll .gsvg { margin-top:0; }
-    .gscroll .gaxis { position:sticky; top:0; z-index:2; background:var(--rw-card); }
+    /* ===== Daftar durasi kerja (gaya sama dengan halaman Riwayat) ===== */
+    .gj-list { margin-top:12px; max-height:340px; overflow-y:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--rw-line); border-radius:14px; }
+    .gj { display:flex; align-items:center; gap:12px; padding:10px 12px; border-top:1px solid var(--rw-line); }
+    .gj:first-child { border-top:0; }
+    .gj.ok { --tint:var(--t-ok); --ink:var(--i-ok); } .gj.late { --tint:var(--t-late); --ink:var(--i-late); }
+    .gj-date { width:42px; flex:0 0 42px; text-align:center; padding:5px 0; border-radius:12px; background:var(--tint); }
+    .gj-d { font-size:18px; font-weight:800; line-height:1.1; color:var(--ink); }
+    .gj-h { font-size:11px; font-weight:600; color:var(--rw-muted); }
+    .gj-main { flex:1; min-width:0; }
+    .gj-time { font-size:14px; font-weight:700; font-variant-numeric:tabular-nums; color:var(--rw-ink); }
+    .gj-sub { font-size:12px; color:var(--rw-muted); margin-top:1px; }
+    .gj-bar { height:6px; border-radius:3px; background:var(--g-track); margin-top:6px; overflow:hidden; }
+    .gj-bar i { display:block; height:6px; border-radius:3px; background:var(--ink); }
+    .gj-badge { padding:5px 10px; border-radius:99px; background:var(--tint); color:var(--ink); font-size:12px; font-weight:700; white-space:nowrap; }
+
     .gleg { display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:8px; font-size:12px; font-weight:600; color:var(--rw-muted); }
     .gleg > div { display:flex; align-items:center; gap:6px; }
     .gsw { display:inline-block; width:14px; height:8px; border-radius:4px; box-sizing:border-box; }
@@ -727,7 +744,7 @@
     <div class="scroll-area" id="scrollArea">
       <div id="syncInfo" style="font-size:12px; font-weight:600; margin-top:8px; min-height:16px; color:var(--text-sub);"></div>
       <div id="content">
-        <div class="loading">Memuat grafik...</div>
+        <div class="gcard sk"><div class="sk-l w40"></div><div class="sk-l w70"></div><div class="sk-b"></div></div><div class="gcard sk"><div class="sk-l w40"></div><div class="sk-l w70"></div><div class="sk-b"></div></div>
       </div>
     </div>
   </div>
@@ -866,7 +883,7 @@
       bulanAktif = bulanTahun;
       var cached = bacaCache(bulanTahun);
       if (cached) { tampilkanHasil(cached); setSync('', false); }
-      else { document.getElementById('content').innerHTML = '<div class="loading">Memuat grafik...</div>'; setSync('', false); }
+      else { document.getElementById('content').innerHTML = '<div class="gcard sk"><div class="sk-l w40"></div><div class="sk-l w70"></div><div class="sk-b"></div></div><div class="gcard sk"><div class="sk-l w40"></div><div class="sk-l w70"></div><div class="sk-b"></div></div>'; setSync('', false); }
       google.script.run
         .withSuccessHandler(function (result) {
           if (mySeq !== reqSeq) return;
@@ -923,7 +940,7 @@
       });
       document.getElementById('summaryGrid').innerHTML =
         summaryCard('k-ok', Math.round(r.hadir / total * 100) + '%', 'Kehadiran') +
-        summaryCard('k-info', nd ? fmtDurasi(sd / nd) : '-', 'Durasi kerja') +
+        summaryCard('k-info', nd ? fmtDurasi(sd / nd) : '-', 'Rerata lama') +
         summaryCard('k-late', r.terlambat, 'Terlambat') +
         summaryCard('k-late', nt ? Math.round(st / nt) + ' mnt' : '-', 'Rerata telat');
 
@@ -937,9 +954,6 @@
       if (hari.length) { html += kartuBatang(hari10) + kartuJam(hari, result.jadwal); }
       html += '<div class="gcard" id="cardBanding" style="display:none;"></div>';
       box.innerHTML = html;
-      // grafik jam/durasi kerja: tampilkan hari terbaru di bawah, sisanya bisa digeser ke atas
-      var gs = box.querySelector('.gscroll');
-      if (gs) gs.scrollTop = gs.scrollHeight;
       muatPerbandingan(bulanAktif);
     }
 
@@ -1011,71 +1025,33 @@
         return { batas: hhmm(j.batasMasuk), pulang: hhmm(j.jamPulang) };
       }
       var today = ymd(new Date());
-      var items = rows.map(function (r) {
-        var j = jdw(r.shift);
-        return { r: r, sh: (r.shift === 'S' ? 'S' : (r.shift === 'P' ? 'P' : 'F')), batas: j.batas, pul: j.pulang, m: hhmm(r.jamMasuk), p: hhmm(r.jamKeluar) };
-      });
-      var lo = 1e9, hi = 0, adaPenuh = false;
-      items.forEach(function (it) {
-        lo = Math.min(lo, it.m, it.batas);
-        hi = Math.max(hi, it.pul, it.m, it.p === null ? 0 : it.p);
-        if (it.sh === 'F') adaPenuh = true;
-      });
-      var aStart = Math.floor((lo - 10) / 30) * 30, aEnd = Math.ceil((hi + 10) / 30) * 30;
-      if (aEnd - aStart < 360) aEnd = aStart + 360;
-      var X0 = 58, W = 250;
-      function X(m) { var v = X0 + (m - aStart) / (aEnd - aStart) * W; return Math.max(X0, Math.min(X0 + W, v)); }
-      function f1(v) { return v.toFixed(1); }
-      var n = items.length, axisY = 34 + 20 * (n - 1) + 14, s = '';
-      var stepT = (aEnd - aStart) <= 480 ? 60 : 120, sumbu = '';
-      for (var t = Math.ceil(aStart / stepT) * stepT; t <= aEnd; t += stepT) {
-        s += '<line x1="' + f1(X(t)) + '" y1="20" x2="' + f1(X(t)) + '" y2="' + axisY + '" class="s-track" stroke-width="1"/>';
-        sumbu += '<text x="' + f1(X(t)) + '" y="14" text-anchor="middle" class="tx">' + ('0' + Math.floor(t / 60)).slice(-2) + ':' + ('0' + (t % 60)).slice(-2) + '</text>';
-      }
-      s += '<line x1="' + X0 + '" y1="' + axisY + '" x2="' + (X0 + W) + '" y2="' + axisY + '" class="s-axis" stroke-width="1"/>';
-      var ket = [];
-      items.forEach(function (it, i) {
-        var cy = 34 + 20 * i, late = adaTelat(it.r), cls = late ? 'f-late' : 'f-info';
-        var chip = (it.sh === 'S') ? 'S' : it.sh;
-        s += '<rect x="2" y="' + (cy - 7) + '" width="16" height="14" rx="4" class="' + (it.sh === 'S' ? 'f-chipS' : 'f-chipP') + '"/>' +
-             '<text x="10" y="' + (cy + 3.2) + '" text-anchor="middle" class="' + (it.sh === 'S' ? 'tx-chipS' : 'tx-chipP') + '">' + chip + '</text>' +
-             '<text x="22" y="' + (cy + 3.5) + '" class="tx">' + labelHari(it.r.tanggal) + '</text>';
-        s += '<line x1="' + f1(X(it.batas)) + '" y1="' + (cy - 8) + '" x2="' + f1(X(it.batas)) + '" y2="' + (cy + 8) + '" class="s-tl" stroke-width="2"/>' +
-             '<line x1="' + f1(X(it.pul)) + '" y1="' + (cy - 8) + '" x2="' + f1(X(it.pul)) + '" y2="' + (cy + 8) + '" class="s-ok" stroke-width="2"/>';
-        var xm = X(it.m);
-        if (it.p !== null && it.p > it.m) {
-          var xp = X(it.p);
-          s += '<rect x="' + f1(xm) + '" y="' + (cy - 5) + '" width="' + f1(Math.max(4, xp - xm)) + '" height="10" rx="5" class="' + cls + '"/>';
-          if (it.p < it.pul) {
-            s += '<circle cx="' + f1(xp) + '" cy="' + cy + '" r="4.5" class="f-bad s-card" stroke-width="1.5"/>';
-            ket.push(labelHari(it.r.tanggal) + ' pulang cepat');
-          }
-        } else if (it.r.tanggal === today) {
-          s += '<circle cx="' + f1(xm) + '" cy="' + cy + '" r="5" class="' + cls + ' s-card" stroke-width="1.5"/>' +
-               '<text x="' + f1(xm + 11) + '" y="' + (cy + 3.5) + '" class="tx">hari ini, belum pulang</text>';
+      function jp(t) { var m = String(t).match(/^(\d{1,2}):(\d{2})/); return m ? ('0' + m[1]).slice(-2) + ':' + m[2] : String(t); }
+      var HARI = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+      var urut = rows.slice().sort(function (a, b) { return a.tanggal < b.tanggal ? 1 : (a.tanggal > b.tanggal ? -1 : 0); });
+      var html = urut.map(function (r) {
+        var j = jdw(r.shift), m = hhmm(r.jamMasuk), p = hhmm(r.jamKeluar);
+        var d = new Date(r.tanggal + 'T00:00:00'), late = adaTelat(r);
+        var sh = r.shift === 'S' ? 'Siang' : (r.shift === 'P' ? 'Pagi' : 'Penuh');
+        var waktu, sub, badge, pct = 0;
+        if (p !== null && p > m) {
+          var dur = p - m, plan = Math.max(60, (j.pulang || p) - (j.batas || m));
+          waktu = jp(r.jamMasuk) + ' \u2013 ' + jp(r.jamKeluar);
+          badge = fmtDurasi(dur);
+          pct = Math.min(100, Math.round(dur / plan * 100));
+          sub = 'Shift ' + sh + (late ? ' \u00b7 terlambat' : '') + (j.pulang && p < j.pulang ? ' \u00b7 pulang cepat' : '');
         } else {
-          var xe = X(it.pul);
-          s += '<rect x="' + f1(xm) + '" y="' + (cy - 5) + '" width="' + f1(Math.max(4, xe - xm)) + '" height="10" rx="5" class="f-card s-info" stroke-width="1.5" stroke-dasharray="4 3"/>' +
-               '<text x="' + f1((xm + xe) / 2) + '" y="' + (cy + 3.5) + '" text-anchor="middle" class="tx">belum absen pulang</text>';
-          ket.push(labelHari(it.r.tanggal) + ' belum absen pulang');
+          waktu = jp(r.jamMasuk) + ' \u2013 belum pulang';
+          badge = '-';
+          sub = 'Shift ' + sh + (r.tanggal === today ? ' \u00b7 hari ini' : ' \u00b7 belum absen pulang');
         }
-      });
-      var legendA = '<div class="gleg">' +
-        '<div><span class="gsw b-info"></span>Tepat waktu</div>' +
-        '<div><span class="gsw b-late"></span>Terlambat</div>' +
-        '<div><span class="gdot b-bad"></span>Pulang cepat</div>' +
-        '<div><span class="gsw dash"></span>Belum absen pulang</div></div>';
-      var legendB = '<div class="gleg">' +
-        '<div><span class="gtick" style="background:var(--g-tl)"></span>Batas masuk</div>' +
-        '<div><span class="gtick" style="background:var(--g-ok)"></span>Jam pulang</div>' +
-        '<div><span class="gchip">P</span>Pagi</div>' +
-        '<div><span class="gchip s">S</span>Siang</div>' +
-        (adaPenuh ? '<div><span class="gchip">F</span>Penuh</div>' : '') + '</div>';
-      return '<div class="gcard"><h2>Jam masuk dan pulang</h2><p class="gsub">Durasi kerja per hari (' + n + ' hari). Geser ke atas/bawah untuk melihat hari lainnya. Tanda kecil = batas masuk dan jam pulang shift.</p>' +
-        '<div class="gscroll" tabindex="0">' +
-        '<svg class="gsvg gaxis" aria-hidden="true" viewBox="0 0 318 20">' + sumbu + '</svg>' +
-        '<svg class="gsvg gbody" role="img" aria-label="Grafik jam masuk dan pulang per hari. ' + (ket.length ? esc(ket.join(', ')) : 'Semua hari lengkap') + '" viewBox="0 20 318 ' + (axisY + 8 - 20) + '">' + s + '</svg>' +
-        '</div>' + legendA + legendB + '</div>';
+        return '<div class="gj ' + (late ? 'late' : 'ok') + '">' +
+          '<div class="gj-date"><div class="gj-d">' + d.getDate() + '</div><div class="gj-h">' + HARI[d.getDay()] + '</div></div>' +
+          '<div class="gj-main"><div class="gj-time">' + waktu + '</div><div class="gj-sub">' + sub + '</div>' +
+          '<div class="gj-bar"><i style="width:' + pct + '%"></i></div></div>' +
+          '<span class="gj-badge">' + badge + '</span></div>';
+      }).join('');
+      return '<div class="gcard"><h2>Durasi kerja per hari</h2><p class="gsub">' + urut.length + ' hari. Geser ke bawah untuk melihat hari sebelumnya.</p>' +
+        '<div class="gj-list" id="gjList">' + html + '</div></div>';
     }
 
     // ---- Perbandingan dengan 2 bulan sebelumnya (diambil dari simpanan HP dulu, sisanya dari server pelan-pelan) ----
