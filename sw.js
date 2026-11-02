@@ -2,8 +2,8 @@
  * belakang layar untuk pembukaan berikutnya (stale-while-revalidate). Kalau belum
  * ada di cache (pertama kali), diambil dari jaringan. Panggilan ke Apps Script
  * TIDAK pernah di-cache. */
-var CACHE = "absensi-v6";
-var SHELL = ["./", "./index.html", "./dashboard.html", "./pengaturan.html", "./riwayat.html", "./grafik.html",
+var CACHE = "absensi-v8";
+var SHELL = ["./", "./index.html", "./dashboard.html", "./pengaturan.html", "./riwayat.html", "./grafik.html", "./laporan.html",
              "./config.js", "./api.js", "./ikon-192.png"];
 
 self.addEventListener("install", function (e) {
