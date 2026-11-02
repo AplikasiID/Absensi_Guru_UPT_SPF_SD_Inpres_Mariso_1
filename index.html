@@ -1051,6 +1051,21 @@ body.adm-sub .adm-pill { display: none !important; }
 #btnRekMuat{flex-shrink:0;width:48px;border-radius:14px;background:linear-gradient(135deg,#1d4ed8,#1e3a8a);color:#fff;display:flex;align-items:center;justify-content:center}#btnRekMuat svg{width:19px;height:19px}
 @media (prefers-color-scheme: dark){.rek-sub,.rek-row em,.rek-g .no,.rek-g .nm small{color:#A8AFBF}.rek-banding.naik{color:#5EE08A}.rek-banding.turun{color:#FF8F86}.rek-g b{color:#9DB7FF}.rek-g .lb{background:rgba(59,108,240,.25);color:#9DB7FF}.rek-g .lb.p{background:rgba(239,68,68,.18);color:#FF8F86}.rek-g .lb.c{background:rgba(245,158,11,.18);color:#FBBF4D}.rek-g .lb.s{background:rgba(34,197,94,.18);color:#5EE08A}#btnRekCetak{background:#3b6cf0}}
 </style>
+<style>
+.lap-card .lap-row{border-top:1px solid var(--divider)}.lap-row.bisa{cursor:pointer}.lap-info u{color:#1d4ed8;text-decoration:none;font-weight:800}
+.lap-det{display:none;padding:2px 0 12px}.lap-card.buka .lap-det{display:block}
+.lap-wk{background:#f1f5f9;border-radius:14px;padding:10px 12px;margin-top:8px}.lap-wk>b{display:block;font-size:12.5px;margin-bottom:4px}.lap-wk>b span{font-weight:600;color:#5b6475}
+.lap-it{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;padding:2px 0}.lap-it i{font-style:normal;width:16px;font-weight:800}.lap-it.y i{color:#15803d}.lap-it.n{color:#8a93a5}.lap-it.n i{color:#b91c1c}
+.lap-cat{margin-top:6px;font-size:12px;font-style:italic;color:#475569;word-break:break-word}
+@media (prefers-color-scheme: dark){.lap-wk{background:#262a36}.lap-wk>b span,.lap-cat{color:#A8AFBF}.lap-it.y i{color:#5EE08A}.lap-it.n i{color:#FF8F86}.lap-info u{color:#9DB7FF}}
+</style>
+<style>
+.lap-chip.r{background:#ffedd5;color:#c2410c}
+.lap-wk>b em{font-style:normal;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:99px;margin-left:6px}.lap-wk>b em.v{background:#dcfce7;color:#15803d}.lap-wk>b em.m{background:#fef3c7;color:#b45309}.lap-wk>b em.t{background:#fee2e2;color:#b91c1c}
+.lap-aksi{display:flex;gap:8px;margin-top:8px}.lap-aksi button{flex:1;padding:9px;border-radius:11px;font-size:12.5px;font-weight:800;box-shadow:none}.lap-t{background:#fee2e2;color:#b91c1c}.lap-s{background:#dcfce7;color:#15803d}.lap-aksi button:disabled{opacity:.5}
+.lap-al{margin-top:6px;font-size:12px;color:#b91c1c;font-weight:600}
+@media (prefers-color-scheme: dark){.lap-chip.r{background:rgba(249,115,22,.2);color:#FDBA74}.lap-wk>b em.v,.lap-s{background:rgba(34,197,94,.18);color:#5EE08A}.lap-wk>b em.m{background:rgba(245,158,11,.18);color:#FBBF4D}.lap-wk>b em.t,.lap-t{background:rgba(239,68,68,.18);color:#FF8F86}.lap-al{color:#FF8F86}}
+</style>
 </head>
 <body>
   <!-- Layar pembuka -->
@@ -2853,8 +2868,9 @@ body.adm-sub .adm-pill { display: none !important; }
 // ===== Verifikasi laporan mingguan (Admin > Verifikasi Laporan) =====
 (function () {
   var $ = function (id) { return document.getElementById(id); };
-  var pinMem = '', bulan = '', data = null, seq = 0;
+  var pinMem = '', bulan = '', data = null, seq = 0, terbuka = {};
   var NAMA = { konten: 'Konten', media: 'Media', admin: 'Admin', interaksi: 'Ortu', kegiatan: 'Kegiatan' };
+  var NAMA_LENGKAP = { konten: 'Konten kelas pekanan', media: 'Memakai media pembelajaran', admin: 'Administrasi terkumpul', interaksi: 'Interaksi dengan orang tua', kegiatan: 'Kegiatan sekolah diikuti' };
   var BLN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
   function esc(x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function bulanIni() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2); }
@@ -2870,11 +2886,21 @@ body.adm-sub .adm-pill { display: none !important; }
     var bd = $('badgeLap'); if (bd) { bd.textContent = menunggu + ' menunggu'; bd.style.display = menunggu ? '' : 'none'; }
     if (!data.rows.length) { $('lapList').innerHTML = '<div class="dev-kosong">Belum ada guru yang wajib lapor.</div>'; return; }
     $('lapList').innerHTML = data.rows.map(function (r) {
-      var cls = r.status === 'Terverifikasi' ? 'v' : (r.status === 'Menunggu' ? 'm' : 'b');
+      var cls = r.status === 'Terverifikasi' ? 'v' : (r.status === 'Menunggu' ? 'm' : (r.status === 'Perlu revisi' ? 'r' : 'b'));
       var info = r.minggu ? Object.keys(r.ringkas).map(function (k) { return NAMA[k] + ' ' + r.ringkas[k] + '/' + r.minggu; }).join(' · ') : 'Belum ada laporan bulan ini';
-      return '<div class="lap-row"><div class="lap-main"><div class="lap-nama">' + esc(r.nama) + '</div><div class="lap-info">' + esc(info) + '</div></div>' +
+      var det = '';
+      if (r.detail && r.detail.length) {
+        det = '<div class="lap-det">' + r.detail.map(function (d) {
+          var sw = d.status === 'Terverifikasi' ? '<em class="v">Disetujui</em>' : (d.status === 'Revisi' ? '<em class="t">Perlu revisi</em>' : '<em class="m">Menunggu</em>');
+          var aksi = d.status === 'Terverifikasi' ? '' : '<div class="lap-aksi"><button type="button" class="lap-t" data-kode="' + esc(r.kode) + '" data-mg="' + esc(d.minggu) + '" data-a="revisi">' + (d.status === 'Revisi' ? 'Revisi lagi' : 'Revisi') + '</button>' + (d.status === 'Revisi' ? '' : '<button type="button" class="lap-s" data-kode="' + esc(r.kode) + '" data-mg="' + esc(d.minggu) + '" data-a="setuju">Setujui</button>') + '</div>';
+          return '<div class="lap-wk"><b>' + esc(d.label) + ' <span>' + esc(d.rentang) + '</span>' + sw + '</b>' +
+            Object.keys(d.isi).map(function (k) { return '<div class="lap-it ' + (d.isi[k] ? 'y' : 'n') + '"><i>' + (d.isi[k] ? '\u2713' : '\u2715') + '</i>' + esc(NAMA_LENGKAP[k] || k) + '</div>'; }).join('') +
+            (d.catatan ? '<div class="lap-cat">\u201C' + esc(d.catatan) + '\u201D</div>' : '') + (d.status === 'Revisi' && d.alasan ? '<div class="lap-al">Alasan: ' + esc(d.alasan) + '</div>' : '') + aksi + '</div>';
+        }).join('') + '</div>';
+      }
+      return '<div class="lap-card' + (terbuka[r.kode] ? ' buka' : '') + '" data-k="' + esc(r.kode) + '"><div class="lap-row' + (det ? ' bisa' : '') + '"><div class="lap-main"><div class="lap-nama">' + esc(r.nama) + '</div><div class="lap-info">' + esc(info) + (det ? ' \u00B7 <u>lihat</u>' : '') + '</div></div>' +
         '<span class="lap-chip ' + cls + '">' + esc(r.status) + '</span>' +
-        (r.status === 'Menunggu' ? '<button type="button" class="lap-ok" data-kode="' + esc(r.kode) + '">Setujui</button>' : '') + '</div>';
+        (r.status === 'Menunggu' ? '<button type="button" class="lap-ok" data-kode="' + esc(r.kode) + '">Setujui</button>' : '') + '</div>' + det + '</div>';
     }).join('');
   }
 
@@ -2897,6 +2923,22 @@ body.adm-sub .adm-pill { display: none !important; }
       .getLaporanAdmin(pin, id, b);
   }
 
+  function tinjau(tb) {
+    var a = tb.getAttribute('data-a'), alasan = '';
+    if (a === 'revisi') {
+      alasan = prompt('Catatan revisi untuk guru (apa yang perlu diperbaiki):', '');
+      if (alasan === null) return;
+    } else if (!confirm('Setujui laporan minggu ini?')) return;
+    tb.disabled = true; setStatus('lapStatus', 'info', 'Menyimpan...');
+    google.script.run
+      .withSuccessHandler(function (res) {
+        if (!res || !res.ok) { tb.disabled = false; setStatus('lapStatus', 'err', (res && res.message) || 'Gagal.'); return; }
+        setStatus('lapStatus', 'ok', res.message || 'Selesai.'); muat(bulan);
+      })
+      .withFailureHandler(function (err) { tb.disabled = false; setStatus('lapStatus', 'err', 'Error: ' + pesanError(err)); })
+      .tinjauLaporanAdmin(pinMem, getDeviceId(), tb.getAttribute('data-kode'), tb.getAttribute('data-mg'), a, alasan);
+  }
+
   function setuju(daftar, tombol) {
     var teks = daftar && daftar.length ? 'Verifikasi laporan guru ini?' : 'Verifikasi SEMUA laporan yang menunggu di ' + label(bulan) + '?\n\nLaporan yang sudah diverifikasi tidak bisa diubah guru lagi.';
     if (!confirm(teks)) return;
@@ -2916,7 +2958,11 @@ body.adm-sub .adm-pill { display: none !important; }
   $('lapPrev').addEventListener('click', function () { muat(geser(bulan, -1)); });
   $('lapNext').addEventListener('click', function () { if (bulan < bulanIni()) muat(geser(bulan, 1)); });
   $('btnLapSemua').addEventListener('click', function () { setuju(null, this); });
-  $('lapList').addEventListener('click', function (e) { var b = e.target.closest('.lap-ok'); if (b) setuju([b.getAttribute('data-kode')], b); });
+  $('lapList').addEventListener('click', function (e) {
+    var b = e.target.closest('.lap-ok'); if (b) { setuju([b.getAttribute('data-kode')], b); return; }
+    var t = e.target.closest('.lap-t, .lap-s'); if (t) { tinjau(t); return; }
+    var row = e.target.closest('.lap-row.bisa'); if (row) { var cd = row.parentNode; cd.classList.toggle('buka'); terbuka[cd.getAttribute('data-k')] = cd.classList.contains('buka'); }
+  });
 })();
 </script>
 <script>
