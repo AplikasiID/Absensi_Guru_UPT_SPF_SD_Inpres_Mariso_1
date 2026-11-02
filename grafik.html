@@ -717,6 +717,27 @@
     svg .f-chipP { fill:var(--g-chipP-bg); } svg .f-chipS { fill:var(--g-chipS-bg); }
     svg .tx-chipP { fill:var(--g-chipP-fg); font-size:9px; font-weight:800; } svg .tx-chipS { fill:var(--g-chipS-fg); font-size:9px; font-weight:800; }
 </style>
+<style>
+/* ===== Rapor kinerja bulanan ===== */
+#raporBox:empty{display:none}
+.rapor{background:var(--card-bg,#fff);border-radius:20px;padding:16px;margin:12px 0;box-shadow:0 8px 20px rgba(30,58,138,.10)}
+.rapor h3{margin:0 0 10px;font-size:14px;font-weight:800}
+.rp-top{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.rp-skor{width:76px;height:76px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;background:linear-gradient(135deg,#1d4ed8,#16a34a);flex-shrink:0}
+.rp-skor b{font-size:26px;line-height:1}.rp-skor small{font-size:10px;font-weight:700;opacity:.9}
+.rp-lab{font-size:15px;font-weight:800}.rp-sub{font-size:12px;color:var(--text-sub,#5b6475);margin-top:2px;line-height:1.4}
+.rp-row{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:12.5px;font-weight:700}
+.rp-row span:first-child{width:78px;flex-shrink:0}.rp-bar{flex:1;height:8px;border-radius:99px;background:rgba(100,116,139,.2);overflow:hidden}
+.rp-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#1d4ed8,#22c55e)}.rp-row em{font-style:normal;width:40px;text-align:right;color:var(--text-sub,#5b6475)}
+.rp-btn{display:block;width:100%;margin-top:12px;padding:12px;border-radius:14px;background:#1d4ed8;color:#fff;font-weight:800;font-size:14px;text-align:center;text-decoration:none;border:0}
+@media (prefers-color-scheme: dark){.rapor{background:#1c1c24;box-shadow:0 8px 20px rgba(0,0,0,.35)}.rp-btn{background:#3b6cf0}}
+</style>
+<style>
+.seg{display:flex;background:rgba(100,116,139,.16);border-radius:14px;padding:4px;margin:10px 0 4px}
+.seg a{flex:1;text-align:center;text-decoration:none;padding:9px 0;border-radius:11px;font-size:13.5px;font-weight:800;color:#5b6475}
+.seg a.on{background:#fff;color:#1e3a8a;box-shadow:0 2px 8px rgba(30,41,59,.12)}
+@media (prefers-color-scheme: dark){.seg a{color:#A8AFBF}.seg a.on{background:#1E3A8A;color:#fff}}
+</style>
 </head>
 <body>
   <div class="page-shell">
@@ -746,7 +767,9 @@
     </div>
 
     <div class="scroll-area" id="scrollArea">
-      <div id="syncInfo" style="font-size:12px; font-weight:600; margin-top:8px; min-height:16px; color:var(--text-sub);"></div>
+      <div class="seg"><a href="#" id="segRiwayat" >Riwayat</a><a href="#" id="segGrafik" class="on" aria-current="page">Grafik</a></div>
+            <div id="syncInfo" style="font-size:12px; font-weight:600; margin-top:8px; min-height:16px; color:var(--text-sub);"></div>
+      <div id="raporBox"></div>
       <div id="content">
         <div class="gcard sk"><div class="sk-l w40"></div><div class="sk-l w70"></div><div class="sk-b"></div></div><div class="gcard sk"><div class="sk-l w40"></div><div class="sk-l w70"></div><div class="sk-b"></div></div>
       </div>
@@ -756,8 +779,8 @@
   <nav class="bnav">
     <div class="bn-row">
     <a href="index.html"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></span>Absen</a>
-    <a href="#" id="navRiwayatLink"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>Riwayat</a>
-    <a href="#" class="on" onclick="return false;" aria-current="page"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20v-9M12 20V4M19 20v-6"/></svg></span>Grafik</a>
+    <a href="#" id="navRiwayatLink" class="on" aria-current="page"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>Riwayat</a>
+    <a href="#" id="navLaporanLink"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></span>Laporan</a>
     <a href="index.html#admin" id="navAdminLink" style="display:none;"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></span>Admin</a>
     </div>
     <div class="bn-credit">Dikembangkan oleh: Ade Irwansyah</div>
@@ -928,9 +951,43 @@
       return '<div class="summary-card ' + cls + '"><div class="num">' + num + '</div><div class="lbl">' + label + '</div></div>';
     }
 
+
+    // ================= RAPOR KINERJA (kehadiran otomatis + laporan mingguan guru) =================
+    var lapData = null, lapSeq = 0, lapBulan = '';
+    var BOBOT = { kehadiran: 30, admin: 25, konten: 15, media: 10, kegiatan: 10, interaksi: 10 };
+    function muatRapor(bulan) {
+      var my = ++lapSeq; lapData = null; renderRapor();
+      google.script.run
+        .withSuccessHandler(function (res) { if (my !== lapSeq) return; lapData = (res && res.ok) ? res : null; renderRapor(); })
+        .withFailureHandler(function () {})
+        .getLaporanGuru(kode, deviceId, bulan);
+    }
+    function renderRapor() {
+      var box = document.getElementById('raporBox');
+      if (!lapData || !lapData.indikator || !lapData.indikator.length) { box.innerHTML = ''; return; }
+      var mulai = lapData.minggu.filter(function (m) { return m.sudahMulai; });
+      var link = 'laporan.html?kode=' + encodeURIComponent(kode) + '&dev=' + encodeURIComponent(deviceId || '');
+      var btn = '<a class="rp-btn" href="' + link + '">Isi laporan minggu ini</a>';
+      var r = lastResult && lastResult.ringkasan, tot = r ? r.hadir + r.izin + r.alpa : 0;
+      var baris = [], bobot = 0, nilai = 0;
+      if (tot) { var f = r.hadir / tot; baris.push(['Kehadiran', f, 'kehadiran']); }
+      if (mulai.length) lapData.indikator.forEach(function (ind) {
+        var n = mulai.filter(function (m) { return m.isi && m.isi[ind.key]; }).length;
+        baris.push([ind.label, n / mulai.length, ind.key]);
+      });
+      baris.forEach(function (b) { var w = BOBOT[b[2]] || 10; bobot += w; nilai += w * b[1]; });
+      if (!baris.length) { box.innerHTML = '<div class="rapor"><h3>Rapor Bulan Ini</h3><div class="rp-sub">Belum ada data bulan ini.</div>' + btn + '</div>'; return; }
+      var skor = Math.round(nilai / bobot * 100);
+      var lab = skor >= 85 ? 'Sangat Baik' : skor >= 70 ? 'Baik' : skor >= 55 ? 'Cukup' : 'Perlu Dibina';
+      var ter = lapData.minggu.some(function (m) { return m.status === 'Terverifikasi'; });
+      box.innerHTML = '<div class="rapor"><h3>Rapor Bulan Ini</h3><div class="rp-top"><div class="rp-skor"><b>' + skor + '</b><small>dari 100</small></div><div><div class="rp-lab">' + lab + '</div><div class="rp-sub">Kehadiran otomatis + laporan mingguan' + (ter ? ' (sudah diverifikasi)' : ' (belum diverifikasi)') + '</div></div></div>' +
+        baris.map(function (b) { var p = Math.round(b[1] * 100); return '<div class="rp-row"><span>' + esc(b[0]) + '</span><div class="rp-bar"><i style="width:' + p + '%"></i></div><em>' + p + '%</em></div>'; }).join('') + btn + '</div>';
+    }
+
     // ================= RENDER =================
     function renderData(result) {
       lastResult = result;
+      if (result.bulan || bulanAktif) { if (lapBulan !== bulanAktif) { lapBulan = bulanAktif; muatRapor(bulanAktif); } else renderRapor(); }
       var r = result.ringkasan || { hadir: 0, terlambat: 0, izin: 0, alpa: 0 };
       var rows = result.rows || [];
       var total = r.hadir + r.izin + r.alpa;
@@ -1133,6 +1190,13 @@
   window.addEventListener('load', atur);
   setTimeout(atur, 600);
 })();
+</script>
+<script>
+(function(){var q=new URLSearchParams(location.search),k=q.get('kode')||'',d=q.get('dev')||'';
+try{if(!k)k=localStorage.getItem('absensi_guru_terakhir')||'';if(!d)d=localStorage.getItem('absensi_device_id')||'';}catch(e){}
+var e='?kode='+encodeURIComponent(k)+'&dev='+encodeURIComponent(d);
+var set=function(id,h){var a=document.getElementById(id);if(a){if(a.classList.contains('on')){a.onclick=function(){return false;};}else a.href=h;}};
+set('segRiwayat','riwayat.html'+e);set('segGrafik','grafik.html'+e);set('navLaporanLink','laporan.html'+e);set('navRiwayatLink','riwayat.html'+e);})();
 </script>
 </body>
 </html>
