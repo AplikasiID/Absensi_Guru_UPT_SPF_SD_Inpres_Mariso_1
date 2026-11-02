@@ -1002,6 +1002,55 @@ body.adm-sub .adm-pill { display: none !important; }
    (dan harus di atas isi halaman), kartu dipindah ke bawah spanduk, tidak menimpa lagi. */
 .name-float { margin-top: 14px; }
 </style>
+<style>
+/* ===== Laporan mingguan: kartu di halaman Absen + verifikasi admin ===== */
+.lap-cta { display: flex; align-items: center; gap: 12px; width: 100%; background: #fff; color: #0f172a; border-radius: 20px; padding: 13px 14px; text-align: left; box-shadow: 0 8px 20px rgba(30,58,138,.10); margin: 0 0 14px; }
+.lap-cta .adm-tx b { font-size: 14.5px; } .lap-cta .adm-tx small { font-size: 12px; }
+#btnLapMuat { flex-shrink: 0; width: 48px; border-radius: 14px; background: linear-gradient(135deg, #1d4ed8, #1e3a8a); color: #fff; display: flex; align-items: center; justify-content: center; }
+#btnLapMuat svg { width: 19px; height: 19px; }
+#lapBox { display: none; margin-top: 14px; } #lapBox.open { display: block; }
+.lap-mrow { display: flex; align-items: center; justify-content: space-between; background: #f1f5f9; border-radius: 14px; padding: 4px; margin-bottom: 10px; }
+.lap-mrow button { width: 40px; height: 34px; background: transparent; color: #1e3a8a; border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: none; }
+.lap-mrow button:disabled { opacity: .3; } .lap-mrow svg { width: 19px; height: 19px; } .lap-mrow b { font-size: 14px; font-weight: 800; color: #14213d; }
+.lap-kp { display: grid; grid-template-columns: repeat(3, 1fr); margin-bottom: 8px; }
+.lap-kp div { text-align: center; border-left: 1px solid #e6eaf2; } .lap-kp div:first-child { border-left: 0; }
+.lap-kp b { display: block; font-size: 22px; font-weight: 800; color: #1e3a8a; } .lap-kp span { font-size: 11px; font-weight: 700; color: #475569; }
+.lap-row { display: flex; align-items: center; gap: 8px; padding: 11px 0; border-top: 1px solid var(--divider); }
+.lap-main { flex: 1; min-width: 0; } .lap-nama { font-size: 14px; font-weight: 800; line-height: 1.3; word-break: break-word; }
+.lap-info { font-size: 11.5px; font-weight: 600; color: #5b6475; margin-top: 2px; }
+.lap-chip { flex-shrink: 0; font-size: 10.5px; font-weight: 800; padding: 3px 9px; border-radius: 99px; }
+.lap-chip.m { background: #fef3c7; color: #b45309; } .lap-chip.v { background: #dcfce7; color: #15803d; } .lap-chip.b { background: #fee2e2; color: #b91c1c; }
+.lap-ok { flex-shrink: 0; padding: 7px 12px; border-radius: 11px; background: #dcfce7; color: #15803d; font-size: 12px; font-weight: 800; box-shadow: none; }
+.lap-ok:disabled { opacity: .5; }
+#btnLapSemua { width: 100%; margin-top: 12px; padding: 13px; border-radius: 16px; background: #dcfce7; color: #15803d; font-weight: 800; font-size: 14px; box-shadow: none; }
+#btnLapSemua:disabled { opacity: .5; }
+@media (prefers-color-scheme: dark) {
+  .lap-cta { background: #1c1c24; color: #F2F2F7; box-shadow: 0 8px 20px rgba(0,0,0,.35); } .lap-cta .adm-tx small { color: #A8AFBF; }
+  .lap-mrow { background: #262a36; } .lap-mrow button { color: #9DB7FF; } .lap-mrow b { color: #F2F2F7; }
+  .lap-kp div { border-left-color: rgba(255,255,255,.1); } .lap-kp b { color: #9DB7FF; } .lap-kp span, .lap-info { color: #A8AFBF; }
+  .lap-chip.m { background: rgba(245,158,11,.18); color: #FBBF4D; } .lap-chip.v, .lap-ok, #btnLapSemua { background: rgba(34,197,94,.18); color: #5EE08A; } .lap-chip.b { background: rgba(239,68,68,.18); color: #FF8F86; }
+}
+</style>
+<style>
+#rekBox{display:none;margin-top:14px}#rekBox.open{display:block}
+.rek-hero{display:flex;align-items:center;gap:14px;margin:6px 0 10px}
+.rek-skor{width:84px;height:84px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;background:linear-gradient(135deg,#1d4ed8,#16a34a);flex-shrink:0}
+.rek-skor b{font-size:30px;line-height:1}.rek-skor small{font-size:10px;font-weight:700;opacity:.9}
+.rek-banding{font-size:15px;font-weight:800}.rek-banding.naik{color:#15803d}.rek-banding.turun{color:#b91c1c}
+.rek-sub{font-size:12.5px;color:#5b6475;margin-top:3px;line-height:1.4}
+.rek-h{font-size:13px;font-weight:800;margin:14px 0 4px}
+.rek-row{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:12.5px;font-weight:700}
+.rek-row span:first-child{width:92px;flex-shrink:0}.rek-bar{flex:1;height:8px;border-radius:99px;background:rgba(100,116,139,.2);overflow:hidden}
+.rek-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#1d4ed8,#22c55e)}.rek-bar i.rendah{background:#f59e0b}
+.rek-row em{font-style:normal;width:38px;text-align:right;color:#5b6475}
+.rek-g{display:flex;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--divider)}
+.rek-g .no{width:20px;font-size:12px;font-weight:800;color:#5b6475}.rek-g .nm{flex:1;min-width:0;font-size:13.5px;font-weight:800;word-break:break-word}.rek-g .nm small{display:block;font-size:11px;font-weight:600;color:#5b6475}
+.rek-g b{font-size:16px;color:#1e3a8a}.rek-g .lb{font-size:10.5px;font-weight:800;padding:3px 8px;border-radius:99px;background:#dbeafe;color:#1e3a8a}
+.rek-g .lb.p{background:#fee2e2;color:#b91c1c}.rek-g .lb.c{background:#fef3c7;color:#b45309}.rek-g .lb.s{background:#dcfce7;color:#15803d}
+#btnRekCetak{width:100%;margin-top:14px;padding:13px;border-radius:16px;background:#1d4ed8;color:#fff;font-weight:800;font-size:14px}
+#btnRekMuat{flex-shrink:0;width:48px;border-radius:14px;background:linear-gradient(135deg,#1d4ed8,#1e3a8a);color:#fff;display:flex;align-items:center;justify-content:center}#btnRekMuat svg{width:19px;height:19px}
+@media (prefers-color-scheme: dark){.rek-sub,.rek-row em,.rek-g .no,.rek-g .nm small{color:#A8AFBF}.rek-banding.naik{color:#5EE08A}.rek-banding.turun{color:#FF8F86}.rek-g b{color:#9DB7FF}.rek-g .lb{background:rgba(59,108,240,.25);color:#9DB7FF}.rek-g .lb.p{background:rgba(239,68,68,.18);color:#FF8F86}.rek-g .lb.c{background:rgba(245,158,11,.18);color:#FBBF4D}.rek-g .lb.s{background:rgba(34,197,94,.18);color:#5EE08A}#btnRekCetak{background:#3b6cf0}}
+</style>
 </head>
 <body>
   <!-- Layar pembuka -->
@@ -1081,6 +1130,8 @@ body.adm-sub .adm-pill { display: none !important; }
     </div>
 
 
+    <button type="button" class="lap-cta" id="lapCta"><span class="adm-ic biru"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></span><span class="adm-tx"><b>Laporan mingguan</b><small>Ketuk yang sudah kamu kerjakan, sekitar 20 detik</small></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+
     <div class="info-card">
       <h3>Jadwal Absen</h3>
       <div class="jd-row"><span>Shift Pagi</span><span>Masuk s.d. 07:30 · Pulang 15:00</span></div>
@@ -1103,6 +1154,8 @@ body.adm-sub .adm-pill { display: none !important; }
         <button type="button" class="adm-item" onclick="window.location.href='pengaturan.html'"><span class="adm-ic kuning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h0a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5h0a1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v0a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span><span class="adm-tx"><b>Pengaturan</b><small>Mode absen, izin daring, pengumuman</small></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
         <button type="button" class="adm-item" onclick="window.admSub('ket')"><span class="adm-ic biru"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></span><span class="adm-tx"><b>Ajukan Keterangan</b><small>Sakit, izin, dinas luar, cuti</small></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
         <button type="button" class="adm-item" onclick="window.admSub('dev')"><span class="adm-ic merah"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg></span><span class="adm-tx"><b>Perangkat Guru</b><small>Daftar HP dan reset</small></span><span class="adm-badge" id="badgeDev" style="display:none"></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button type="button" class="adm-item" onclick="window.admSub('lap')"><span class="adm-ic hijau"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></span><span class="adm-tx"><b>Verifikasi Laporan</b><small>Laporan mingguan guru</small></span><span class="adm-badge" id="badgeLap" style="display:none;"></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button type="button" class="adm-item" onclick="window.admSub('rek')"><span class="adm-ic biru"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg></span><span class="adm-tx"><b>Ringkasan Sekolah</b><small>Skor guru dan rekap bulanan</small></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
       </div>
       </div>
 
@@ -1184,6 +1237,43 @@ body.adm-sub .adm-pill { display: none !important; }
         </div>
       </div>
 
+      <div class="adm-pane" id="admPaneRek">
+        <div class="card2">
+          <h2>Ringkasan Sekolah</h2>
+          <p class="hint-small">Rata-rata skor guru, indikator yang perlu dibina, dan rekap untuk rapat. Perlu PIN admin.</p>
+          <div class="pin-row" id="rekPinRow">
+            <input type="password" id="rekPin" inputmode="numeric" placeholder="Masukkan PIN admin" autocomplete="off">
+            <button type="button" id="btnRekMuat" aria-label="Muat ringkasan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>
+          </div>
+          <div id="rekStatus" class="status"></div>
+          <div id="rekBox">
+            <div class="lap-mrow"><button type="button" id="rekPrev" aria-label="Bulan sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><b id="rekBulan">-</b><button type="button" id="rekNext" aria-label="Bulan berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div>
+            <div class="rek-hero"><div class="rek-skor"><b id="rekRata">-</b><small>rata-rata</small></div><div><div id="rekBanding" class="rek-banding"></div><div id="rekTerlemah" class="rek-sub"></div></div></div>
+            <h3 class="rek-h">Per indikator</h3><div id="rekInd"></div>
+            <h3 class="rek-h">Skor guru</h3><div id="rekList"></div>
+            <button type="button" id="btnRekCetak">Cetak / simpan PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="adm-pane" id="admPaneLap">
+        <div class="card2" id="lapCard">
+          <h2>Verifikasi Laporan</h2>
+          <p class="hint-small">Periksa laporan mingguan guru, lalu verifikasi sebulan sekali. Perlu PIN admin.</p>
+          <div class="pin-row" id="lapPinRow">
+            <input type="password" id="lapPin" inputmode="numeric" placeholder="Masukkan PIN admin" autocomplete="off">
+            <button type="button" id="btnLapMuat" aria-label="Muat laporan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>
+          </div>
+          <div id="lapStatus" class="status"></div>
+          <div id="lapBox">
+            <div class="lap-mrow"><button type="button" id="lapPrev" aria-label="Bulan sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><b id="lapBulan">-</b><button type="button" id="lapNext" aria-label="Bulan berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div>
+            <div class="lap-kp"><div><b id="lapSudah">0</b><span>Sudah lapor</span></div><div><b id="lapBelum">0</b><span>Belum lapor</span></div><div><b id="lapVerif">0</b><span>Terverifikasi</span></div></div>
+            <div id="lapList"></div>
+            <button type="button" id="btnLapSemua">Setujui semua yang menunggu</button>
+          </div>
+        </div>
+      </div>
+
       <div class="adm-out"><a href="#" id="admKeluar">Keluar dari mode admin</a></div>
 
     </div>
@@ -1193,7 +1283,7 @@ body.adm-sub .adm-pill { display: none !important; }
     <div class="bn-row">
     <button type="button" class="on" id="navAbsen"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></span>Absen</button>
     <button type="button" id="navRiwayat"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>Riwayat</button>
-    <button type="button" id="navGrafik"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20v-9M12 20V4M19 20v-6"/></svg></span>Grafik</button>
+    <button type="button" id="navLaporan"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></span>Laporan</button>
       <button type="button" id="navAdmin" style="display:none;"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></span>Admin</button>
     </div>
     <div class="bn-credit" id="footerSecret">Dikembangkan oleh: Ade Irwansyah</div>
@@ -1739,7 +1829,7 @@ body.adm-sub .adm-pill { display: none !important; }
           else showModal('err', 'PIN Salah', (r && r.message) || 'PIN admin salah.');
         })
         .withFailureHandler(function () { selesai(); showModal('err', 'Tidak Terhubung', 'Tidak bisa memeriksa PIN. Coba lagi.'); })
-        .verifikasiAdmin(pin);
+        .verifikasiAdmin(pin, getDeviceId());
     }
 
     /** Rapikan nama untuk TAMPILAN saja (mis. "ADE IRWANSYAH, S.KOM" jadi
@@ -2566,12 +2656,14 @@ body.adm-sub .adm-pill { display: none !important; }
     else showModal('err', 'Pilih Nama Dulu', 'Pilih namamu di bagian atas, lalu buka Riwayat.');
   };
 
-  $('navGrafik').onclick = function () {
+  $('lapCta').onclick = function () {
     var kode = $('guruSelect').value;
-    if (!kode) { showModal('err', 'Pilih Nama Dulu', 'Pilih namamu di bagian atas, lalu buka Grafik.'); return; }
-    showLoading('Membuka Grafik...');
-    window.location.href = 'grafik.html?kode=' + encodeURIComponent(kode) + '&dev=' + encodeURIComponent(getDeviceId() || '');
+    if (!kode) { showModal('err', 'Pilih Nama Dulu', 'Pilih namamu di bagian atas, lalu buka Laporan.'); return; }
+    showLoading('Membuka Laporan...');
+    window.location.href = 'laporan.html?kode=' + encodeURIComponent(kode) + '&dev=' + encodeURIComponent(getDeviceId() || '');
   };
+
+  $('navLaporan').onclick = function () { $('lapCta').onclick(); };
 
   // Deretan hari minggu ini (Senin-Jumat) dari data riwayat yang tersimpan di HP
   function ymd(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
@@ -2669,9 +2761,9 @@ body.adm-sub .adm-pill { display: none !important; }
     try { window.scrollTo(0, 0); } catch (e) { }
   }
   window.admSub = function (k) {
-    var peta = { menu: 'admPaneMenu', ket: 'admPaneKet', dev: 'admPaneDev' };
+    var peta = { menu: 'admPaneMenu', ket: 'admPaneKet', dev: 'admPaneDev', lap: 'admPaneLap', rek: 'admPaneRek' };
     for (var id in peta) $(peta[id]).classList.toggle('on', id === k);
-    var T = { menu: ['Menu Admin', 'Kelola absensi sekolah'], ket: ['Ajukan Keterangan', 'Sakit, izin, dinas luar, cuti'], dev: ['Perangkat Guru', 'Daftar HP dan reset'] }[k] || ['Menu Admin', 'Kelola absensi sekolah'];
+    var T = { menu: ['Menu Admin', 'Kelola absensi sekolah'], ket: ['Ajukan Keterangan', 'Sakit, izin, dinas luar, cuti'], dev: ['Perangkat Guru', 'Daftar HP dan reset'], lap: ['Verifikasi Laporan', 'Laporan mingguan guru'], rek: ['Ringkasan Sekolah', 'Skor guru dan rekap bulanan'] }[k] || ['Menu Admin', 'Kelola absensi sekolah'];
     $('admGt1').textContent = T[0]; $('admGt2').textContent = T[1];
     document.body.classList.toggle('adm-sub', k !== 'menu');
     try { window.scrollTo(0, 0); } catch (e) { }
@@ -2682,11 +2774,38 @@ body.adm-sub .adm-pill { display: none !important; }
   $('admBp').addEventListener('click', function () { window.admSub('menu'); });
   $('admKeluar').addEventListener('click', function (e) {
     e.preventDefault();
-    try { localStorage.removeItem(KUNCI); } catch (x) { }
+    try { localStorage.removeItem(KUNCI); localStorage.setItem('absensi_admin_keluar', '1'); } catch (x) { }
     pasangNavAdmin(); tampilTab('absen');
   });
   pasangNavAdmin();
   if (location.hash === '#admin' && adaFlag()) tampilTab('admin');
+
+  // Tab Admin muncul otomatis di HP admin terdaftar, atau saat nama yang dipilih berjabatan Kepala Sekolah
+  // (HP-nya sendiri). Dicek paling sering sekali per 6 jam per nama; dilewati kalau admin memilih "Keluar dari mode admin".
+  function cekAdminOtomatis(kode) {
+    if (adaFlag()) return;
+    var kunci = 'absensi_admin_cek_' + (kode || '');
+    try {
+      if (localStorage.getItem('absensi_admin_keluar') === '1') return;
+      if (Date.now() - (+localStorage.getItem(kunci) || 0) < 6 * 3600 * 1000) return;
+    } catch (e) { return; }
+    var id = ''; try { id = getDeviceId(); } catch (e) { }
+    if (!id) return;
+    google.script.run
+      .withSuccessHandler(function (r) {
+        try { localStorage.setItem(kunci, String(Date.now())); } catch (e) { }
+        if (r && r.admin) { try { localStorage.setItem(KUNCI, '1'); } catch (e) { } pasangNavAdmin(); }
+      })
+      .withFailureHandler(function () { })
+      .cekPerangkatAdmin(id, kode || '');
+  }
+  window.cekAdminOtomatis = cekAdminOtomatis;
+  var _gs = $('guruSelect');
+  _gs.addEventListener('change', function () { if (this.value) cekAdminOtomatis(this.value); });
+  var _t0 = 0; try { _t0 = localStorage.getItem('absensi_guru_terakhir') || ''; } catch (e) { }
+  cekAdminOtomatis(_t0);
+  // dropdown baru terisi setelah daftar guru dimuat -> cek lagi pada pilihan tersimpan
+  setTimeout(function () { if (_gs.value) cekAdminOtomatis(_gs.value); }, 2500);
 
   function tutup() { $('adminPinOverlay').classList.remove('show'); $('adminPinInput').value = ''; $('adminPinMsg').textContent = ''; }
   window.bukaAdminPin = function () {
@@ -2703,13 +2822,13 @@ body.adm-sub .adm-pill { display: none !important; }
       .withSuccessHandler(function (r) {
         btn.disabled = false; $('adminPinMsg').style.color = '#dc2626';
         if (r && r.ok) {
-          try { localStorage.setItem(KUNCI, '1'); } catch (e) { }
+          try { localStorage.setItem(KUNCI, '1'); localStorage.removeItem('absensi_admin_keluar'); } catch (e) { }
           window.__admPin = pin;
           tutup(); pasangNavAdmin(); tampilTab('admin'); window.admSub('menu');
         } else $('adminPinMsg').textContent = (r && r.message) || 'PIN salah.';
       })
       .withFailureHandler(function () { btn.disabled = false; $('adminPinMsg').style.color = '#dc2626'; $('adminPinMsg').textContent = 'Tidak bisa terhubung. Coba lagi.'; })
-      .verifikasiAdmin(pin);
+      .verifikasiAdmin(pin, getDeviceId());
   }
   $('adminPinOk').addEventListener('click', kirim);
   $('adminPinInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') kirim(); });
@@ -2728,6 +2847,159 @@ body.adm-sub .adm-pill { display: none !important; }
   if (window.ResizeObserver) new ResizeObserver(atur).observe(nav);
   window.addEventListener('resize', atur);
   window.addEventListener('load', atur);
+})();
+</script>
+<script>
+// ===== Verifikasi laporan mingguan (Admin > Verifikasi Laporan) =====
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var pinMem = '', bulan = '', data = null, seq = 0;
+  var NAMA = { konten: 'Konten', media: 'Media', admin: 'Admin', interaksi: 'Ortu', kegiatan: 'Kegiatan' };
+  var BLN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  function esc(x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function bulanIni() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2); }
+  function geser(b, n) { var p = b.split('-'); var d = new Date(+p[0], +p[1] - 1 + n, 1); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2); }
+  function label(b) { var p = b.split('-'); return BLN[+p[1] - 1] + ' ' + p[0]; }
+
+  function gambar() {
+    $('lapBulan').textContent = label(bulan);
+    $('lapNext').disabled = bulan >= bulanIni();
+    $('lapSudah').textContent = data.sudah; $('lapBelum').textContent = data.belum; $('lapVerif').textContent = data.terverifikasi;
+    var menunggu = data.rows.filter(function (r) { return r.status === 'Menunggu'; }).length;
+    $('btnLapSemua').disabled = !menunggu;
+    var bd = $('badgeLap'); if (bd) { bd.textContent = menunggu + ' menunggu'; bd.style.display = menunggu ? '' : 'none'; }
+    if (!data.rows.length) { $('lapList').innerHTML = '<div class="dev-kosong">Belum ada guru yang wajib lapor.</div>'; return; }
+    $('lapList').innerHTML = data.rows.map(function (r) {
+      var cls = r.status === 'Terverifikasi' ? 'v' : (r.status === 'Menunggu' ? 'm' : 'b');
+      var info = r.minggu ? Object.keys(r.ringkas).map(function (k) { return NAMA[k] + ' ' + r.ringkas[k] + '/' + r.minggu; }).join(' · ') : 'Belum ada laporan bulan ini';
+      return '<div class="lap-row"><div class="lap-main"><div class="lap-nama">' + esc(r.nama) + '</div><div class="lap-info">' + esc(info) + '</div></div>' +
+        '<span class="lap-chip ' + cls + '">' + esc(r.status) + '</span>' +
+        (r.status === 'Menunggu' ? '<button type="button" class="lap-ok" data-kode="' + esc(r.kode) + '">Setujui</button>' : '') + '</div>';
+    }).join('');
+  }
+
+  function muat(b, pinBaru) {
+    var pin = pinBaru || pinMem;
+    if (!pin) { setStatus('lapStatus', 'err', 'Isi PIN admin dulu.'); return; }
+    var id = getDeviceId();
+    if (!id) { setStatus('lapStatus', 'err', 'Device ID tidak terdeteksi.'); return; }
+    var my = ++seq, btn = $('btnLapMuat'); btn.disabled = true;
+    setStatus('lapStatus', 'info', 'Memuat laporan...');
+    google.script.run
+      .withSuccessHandler(function (res) {
+        btn.disabled = false; if (my !== seq) return;
+        if (!res || !res.ok) { setStatus('lapStatus', 'err', (res && res.message) || 'Gagal memuat.'); return; }
+        pinMem = pin; window.__admPin = pin; $('lapPin').value = ''; $('lapPinRow').style.display = 'none';
+        bulan = res.bulan; data = res; $('lapStatus').className = 'status'; $('lapStatus').textContent = '';
+        $('lapBox').classList.add('open'); gambar();
+      })
+      .withFailureHandler(function (err) { btn.disabled = false; setStatus('lapStatus', 'err', 'Error: ' + pesanError(err)); })
+      .getLaporanAdmin(pin, id, b);
+  }
+
+  function setuju(daftar, tombol) {
+    var teks = daftar && daftar.length ? 'Verifikasi laporan guru ini?' : 'Verifikasi SEMUA laporan yang menunggu di ' + label(bulan) + '?\n\nLaporan yang sudah diverifikasi tidak bisa diubah guru lagi.';
+    if (!confirm(teks)) return;
+    if (tombol) tombol.disabled = true;
+    setStatus('lapStatus', 'info', 'Memverifikasi...');
+    google.script.run
+      .withSuccessHandler(function (res) {
+        if (!res || !res.ok) { if (tombol) tombol.disabled = false; setStatus('lapStatus', 'err', (res && res.message) || 'Gagal.'); return; }
+        setStatus('lapStatus', 'ok', res.message || 'Selesai.'); muat(bulan);
+      })
+      .withFailureHandler(function (err) { if (tombol) tombol.disabled = false; setStatus('lapStatus', 'err', 'Error: ' + pesanError(err)); })
+      .verifikasiLaporanAdmin(pinMem, getDeviceId(), bulan, daftar || []);
+  }
+
+  $('btnLapMuat').addEventListener('click', function () { var p = $('lapPin').value.trim(); muat(bulanIni(), p); });
+  $('lapPin').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('btnLapMuat').click(); });
+  $('lapPrev').addEventListener('click', function () { muat(geser(bulan, -1)); });
+  $('lapNext').addEventListener('click', function () { if (bulan < bulanIni()) muat(geser(bulan, 1)); });
+  $('btnLapSemua').addEventListener('click', function () { setuju(null, this); });
+  $('lapList').addEventListener('click', function (e) { var b = e.target.closest('.lap-ok'); if (b) setuju([b.getAttribute('data-kode')], b); });
+})();
+</script>
+<script>
+// ===== Ringkasan sekolah + cetak rekap =====
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var bulan = '', data = null, seq = 0;
+  var BLN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  function esc(x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function bulanIni() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2); }
+  function geser(b, n) { var p = b.split('-'); var d = new Date(+p[0], +p[1] - 1 + n, 1); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2); }
+  function label(b) { var p = b.split('-'); return BLN[+p[1] - 1] + ' ' + p[0]; }
+  function kls(l) { return l === 'Sangat Baik' ? 's' : l === 'Baik' ? '' : l === 'Cukup' ? 'c' : 'p'; }
+
+  function gambar() {
+    $('rekBulan').textContent = label(bulan);
+    $('rekNext').disabled = bulan >= bulanIni();
+    $('rekRata').textContent = data.rata === null ? '-' : data.rata;
+    var b = $('rekBanding');
+    if (data.selisih === null) { b.className = 'rek-banding'; b.textContent = 'Belum ada pembanding bulan lalu'; }
+    else if (data.selisih === 0) { b.className = 'rek-banding'; b.textContent = 'Sama dengan ' + label(data.bulanLalu); }
+    else { b.className = 'rek-banding ' + (data.selisih > 0 ? 'naik' : 'turun'); b.textContent = (data.selisih > 0 ? '\u25B2 naik ' : '\u25BC turun ') + Math.abs(data.selisih) + ' poin dari ' + label(data.bulanLalu); }
+    $('rekTerlemah').textContent = data.terlemah ? 'Perlu dibina: ' + data.terlemah.label + ' (' + data.terlemah.persen + '%)' : 'Belum ada data.';
+    $('rekInd').innerHTML = data.indikator.slice().sort(function (a, b) { return b.persen - a.persen; }).map(function (i) {
+      return '<div class="rek-row"><span>' + esc(i.label) + '</span><div class="rek-bar"><i class="' + (i.persen < 50 ? 'rendah' : '') + '" style="width:' + i.persen + '%"></i></div><em>' + i.persen + '%</em></div>';
+    }).join('') || '<div class="dev-kosong">Belum ada data.</div>';
+    $('rekList').innerHTML = data.rows.map(function (r, n) {
+      return '<div class="rek-g"><span class="no">' + (n + 1) + '</span><div class="nm">' + esc(r.nama) + '<small>' + esc(r.jabatan || '') + '</small></div><b>' + r.skor + '</b><span class="lb ' + kls(r.label) + '">' + esc(r.label) + '</span></div>';
+    }).join('') || '<div class="dev-kosong">Belum ada data guru.</div>';
+    $('btnRekCetak').disabled = !data.rows.length;
+  }
+
+  function muat(b, pinBaru) {
+    var pin = pinBaru || window.__admPin;
+    if (!pin) { setStatus('rekStatus', 'err', 'Isi PIN admin dulu.'); return; }
+    var id = getDeviceId();
+    if (!id) { setStatus('rekStatus', 'err', 'Device ID tidak terdeteksi.'); return; }
+    var my = ++seq, btn = $('btnRekMuat'); btn.disabled = true;
+    setStatus('rekStatus', 'info', 'Menghitung skor guru... (bisa sampai setengah menit)');
+    google.script.run
+      .withSuccessHandler(function (res) {
+        btn.disabled = false; if (my !== seq) return;
+        if (!res || !res.ok) { setStatus('rekStatus', 'err', (res && res.message) || 'Gagal memuat.'); return; }
+        window.__admPin = pin; $('rekPin').value = ''; $('rekPinRow').style.display = 'none';
+        bulan = res.bulan; data = res; $('rekStatus').className = 'status'; $('rekStatus').textContent = '';
+        $('rekBox').classList.add('open'); gambar();
+      })
+      .withFailureHandler(function (err) { btn.disabled = false; setStatus('rekStatus', 'err', 'Error: ' + pesanError(err)); })
+      .getRingkasanSekolah(pin, id, b);
+  }
+
+  function cetak() {
+    var d = data; if (!d) return;
+    var baris = d.rows.map(function (r, n) {
+      return '<tr><td>' + (n + 1) + '</td><td>' + esc(r.nama) + '</td><td>' + esc(r.jabatan || '') + '</td><td class="c">' + (r.hadirPct === null ? '-' : r.hadirPct + '%') + '</td><td class="c">' + r.skor + '</td><td>' + esc(r.label) + '</td></tr>';
+    }).join('');
+    var ind = d.indikator.slice().sort(function (a, b) { return b.persen - a.persen; }).map(function (i) { return '<tr><td>' + esc(i.label) + '</td><td class="c">' + i.persen + '%</td></tr>'; }).join('');
+    var banding = d.selisih === null ? '-' : (d.selisih > 0 ? 'naik ' : d.selisih < 0 ? 'turun ' : 'tetap ') + (d.selisih ? Math.abs(d.selisih) + ' poin ' : '') + '(' + label(d.bulanLalu) + ': ' + d.rataLalu + ')';
+    var h = '<!doctype html><html lang="id"><head><meta charset="utf-8"><title>Rekap Kinerja ' + label(d.bulan) + '</title><style>' +
+      'body{font-family:Arial,sans-serif;color:#111;margin:24px;font-size:12px}h1{font-size:17px;margin:0}h2{font-size:13px;margin:18px 0 6px}.s{color:#555;margin:2px 0 14px}' +
+      'table{border-collapse:collapse;width:100%}th,td{border:1px solid #999;padding:5px 7px;text-align:left}th{background:#e8eefc}td.c{text-align:center}' +
+      '.k{display:flex;gap:12px;margin:10px 0}.k div{border:1px solid #999;padding:8px 12px;flex:1}.k b{font-size:20px;display:block}' +
+      '.ttd{margin-top:36px;display:flex;justify-content:flex-end}.ttd div{text-align:center;width:220px}@media print{body{margin:12mm}}' +
+      '</style></head><body><h1>Rekap Kinerja Guru \u2013 ' + label(d.bulan) + '</h1><div class="s">' + esc(d.sekolah) + ' \u00B7 dicetak ' + esc(d.dibuat) + '</div>' +
+      '<div class="k"><div><b>' + (d.rata === null ? '-' : d.rata) + '</b>Rata-rata skor sekolah</div><div><b>' + d.rows.length + '</b>Guru dinilai</div><div><b style="font-size:13px">' + esc(banding) + '</b>Perbandingan bulan lalu</div></div>' +
+      '<h2>Capaian per indikator</h2><table><tr><th>Indikator</th><th style="width:80px">Capaian</th></tr>' + ind + '</table>' +
+      '<h2>Skor per guru</h2><table><tr><th style="width:28px">No</th><th>Nama</th><th>Jabatan</th><th style="width:60px">Hadir</th><th style="width:48px">Skor</th><th style="width:90px">Predikat</th></tr>' + baris + '</table>' +
+      '<p>Skor = kehadiran otomatis dari absen + laporan mingguan guru (bobot: kehadiran 30, administrasi 25, konten 15, media 10, kegiatan 10, interaksi 10).</p>' +
+      '<div class="ttd"><div>Kepala Sekolah<br><br><br><br>(................................)</div></div></body></html>';
+    var w = window.open('', '_blank');
+    if (w) { w.document.open(); w.document.write(h); w.document.close(); setTimeout(function () { try { w.focus(); w.print(); } catch (e) { } }, 400); return; }
+    var f = document.createElement('iframe'); f.style.cssText = 'position:fixed;width:0;height:0;border:0;'; document.body.appendChild(f);
+    f.srcdoc = h; f.onload = function () { try { f.contentWindow.print(); } catch (e) { } setTimeout(function () { f.remove(); }, 4000); };
+  }
+
+  $('btnRekMuat').addEventListener('click', function () { muat(bulanIni(), $('rekPin').value.trim()); });
+  $('rekPin').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('btnRekMuat').click(); });
+  $('rekPrev').addEventListener('click', function () { muat(geser(bulan, -1)); });
+  $('rekNext').addEventListener('click', function () { if (bulan < bulanIni()) muat(geser(bulan, 1)); });
+  $('btnRekCetak').addEventListener('click', cetak);
+  // Kalau PIN sudah dimasukkan di menu lain pada sesi ini, langsung muat saat menu dibuka.
+  var asli = window.admSub;
+  window.admSub = function (k) { asli(k); if (k === 'rek' && window.__admPin && !data) muat(bulanIni()); };
 })();
 </script>
 <script>
