@@ -972,7 +972,7 @@
       var baris = [], bobot = 0, nilai = 0;
       if (tot) { var f = r.hadir / tot; baris.push(['Kehadiran', f, 'kehadiran']); }
       if (mulai.length) lapData.indikator.forEach(function (ind) {
-        var n = mulai.filter(function (m) { return m.isi && m.isi[ind.key]; }).length;
+        var n = mulai.filter(function (m) { return m.isi && m.isi[ind.key] && m.status !== 'Revisi'; }).length;
         baris.push([ind.label, n / mulai.length, ind.key]);
       });
       baris.forEach(function (b) { var w = BOBOT[b[2]] || 10; bobot += w; nilai += w * b[1]; });
