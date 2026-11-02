@@ -759,6 +759,11 @@
     google.script.url.getLocation(function (location) {
       kode = location.parameter.kode;
       deviceId = location.parameter.dev;
+      // Dibuka tanpa parameter (mis. dari layar utama HP / riwayat browser)? Pakai nama & perangkat yang terakhir dipakai.
+      try {
+        if (!kode) kode = localStorage.getItem('absensi_guru_terakhir') || undefined;
+        if (!deviceId) deviceId = localStorage.getItem('absensi_device_id') || undefined;
+      } catch (e) { }
       bulanAwal = location.parameter.bulan; // opsional, format yyyy-MM
       var ng = document.getElementById('navLaporanLink');
       if (kode && ng) ng.href = 'laporan.html?kode=' + encodeURIComponent(kode) + '&dev=' + encodeURIComponent(deviceId || '');
@@ -851,6 +856,14 @@
       document.getElementById('content').innerHTML = '';
       document.getElementById('errorDesc').textContent = msg;
       document.getElementById('errorBtn').href = WEBAPP_URL;
+      document.getElementById('errorBtn').onclick = function (ev) {
+        // Pindah halaman lewat skrip (lebih andal daripada tautan biasa di sebagian HP / mode aplikasi layar utama).
+        try { ev.preventDefault(); } catch (e) { }
+        var tujuan = WEBAPP_URL;
+        try { tujuan = new URL(WEBAPP_URL, location.href).href; } catch (e) { }
+        location.replace(tujuan);
+        return false;
+      };
       document.getElementById('errorOverlay').classList.add('show');
     }
 
