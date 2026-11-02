@@ -636,6 +636,12 @@
     .rw-badge { flex: 0 0 auto; }
     @media (max-width: 350px) { .rw-time { font-size: 13px; } .rw { gap: 10px; padding: 12px 10px; } .rw-badge { padding: 5px 8px; } }
   </style>
+<style>
+.seg{display:flex;background:rgba(100,116,139,.16);border-radius:14px;padding:4px;margin:10px 0 4px}
+.seg a{flex:1;text-align:center;text-decoration:none;padding:9px 0;border-radius:11px;font-size:13.5px;font-weight:800;color:#5b6475}
+.seg a.on{background:#fff;color:#1e3a8a;box-shadow:0 2px 8px rgba(30,41,59,.12)}
+@media (prefers-color-scheme: dark){.seg a{color:#A8AFBF}.seg a.on{background:#1E3A8A;color:#fff}}
+</style>
 </head>
 <body>
   <div class="page-shell">
@@ -665,7 +671,8 @@
     </div>
 
     <div class="scroll-area" id="scrollArea">
-      <div id="syncInfo" style="font-size:12px; font-weight:600; margin-top:8px; min-height:16px; color:var(--text-sub);"></div>
+      <div class="seg"><a href="#" id="segRiwayat" class="on" aria-current="page">Riwayat</a><a href="#" id="segGrafik" >Grafik</a></div>
+            <div id="syncInfo" style="font-size:12px; font-weight:600; margin-top:8px; min-height:16px; color:var(--text-sub);"></div>
       <div id="content">
         <div class="loading">Memuat riwayat absensi...</div>
       </div>
@@ -676,7 +683,7 @@
     <div class="bn-row">
     <a href="index.html"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></span>Absen</a>
     <a href="#" class="on" onclick="return false;" aria-current="page"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>Riwayat</a>
-    <a href="#" id="navGrafikLink"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20v-9M12 20V4M19 20v-6"/></svg></span>Grafik</a>
+    <a href="#" id="navLaporanLink"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></span>Laporan</a>
     <a href="index.html#admin" id="navAdminLink" style="display:none;"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></span>Admin</a>
     </div>
     <div class="bn-credit">Dikembangkan oleh: Ade Irwansyah</div>
@@ -753,8 +760,8 @@
       kode = location.parameter.kode;
       deviceId = location.parameter.dev;
       bulanAwal = location.parameter.bulan; // opsional, format yyyy-MM
-      var ng = document.getElementById('navGrafikLink');
-      if (kode && ng) ng.href = 'grafik.html?kode=' + encodeURIComponent(kode) + '&dev=' + encodeURIComponent(deviceId || '');
+      var ng = document.getElementById('navLaporanLink');
+      if (kode && ng) ng.href = 'laporan.html?kode=' + encodeURIComponent(kode) + '&dev=' + encodeURIComponent(deviceId || '');
       init();
     });
 
@@ -1100,6 +1107,13 @@
   window.addEventListener('load', atur);
   setTimeout(atur, 600);
 })();
+</script>
+<script>
+(function(){var q=new URLSearchParams(location.search),k=q.get('kode')||'',d=q.get('dev')||'';
+try{if(!k)k=localStorage.getItem('absensi_guru_terakhir')||'';if(!d)d=localStorage.getItem('absensi_device_id')||'';}catch(e){}
+var e='?kode='+encodeURIComponent(k)+'&dev='+encodeURIComponent(d);
+var set=function(id,h){var a=document.getElementById(id);if(a){if(a.classList.contains('on')){a.onclick=function(){return false;};}else a.href=h;}};
+set('segRiwayat','riwayat.html'+e);set('segGrafik','grafik.html'+e);set('navLaporanLink','laporan.html'+e);set('navRiwayatLink','riwayat.html'+e);})();
 </script>
 </body>
 </html>
