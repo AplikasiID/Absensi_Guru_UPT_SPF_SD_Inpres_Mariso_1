@@ -234,7 +234,7 @@ button, input, textarea { font-family: inherit; }
         html += '<div class="pj-need' + (d.need ? ' show' : '') + '">Tempel tautan atau unggah file dulu, baru bisa dicentang.</div>' +
           '<input type="url" class="pj-lnk' + (d.need ? ' bad' : '') + '" inputmode="url" maxlength="300" placeholder="' + (wj ? 'Tempel tautan, atau unggah file (wajib)' : 'Tempel tautan, atau unggah file (opsional)') + '" value="' + esc(d.link).replace(/"/g, '&quot;') + '"' + (bisa ? '' : ' disabled') + '>' +
           (bisa ? '<div class="pj-btns"><button type="button" class="pj-b sv" data-a="simpan"' + ((d.busy || d.up) ? ' disabled' : '') + '>' + (d.busy ? 'Menyimpan...' : 'Simpan') + '</button>' +
-            '<button type="button" class="pj-b up" data-a="unggah"' + ((d.up || d.busy) ? ' disabled' : '') + '>' + (d.up ? 'Mengunggah...' : 'Unggah file') + '</button><input type="file" class="pj-file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none">' +
+            '<button type="button" class="pj-b up" data-a="unggah"' + ((d.up || d.busy) ? ' disabled' : '') + '>' + (d.up ? 'Mengunggah...' : 'Unggah file') + '</button><input type="file" class="pj-file" accept=".pdf,application/pdf" style="display:none">' +
             (ajLinkOk(d.link) ? '<a class="pj-b lh" href="' + esc(ajHref(d.link)).replace(/"/g, '&quot;') + '" target="_blank" rel="noopener">Lihat</a>' : '') +
             (it.ada ? '<button type="button" class="pj-b bt" data-a="batal">Batal</button>' : '') + '</div>' : '');
       }
@@ -370,7 +370,7 @@ button, input, textarea { font-family: inherit; }
     var f = e.target.files && e.target.files[0]; if (!f) return;
     var k = ajItemEl(e.target), d = ajDraft[k]; if (!d) return;
     var ext = (f.name.split('.').pop() || '').toLowerCase();
-    if (['pdf', 'doc', 'docx'].indexOf(ext) < 0) { d.msg = 'Format file harus PDF, DOC, atau DOCX.'; d.msgJ = 'err'; ajGambar(); return; }
+    if (ext !== 'pdf') { d.msg = 'Format file harus PDF.'; d.msgJ = 'err'; ajGambar(); return; }
     if (f.size > 5 * 1024 * 1024) { d.msg = 'Ukuran file maksimal 5 MB.'; d.msgJ = 'err'; ajGambar(); return; }
     d.up = true; d.msg = 'Mengunggah ' + f.name + '...'; d.msgJ = ''; ajGambar();
     var rd = new FileReader();
