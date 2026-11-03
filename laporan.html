@@ -87,6 +87,43 @@ button, input, textarea { font-family: inherit; }
 @media (min-width: 769px) { .ban, .wrap { max-width: 640px; } .bnav { max-width: 616px; } }
 @media (prefers-reduced-motion: no-preference) { .sk { animation: sh 1.2s linear infinite; } @keyframes sh { to { background-position: -200% 0; } } }
 </style>
+<style>
+.seg{display:flex;background:var(--card);border-radius:16px;padding:4px;box-shadow:0 6px 18px rgba(30,58,138,.12);margin-bottom:10px}
+.seg button{flex:1;border:0;background:transparent;padding:10px 0;border-radius:12px;font-size:13.5px;font-weight:800;color:var(--muted);font-family:inherit}
+.seg button.on{background:#1e3a8a;color:#fff}
+.pj-sum{background:var(--card);border-radius:20px;padding:14px;box-shadow:0 8px 20px rgba(30,58,138,.10);margin-bottom:6px}
+.pj-sum .r{display:flex;align-items:center;gap:8px}.pj-sum .r b{font-size:14px}.pj-sum .sp{flex:1}.pj-sum .n{color:#1e3a8a;font-weight:800;white-space:nowrap}
+.pj-bar{height:8px;border-radius:99px;background:rgba(100,116,139,.2);overflow:hidden;margin-top:8px}.pj-bar i{display:block;height:100%;background:linear-gradient(90deg,#1d4ed8,#22c55e);border-radius:99px}
+.pj-h{font-size:11.5px;font-weight:800;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin:16px 4px 6px}
+.pj-it{border-top:1px solid var(--line);padding:11px 14px}.pj-it:first-child{border-top:0}
+.pj-row{display:flex;align-items:center;gap:12px;width:100%;background:transparent;border:0;padding:0;text-align:left;font-family:inherit;color:inherit}
+.pj-row b{font-size:14px;font-weight:700}
+.pj-it.on .cb{background:var(--ok);border-color:var(--ok)}.pj-it.on .cb svg{opacity:1}
+.pj-lnk{display:none;width:calc(100% - 40px);margin:8px 0 0 40px;padding:10px 12px;font-size:13px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font-family:inherit}
+.pj-it.on .pj-lnk{display:block}
+.pj-rev{background:#fef2f2;border:1px solid #fecaca;color:#991b1b;border-radius:14px;padding:10px 12px;margin:0 0 8px;font-size:12.5px;font-weight:600;line-height:1.4}.pj-rev b{display:block;font-weight:800;margin-bottom:2px}
+.pj-it.rv{background:#fef2f2}.pj-ntc{margin:6px 0 0 40px;font-size:12px;font-weight:700;color:#b91c1c}
+.pj-ok{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;border-radius:14px;padding:10px 12px;margin:0 0 8px;font-size:12.5px;font-weight:800}
+@media (prefers-color-scheme: dark){.pj-it.rv{background:rgba(239,68,68,.12)}.pj-ntc{color:#FF8F86}.seg button.on{background:#3b6cf0}.pj-sum .n{color:#9DB7FF}.pj-rev{background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.35);color:#FF8F86}.pj-ok{background:rgba(34,197,94,.14);border-color:rgba(34,197,94,.35);color:#5EE08A}}
+</style>
+<style>
+/* ===== Animasi ikon menu bawah (halus; mati otomatis kalau HP memilih "kurangi gerakan") ===== */
+.bnav .bn-row > * { -webkit-tap-highlight-color: transparent; transition: background-color .28s ease, color .28s ease, transform .15s ease; }
+.bnav .bn-row > *:active { transform: scale(.92); }
+.bnav .bn-row > .on .ni svg, .bnav .bn-row > [aria-current] .ni svg { animation: ni-pop .55s cubic-bezier(.34,1.56,.64,1) both; }
+.bnav .bn-row > .on, .bnav .bn-row > [aria-current] { animation: ni-pill .35s ease-out both; }
+.bnav .bn-row > :nth-child(1).on .ni svg { animation-name: ni-hop; animation-duration: .6s; }
+.bnav .bn-row > :nth-child(2).on .ni svg path, .bnav .bn-row > :nth-child(2)[aria-current] .ni svg path { transform-box: view-box; transform-origin: 12px 12px; animation: ni-spin .9s cubic-bezier(.22,1,.36,1) both; }
+.bnav .bn-row > :nth-child(3).on .ni svg path:first-child, .bnav .bn-row > :nth-child(3)[aria-current] .ni svg path:first-child { stroke-dasharray: 14; animation: ni-draw .6s .1s ease-out both; }
+.bnav .bn-row > :nth-child(4).on .ni svg { animation-name: ni-shield; animation-duration: .7s; }
+@keyframes ni-pop { 0% { transform: scale(.55); opacity: .4; } 60% { transform: scale(1.18); opacity: 1; } 100% { transform: scale(1); } }
+@keyframes ni-hop { 0% { transform: translateY(6px) scale(.8); } 45% { transform: translateY(-5px) scale(1.12); } 70% { transform: translateY(1px); } 100% { transform: none; } }
+@keyframes ni-spin { from { transform: rotate(-300deg); } to { transform: rotate(0); } }
+@keyframes ni-draw { from { stroke-dashoffset: 14; } to { stroke-dashoffset: 0; } }
+@keyframes ni-shield { 0% { transform: scale(.6) rotate(-12deg); } 55% { transform: scale(1.15) rotate(6deg); } 100% { transform: none; } }
+@keyframes ni-pill { from { opacity: .35; transform: scale(.9); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .bnav .bn-row > *, .bnav .bn-row > * .ni svg, .bnav .bn-row > * .ni svg path { animation: none !important; transition: none !important; } }
+</style>
 </head>
 <body>
 <div class="ban">
@@ -96,9 +133,13 @@ button, input, textarea { font-family: inherit; }
 </div>
 
 <div class="wrap">
+  <div class="seg" id="seg"><button type="button" id="segMing" class="on">Mingguan</button><button type="button" id="segAjar">Perangkat Ajar</button></div>
+  <div id="paneMing">
   <div class="mrow"><button type="button" id="prev" aria-label="Bulan sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><b id="bulanLabel">-</b><button type="button" id="next" aria-label="Bulan berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div>
   <div class="wks" id="wks"></div>
   <div id="isi"><div class="sk"></div></div>
+  </div>
+  <div id="paneAjar" style="display:none"><div class="sk"></div></div>
 </div>
 
 <nav class="bnav" id="bnav">
@@ -219,7 +260,84 @@ button, input, textarea { font-family: inherit; }
     if (window.ResizeObserver) new ResizeObserver(pad).observe(nav);
   })();
 
-  muat(bulan);
+  // ================= PERANGKAT AJAR (per semester) =================
+  var aj = null, ajDraft = null, ajMuat = false;
+  function ajGambar() {
+    var box = $('paneAjar');
+    if (!aj) return;
+    if (aj.tidak) { box.innerHTML = '<div class="empty">Jabatanmu tidak memiliki perangkat ajar yang perlu dilaporkan.</div>'; return; }
+    var bisa = aj.bisaIsi, jml = 0;
+    aj.items.forEach(function (it) { if (ajDraft[it.key].ada) jml++; });
+    var html = '<div class="pj-sum"><div class="r"><b>Kelengkapan ' + esc(aj.semester) + '</b><span class="sp"></span><span class="n" id="ajN">' + jml + ' dari ' + aj.items.length + '</span></div><div class="pj-bar"><i id="ajBar" style="width:' + Math.round(jml / aj.items.length * 100) + '%"></i></div></div>';
+    var adaRevItem = aj.items.some(function (it) { return it.revisi; });
+    if (aj.status === 'Revisi') html += '<div class="pj-rev"><b>Kepala sekolah meminta revisi</b>' + (aj.catatan ? esc(aj.catatan) : (adaRevItem ? 'Ada item yang perlu diperbaiki (ditandai merah di bawah). Item lain sudah baik.' : 'Mohon periksa perangkat ajar, perbaiki, lalu simpan lagi.')) + '</div>';
+    else if (aj.status === 'Lengkap') html += '<div class="pj-ok">Dinyatakan lengkap oleh kepala sekolah.</div>';
+    else if (aj.status === 'Menunggu') html += '<div class="pj-ok" style="background:#fffbeb;border-color:#fde68a;color:#92400e">Sudah dikirim, menunggu pemeriksaan kepala sekolah.</div>';
+    var grup = '';
+    aj.items.forEach(function (it) {
+      if (it.grup !== grup) {
+        if (grup) html += '</div>';
+        grup = it.grup;
+        html += '<div class="pj-h">' + (grup === 'Perencanaan' ? 'Perencanaan \u00B7 sekali per semester' : 'Berjalan \u00B7 diperbarui tiap bulan') + '</div><div class="card">';
+      }
+      var d = ajDraft[it.key];
+      html += '<div class="pj-it' + (d.ada ? ' on' : '') + (it.revisi ? ' rv' : '') + '" data-k="' + it.key + '"><button type="button" class="pj-row" data-t="1"' + (bisa ? '' : ' disabled') + '><span class="cb">' + CEK + '</span><b>' + esc(it.label) + '</b></button>' +
+        (it.revisi ? '<div class="pj-ntc">Perlu diperbaiki: ' + esc(it.revisi) + '</div>' : '') +
+        '<input type="url" class="pj-lnk" inputmode="url" maxlength="300" placeholder="Tempel tautan Google Drive (opsional)" value="' + esc(d.link).replace(/"/g, '&quot;') + '"' + (bisa ? '' : ' disabled') + '></div>';
+    });
+    if (grup) html += '</div>';
+    if (bisa) html += '<button type="button" class="btn" id="ajSimpan">Simpan perangkat ajar</button><div class="st" id="ajSt"></div><div class="hint">Bisa diubah sampai dinyatakan lengkap</div>';
+    else html += '<div class="hint">Sudah lengkap, tidak bisa diubah lagi.</div>';
+    box.innerHTML = html;
+  }
+  function ajPesan(t, j) { var e = $('ajSt'); if (!e) return; e.textContent = t || ''; e.className = 'st ' + (j || ''); }
+  function ajMuatData() {
+    var box = $('paneAjar');
+    if (!kode) { box.innerHTML = '<div class="empty">Nama guru belum dipilih. Kembali ke halaman Absen, pilih namamu, lalu buka lagi.</div>'; return; }
+    box.innerHTML = '<div class="sk"></div>'; ajMuat = true;
+    google.script.run
+      .withSuccessHandler(function (r) {
+        if (!r || !r.ok) { box.innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; ajMuat = false; return; }
+        aj = r; $('guruPill').textContent = r.nama.split(',')[0]; $('guruKelas').textContent = r.jabatan || '';
+        ajDraft = {}; (r.items || []).forEach(function (it) { ajDraft[it.key] = { ada: !!it.ada, link: it.link || '' }; });
+        ajGambar();
+      })
+      .withFailureHandler(function () { box.innerHTML = '<div class="empty">Tidak bisa terhubung ke server. Periksa internet, lalu buka lagi.</div>'; ajMuat = false; })
+      .getPerangkatGuru(kode, dev);
+  }
+  function ajTab(ajar) {
+    $('segMing').classList.toggle('on', !ajar); $('segAjar').classList.toggle('on', ajar);
+    var g1 = document.querySelector('.g1'), g2 = $('sub'); if (g1) g1.textContent = ajar ? 'Perangkat Ajar' : 'Laporan Minggu Ini'; if (g2) g2.textContent = ajar ? 'Centang yang sudah kamu siapkan' : 'Ketuk yang sudah kamu kerjakan';
+    $('paneMing').style.display = ajar ? 'none' : ''; $('paneAjar').style.display = ajar ? '' : 'none';
+    if (ajar && !aj && !ajMuat) ajMuatData();
+    try { if (location.hash !== (ajar ? '#ajar' : '')) history.replaceState(null, '', ajar ? '#ajar' : location.pathname + location.search); } catch (e) { }
+  }
+  $('segMing').addEventListener('click', function () { ajTab(false); });
+  $('segAjar').addEventListener('click', function () { ajTab(true); });
+  $('paneAjar').addEventListener('click', function (e) {
+    var r = e.target.closest('.pj-row');
+    if (r && !r.disabled) {
+      var it = r.parentNode, k = it.getAttribute('data-k'); ajDraft[k].ada = !ajDraft[k].ada; it.classList.toggle('on', ajDraft[k].ada);
+      var jml = 0; for (var x in ajDraft) if (ajDraft[x].ada) jml++;
+      $('ajN').textContent = jml + ' dari ' + aj.items.length; $('ajBar').style.width = Math.round(jml / aj.items.length * 100) + '%';
+      try { if (navigator.vibrate) navigator.vibrate(8); } catch (x2) { } return;
+    }
+    if (e.target.id === 'ajSimpan') {
+      var btn = e.target; btn.disabled = true; btn.textContent = 'Menyimpan...'; ajPesan('');
+      google.script.run
+        .withSuccessHandler(function (res) {
+          btn.disabled = false; btn.textContent = 'Simpan perangkat ajar';
+          if (res && res.ok) { ajPesan(res.message || 'Tersimpan. Terima kasih!', res.masihRevisi ? 'err' : 'ok'); aj.status = res.masihRevisi ? 'Revisi' : 'Menunggu'; aj.catatan = ''; ajMuat = false; aj = null; setTimeout(ajMuatData, 900); }
+          else ajPesan((res && res.message) || 'Gagal menyimpan.', 'err');
+        })
+        .withFailureHandler(function () { btn.disabled = false; btn.textContent = 'Simpan perangkat ajar'; ajPesan('Tidak bisa terhubung ke server. Coba lagi.', 'err'); })
+        .simpanPerangkatGuru(kode, dev, ajDraft);
+    }
+  });
+  $('paneAjar').addEventListener('input', function (e) {
+    if (e.target.classList.contains('pj-lnk')) ajDraft[e.target.parentNode.getAttribute('data-k')].link = e.target.value;
+  });
+  if (location.hash === '#ajar') ajTab(true);
 })();
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
 </script>
