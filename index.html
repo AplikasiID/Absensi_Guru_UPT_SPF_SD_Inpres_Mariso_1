@@ -1049,6 +1049,7 @@ body.adm-sub .adm-pill { display: none !important; }
 .rek-g .lb.p{background:#fee2e2;color:#b91c1c}.rek-g .lb.c{background:#fef3c7;color:#b45309}.rek-g .lb.s{background:#dcfce7;color:#15803d}
 #btnRekCetak{width:100%;margin-top:14px;padding:13px;border-radius:16px;background:#1d4ed8;color:#fff;font-weight:800;font-size:14px}
 #btnRekMuat{flex-shrink:0;width:48px;border-radius:14px;background:linear-gradient(135deg,#1d4ed8,#1e3a8a);color:#fff;display:flex;align-items:center;justify-content:center}#btnRekMuat svg{width:19px;height:19px}
+#btnAjMuat{flex-shrink:0;width:48px;border-radius:14px;background:linear-gradient(135deg,#1d4ed8,#1e3a8a);color:#fff;display:flex;align-items:center;justify-content:center}#btnAjMuat svg{width:19px;height:19px}
 @media (prefers-color-scheme: dark){.rek-sub,.rek-row em,.rek-g .no,.rek-g .nm small{color:#A8AFBF}.rek-banding.naik{color:#5EE08A}.rek-banding.turun{color:#FF8F86}.rek-g b{color:#9DB7FF}.rek-g .lb{background:rgba(59,108,240,.25);color:#9DB7FF}.rek-g .lb.p{background:rgba(239,68,68,.18);color:#FF8F86}.rek-g .lb.c{background:rgba(245,158,11,.18);color:#FBBF4D}.rek-g .lb.s{background:rgba(34,197,94,.18);color:#5EE08A}#btnRekCetak{background:#3b6cf0}}
 </style>
 <style>
@@ -1080,6 +1081,33 @@ body.adm-sub .adm-pill { display: none !important; }
 .aj-cat{margin-top:6px;font-size:12px;color:#b91c1c;font-weight:600}
 .aj-act{display:flex;gap:8px;margin-top:10px}.aj-act button{flex:1;padding:10px;border-radius:12px;font-size:13px;font-weight:800;box-shadow:none}.aj-rev{background:#fee2e2;color:#b91c1c}.aj-lgk{background:#dcfce7;color:#15803d}.aj-act button:disabled{opacity:.5}
 @media (prefers-color-scheme: dark){.aj-ri{background:rgba(239,68,68,.18);color:#FF8F86}.aj-it.rv,.aj-itn{color:#FF8F86}.aj-sem,.aj-det{background:#262a36;color:#F2F2F7}.aj-it a{color:#9DB7FF}.aj-nl{background:rgba(245,158,11,.2);color:#FCD34D}.aj-it.y i{color:#5EE08A}.aj-it.n i,.aj-cat{color:#FF8F86}.aj-rev{background:rgba(239,68,68,.18);color:#FF8F86}.aj-lgk{background:rgba(34,197,94,.18);color:#5EE08A}}
+</style>
+<style>
+/* Admin terbatas (Kepala Sekolah / Nur Azizah Arindah): menu Perangkat Guru & Pengaturan disembunyikan */
+body.adm-terbatas [data-terbatas]{display:none!important}
+/* Tombol Perangkat Ajar: area sentuh lebih besar, tata letak rapi */
+.aj-it{align-items:flex-start;gap:8px;padding:6px 0}
+.aj-it i{margin-top:6px}
+.aj-lb{flex:1;min-width:0;word-break:break-word;padding-top:6px;line-height:1.35}
+.aj-r{display:flex;align-items:center;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;max-width:58%}
+.aj-it .aj-r a,.aj-it .aj-r .aj-nl,.aj-it .aj-r .aj-ri{margin-left:0}
+.aj-it .aj-r a{display:inline-flex;align-items:center;min-height:34px;padding:0 6px}
+.aj-it .aj-r .aj-nl{display:inline-flex;align-items:center;min-height:30px}
+.aj-it .aj-r .aj-ri{min-height:34px;padding:6px 14px;font-size:12px;border-radius:12px;touch-action:manipulation}
+.aj-act{gap:10px;margin-top:12px}
+.aj-act button{min-height:46px;padding:12px 10px;font-size:14px;touch-action:manipulation}
+.aj-itn{margin:0 0 6px 24px}
+.aj-dlg{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:99999;padding:20px}
+.aj-dlg.show{display:flex}
+.aj-dlg-box{width:100%;max-width:400px;background:#fff;color:#0f172a;border-radius:22px;padding:20px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.aj-dlg-box h3{margin:0 0 6px;font-size:17px;font-weight:800}
+.aj-dlg-box p{margin:0 0 12px;font-size:13.5px;line-height:1.45;color:#475569}
+.aj-dlg-box textarea{width:100%;box-sizing:border-box;min-height:84px;padding:12px;border:1.5px solid #cbd5e1;border-radius:14px;font:inherit;font-size:14px;color:inherit;background:#f8fafc;resize:vertical;margin-bottom:12px}
+.aj-dlg-box textarea:focus{outline:none;border-color:#2563eb}
+.aj-dlg-btn{display:flex;gap:10px}
+.aj-dlg-btn button{flex:1;min-height:46px;border-radius:14px;font-size:14px;font-weight:800;box-shadow:none}
+.aj-dlg-batal{background:#e2e8f0;color:#334155}.aj-dlg-ok{background:#2563eb;color:#fff}.aj-dlg-ok.rv{background:#dc2626}.aj-dlg-ok.lg{background:#16a34a}
+@media (prefers-color-scheme: dark){.aj-dlg-box{background:#1c1c24;color:#F2F2F7}.aj-dlg-box p{color:#A8AFBF}.aj-dlg-box textarea{background:#262a36;border-color:#3a3f4d;color:#F2F2F7}.aj-dlg-batal{background:#262a36;color:#D5D9E3}}
 </style>
 <style>
 /* ===== Animasi ikon menu bawah (halus; mati otomatis kalau HP memilih "kurangi gerakan") ===== */
@@ -1201,10 +1229,10 @@ body.adm-sub .adm-pill { display: none !important; }
       <div class="adm-list">
         <button type="button" class="adm-item" onclick="window.admSub('ket')"><span class="adm-ic biru"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></span><span class="adm-tx"><b>Ajukan Keterangan</b><small>Sakit, izin, dinas luar, cuti</small></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
         <button type="button" class="adm-item" onclick="window.admSub('aj')"><span class="adm-ic kuning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h12l4 4v12H4z"/><path d="M8 12h8M8 16h5"/></svg></span><span class="adm-tx"><b>Perangkat Ajar</b><small>Pemeriksaan per semester</small></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
-        <button type="button" class="adm-item" onclick="window.admSub('dev')"><span class="adm-ic merah"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg></span><span class="adm-tx"><b>Perangkat Guru</b><small>Daftar HP dan reset</small></span><span class="adm-badge" id="badgeDev" style="display:none"></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button type="button" class="adm-item" data-terbatas="1" onclick="window.admSub('dev')"><span class="adm-ic merah"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg></span><span class="adm-tx"><b>Perangkat Guru</b><small>Daftar HP dan reset</small></span><span class="adm-badge" id="badgeDev" style="display:none"></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
         <button type="button" class="adm-item" onclick="window.admSub('rek')"><span class="adm-ic biru"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg></span><span class="adm-tx"><b>Ringkasan Sekolah</b><small>Skor guru dan rekap bulanan</small></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
         <button type="button" class="adm-item" onclick="window.admSub('lap')"><span class="adm-ic hijau"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></span><span class="adm-tx"><b>Verifikasi Laporan</b><small>Laporan mingguan guru</small></span><span class="adm-badge" id="badgeLap" style="display:none;"></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
-        <button type="button" class="adm-item" onclick="window.location.href='pengaturan.html'"><span class="adm-ic kuning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h0a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5h0a1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v0a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span><span class="adm-tx"><b>Pengaturan</b><small>Mode absen, izin daring, pengumuman</small></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button type="button" class="adm-item" data-terbatas="1" onclick="window.location.href='pengaturan.html'"><span class="adm-ic kuning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h0a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5h0a1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v0a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span><span class="adm-tx"><b>Pengaturan</b><small>Mode absen, izin daring, pengumuman</small></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
       </div>
       </div>
 
@@ -1299,6 +1327,14 @@ body.adm-sub .adm-pill { display: none !important; }
             <div class="aj-sem" id="ajSem">-</div>
             <div class="lap-kp"><div><b id="ajLengkap">0</b><span>Lengkap</span></div><div><b id="ajMenunggu">0</b><span>Menunggu</span></div><div><b id="ajBelum">0</b><span>Belum</span></div></div>
             <div id="ajList"></div>
+          </div>
+          <div class="aj-dlg" id="ajDlg" role="dialog" aria-modal="true">
+            <div class="aj-dlg-box">
+              <h3 id="ajDlgJ"></h3>
+              <p id="ajDlgT"></p>
+              <textarea id="ajDlgC" maxlength="200" placeholder="Tulis catatan untuk guru..."></textarea>
+              <div class="aj-dlg-btn"><button type="button" class="aj-dlg-batal" id="ajDlgBatal">Batal</button><button type="button" class="aj-dlg-ok" id="ajDlgOk">OK</button></div>
+            </div>
           </div>
         </div>
       </div>
@@ -1471,6 +1507,7 @@ body.adm-sub .adm-pill { display: none !important; }
       var pressTimer = null;
       var HOLD_MS = 2000;
       function bukaPengaturan() {
+        if (window.__admTerbatas) return;
         window.location.href = 'pengaturan.html';
       }
       function mulaiTekan(e) {
@@ -2824,9 +2861,11 @@ body.adm-sub .adm-pill { display: none !important; }
     var nf = document.querySelector('.name-float'); if (nf) nf.style.display = t === 'admin' ? 'none' : '';
     $('navAbsen').classList.toggle('on', t === 'absen');
     $('navAdmin').classList.toggle('on', t === 'admin');
+    if (t === 'admin') terapkanTerbatas(kodeAktif());
     try { window.scrollTo(0, 0); } catch (e) { }
   }
   window.admSub = function (k) {
+    if (window.__admTerbatas && k === 'dev') k = 'menu';
     var peta = { menu: 'admPaneMenu', ket: 'admPaneKet', dev: 'admPaneDev', lap: 'admPaneLap', rek: 'admPaneRek', aj: 'admPaneAj' };
     for (var id in peta) $(peta[id]).classList.toggle('on', id === k);
     var T = { menu: ['Menu Admin', 'Kelola absensi sekolah'], ket: ['Ajukan Keterangan', 'Sakit, izin, dinas luar, cuti'], dev: ['Perangkat Guru', 'Daftar HP dan reset'], lap: ['Verifikasi Laporan', 'Laporan mingguan guru'], rek: ['Ringkasan Sekolah', 'Skor guru dan rekap bulanan'], aj: ['Perangkat Ajar', 'Pemeriksaan per semester'] }[k] || ['Menu Admin', 'Kelola absensi sekolah'];
@@ -2848,28 +2887,41 @@ body.adm-sub .adm-pill { display: none !important; }
 
   // Tab Admin muncul otomatis di HP admin terdaftar, atau saat nama yang dipilih berjabatan Kepala Sekolah
   // (HP-nya sendiri). Dicek paling sering sekali per 6 jam per nama; dilewati kalau admin memilih "Keluar dari mode admin".
+  var TB = 'absensi_admin_tb_';
+  function terapkanTerbatas(kode) {
+    var t = false;
+    try { t = localStorage.getItem(TB + (kode || '')) === '1'; } catch (e) { }
+    window.__admTerbatas = t;
+    document.body.classList.toggle('adm-terbatas', t);
+    if (t && $('admPaneDev') && $('admPaneDev').classList.contains('on')) window.admSub('menu');
+  }
+  function kodeAktif() {
+    var v = ''; try { v = ($('guruSelect') && $('guruSelect').value) || localStorage.getItem('absensi_guru_terakhir') || ''; } catch (e) { }
+    return v;
+  }
   function cekAdminOtomatis(kode) {
-    if (adaFlag()) return;
+    kode = kode || kodeAktif();
     var kunci = 'absensi_admin_cek_' + (kode || '');
     try {
-      if (localStorage.getItem('absensi_admin_keluar') === '1') return;
-      if (Date.now() - (+localStorage.getItem(kunci) || 0) < 6 * 3600 * 1000) return;
+      if (!adaFlag() && localStorage.getItem('absensi_admin_keluar') === '1') return;
+      if (Date.now() - (+localStorage.getItem(kunci) || 0) < 6 * 3600 * 1000) { terapkanTerbatas(kode); return; }
     } catch (e) { return; }
     var id = ''; try { id = getDeviceId(); } catch (e) { }
     if (!id) return;
     google.script.run
       .withSuccessHandler(function (r) {
-        try { localStorage.setItem(kunci, String(Date.now())); } catch (e) { }
-        if (r && r.admin) { try { localStorage.setItem(KUNCI, '1'); } catch (e) { } pasangNavAdmin(); }
+        try { localStorage.setItem(kunci, String(Date.now())); localStorage.setItem(TB + (kode || ''), r && r.terbatas ? '1' : '0'); } catch (e) { }
+        if (r && r.admin && !adaFlag()) { try { localStorage.setItem(KUNCI, '1'); } catch (e) { } pasangNavAdmin(); }
+        terapkanTerbatas(kode);
       })
       .withFailureHandler(function () { })
       .cekPerangkatAdmin(id, kode || '');
   }
   window.cekAdminOtomatis = cekAdminOtomatis;
   var _gs = $('guruSelect');
-  _gs.addEventListener('change', function () { if (this.value) cekAdminOtomatis(this.value); });
+  _gs.addEventListener('change', function () { if (this.value) { terapkanTerbatas(this.value); cekAdminOtomatis(this.value); } });
   var _t0 = 0; try { _t0 = localStorage.getItem('absensi_guru_terakhir') || ''; } catch (e) { }
-  cekAdminOtomatis(_t0);
+  terapkanTerbatas(_t0); cekAdminOtomatis(_t0);
   // dropdown baru terisi setelah daftar guru dimuat -> cek lagi pada pilihan tersimpan
   setTimeout(function () { if (_gs.value) cekAdminOtomatis(_gs.value); }, 2500);
 
@@ -3126,8 +3178,8 @@ body.adm-sub .adm-pill { display: none !important; }
       var det = '';
       if (r.status !== 'Belum isi') {
         det = '<div class="aj-det">' + r.items.map(function (it) {
-          return '<div class="aj-it ' + (it.ada ? 'y' : 'n') + (it.revisi ? ' rv' : '') + '"><i>' + (it.ada ? '\u2713' : '\u2715') + '</i>' + esc(it.label) + (it.ada && it.link ? '<a href="' + esc(it.link) + '" target="_blank" rel="noopener">buka tautan</a>' : (it.ada ? '<span class="aj-nl">tanpa tautan</span>' : '')) +
-            (it.ada && r.status !== 'Lengkap' && r.status !== 'Belum dikirim' ? '<button type="button" class="aj-ri" data-a="revisi_item" data-item="' + esc(it.key) + '" data-nama="' + esc(it.label) + '" data-kode="' + esc(r.kode) + '">Revisi</button>' : '') + '</div>' +
+          return '<div class="aj-it ' + (it.ada ? 'y' : 'n') + (it.revisi ? ' rv' : '') + '"><i>' + (it.ada ? '\u2713' : '\u2715') + '</i><span class="aj-lb">' + esc(it.label) + '</span><span class="aj-r">' + (it.ada && it.link ? '<a href="' + esc(it.link) + '" target="_blank" rel="noopener">buka tautan</a>' : (it.ada ? '<span class="aj-nl">tanpa tautan</span>' : '')) +
+            (it.ada && r.status !== 'Lengkap' && r.status !== 'Belum dikirim' ? '<button type="button" class="aj-ri" data-a="revisi_item" data-item="' + esc(it.key) + '" data-nama="' + esc(it.label) + '" data-kode="' + esc(r.kode) + '">Revisi</button>' : '') + '</span></div>' +
             (it.revisi ? '<div class="aj-itn">Diminta revisi: ' + esc(it.revisi) + '</div>' : '');
         }).join('') + (r.status === 'Perlu revisi' && r.catatan ? '<div class="aj-cat">Catatan revisi: ' + esc(r.catatan) + '</div>' : '') +
           (r.status !== 'Lengkap' && r.status !== 'Belum dikirim' ? '<div class="aj-act"><button type="button" class="aj-rev" data-a="revisi" data-kode="' + esc(r.kode) + '">Revisi</button>' + (r.status === 'Perlu revisi' ? '' : '<button type="button" class="aj-lgk" data-a="lengkap" data-kode="' + esc(r.kode) + '">Lengkap</button>') + '</div>' : '') + '</div>';
@@ -3155,19 +3207,38 @@ body.adm-sub .adm-pill { display: none !important; }
       .getPerangkatAdmin(pin, id);
   }
 
-  function tinjau(tb) {
-    var a = tb.getAttribute('data-a'), cat = '', item = tb.getAttribute('data-item') || '';
-    if (a === 'revisi_item') { cat = prompt('Apa yang perlu diperbaiki pada "' + (tb.getAttribute('data-nama') || 'item ini') + '"?', ''); if (cat === null) return; }
-    else if (a === 'revisi') { cat = prompt('Catatan revisi untuk guru (apa yang perlu dilengkapi):', ''); if (cat === null) return; }
-    else if (!confirm('Nyatakan perangkat ajar guru ini LENGKAP? Setelah itu guru tidak bisa mengubahnya lagi.')) return;
-    tb.disabled = true; toast('info', 'Menyimpan...');
+  var dlgCb = null;
+  function tanya(judul, teks, pakaiCatatan, labelOk, kelas, cb) {
+    $('ajDlgJ').textContent = judul; $('ajDlgT').textContent = teks;
+    var ta = $('ajDlgC'); ta.value = ''; ta.style.display = pakaiCatatan ? '' : 'none';
+    var ok = $('ajDlgOk'); ok.textContent = labelOk; ok.className = 'aj-dlg-ok ' + (kelas || '');
+    dlgCb = cb; $('ajDlg').classList.add('show');
+    if (pakaiCatatan) setTimeout(function () { try { ta.focus(); } catch (e) { } }, 150);
+  }
+  function tutupDlg() { $('ajDlg').classList.remove('show'); dlgCb = null; }
+  $('ajDlgBatal').addEventListener('click', tutupDlg);
+  $('ajDlg').addEventListener('click', function (e) { if (e.target === this) tutupDlg(); });
+  $('ajDlgOk').addEventListener('click', function () {
+    var cb = dlgCb, cat = $('ajDlgC').value.trim(); tutupDlg(); if (cb) cb(cat);
+  });
+
+  function kirimTinjau(a, kode, item, cat) {
+    toast('info', 'Menyimpan...');
     google.script.run
       .withSuccessHandler(function (res) {
-        if (!res || !res.ok) { tb.disabled = false; toast('err', (res && res.message) || 'Gagal.'); return; }
+        if (!res || !res.ok) { toast('err', (res && res.message) || 'Gagal.'); return; }
         toast('ok', res.message || 'Selesai.'); muat(null, true);
       })
-      .withFailureHandler(function (err) { tb.disabled = false; toast('err', 'Error: ' + pesanError(err)); })
-      .tinjauPerangkatAdmin(window.__admPin, getDeviceId(), tb.getAttribute('data-kode'), a, cat, item);
+      .withFailureHandler(function (err) { toast('err', 'Error: ' + pesanError(err)); })
+      .tinjauPerangkatAdmin(window.__admPin, getDeviceId(), kode, a, cat, item);
+  }
+
+  function tinjau(tb) {
+    var a = tb.getAttribute('data-a'), item = tb.getAttribute('data-item') || '', kode = tb.getAttribute('data-kode');
+    if (!window.__admPin) { toast('err', 'Masukkan PIN admin dulu, lalu muat ulang.'); return; }
+    if (a === 'revisi_item') tanya('Minta revisi item', 'Apa yang perlu diperbaiki pada "' + (tb.getAttribute('data-nama') || 'item ini') + '"?', true, 'Kirim revisi', 'rv', function (c) { kirimTinjau(a, kode, item, c); });
+    else if (a === 'revisi') tanya('Kembalikan ke guru', 'Tulis catatan: apa yang perlu dilengkapi atau diperbaiki.', true, 'Kirim revisi', 'rv', function (c) { kirimTinjau(a, kode, '', c); });
+    else tanya('Nyatakan lengkap?', 'Setelah dinyatakan LENGKAP, guru tidak bisa mengubah perangkat ajarnya lagi.', false, 'Ya, lengkap', 'lg', function () { kirimTinjau(a, kode, '', ''); });
   }
 
   $('btnAjMuat').addEventListener('click', function () { muat($('ajPin').value.trim()); });
