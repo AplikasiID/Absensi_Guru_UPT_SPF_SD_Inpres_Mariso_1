@@ -124,6 +124,23 @@ button, input, textarea { font-family: inherit; }
 @keyframes ni-pill { from { opacity: .35; transform: scale(.9); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .bnav .bn-row > *, .bnav .bn-row > * .ni svg, .bnav .bn-row > * .ni svg path { animation: none !important; transition: none !important; } }
 </style>
+<style>
+.seg button{font-size:12.5px}
+.rw-sum{display:flex;gap:8px;margin-bottom:4px}.rw-sum div{flex:1;background:var(--card);border-radius:16px;padding:10px 6px;text-align:center;box-shadow:0 6px 16px rgba(30,58,138,.08)}
+.rw-sum b{display:block;font-size:20px;font-weight:800;color:#1e3a8a}.rw-sum small{font-size:11px;font-weight:700;color:var(--muted)}
+.rw-m{background:var(--card);border-radius:20px;margin-top:12px;box-shadow:0 8px 20px rgba(30,58,138,.08);overflow:hidden}
+.rw-h{display:flex;align-items:center;gap:12px;width:100%;background:transparent;border:0;padding:14px;text-align:left;font-family:inherit;color:inherit}
+.rw-sc{width:54px;height:54px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;background:linear-gradient(135deg,#1d4ed8,#16a34a);flex-shrink:0}.rw-sc b{font-size:19px;line-height:1}.rw-sc small{font-size:8.5px;font-weight:700;opacity:.9}
+.rw-sc.c{background:linear-gradient(135deg,#d97706,#f59e0b)}.rw-sc.k{background:linear-gradient(135deg,#dc2626,#f87171)}.rw-sc.kosong{background:rgba(100,116,139,.18);color:var(--muted)}.rw-sc.kosong b{font-size:15px}
+.rw-t{flex:1;min-width:0}.rw-t b{display:block;font-size:15px;font-weight:800}.rw-t small{font-size:12px;color:var(--muted);font-weight:600}
+.rw-chip{flex-shrink:0;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:99px}.rw-chip.v{background:#dcfce7;color:#15803d}.rw-chip.m{background:#fef3c7;color:#b45309}.rw-chip.r{background:#ffedd5;color:#c2410c}.rw-chip.b{background:rgba(100,116,139,.18);color:var(--muted)}
+.rw-det{display:none;padding:0 14px 14px}.rw-m.buka .rw-det{display:block}
+.rw-row{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:12.5px;font-weight:700}.rw-row span:first-child{width:86px;flex-shrink:0}.rw-bar{flex:1;height:8px;border-radius:99px;background:rgba(100,116,139,.2);overflow:hidden}.rw-bar i{display:block;height:100%;background:linear-gradient(90deg,#1d4ed8,#22c55e)}.rw-row em{font-style:normal;width:38px;text-align:right;color:var(--muted)}
+.rw-wk{background:rgba(100,116,139,.12);border-radius:14px;padding:10px 12px;margin-top:8px}.rw-wk>b{font-size:12.5px}.rw-wk>b span{font-weight:600;color:var(--muted)}
+.rw-wi{font-size:12.5px;font-weight:600;padding:2px 0}.rw-wi.y::before{content:"\2713  ";color:#15803d;font-weight:800}.rw-wi.n{color:var(--muted)}.rw-wi.n::before{content:"\2715  ";color:#b91c1c;font-weight:800}
+.rw-cat{margin-top:6px;font-size:12px;font-style:italic;color:var(--muted);word-break:break-word}.rw-al{margin-top:6px;font-size:12px;font-weight:700;color:#b91c1c}.rw-kosong{font-size:12.5px;color:var(--muted);margin-top:8px}
+@media (prefers-color-scheme: dark){.rw-sum b{color:#9DB7FF}.rw-chip.v{background:rgba(34,197,94,.18);color:#5EE08A}.rw-chip.m{background:rgba(245,158,11,.18);color:#FBBF4D}.rw-chip.r{background:rgba(249,115,22,.2);color:#FDBA74}.rw-wi.y::before{color:#5EE08A}.rw-wi.n::before,.rw-al{color:#FF8F86}}
+</style>
 </head>
 <body>
 <div class="ban">
@@ -133,13 +150,14 @@ button, input, textarea { font-family: inherit; }
 </div>
 
 <div class="wrap">
-  <div class="seg" id="seg"><button type="button" id="segMing" class="on">Mingguan</button><button type="button" id="segAjar">Perangkat Ajar</button></div>
+  <div class="seg" id="seg"><button type="button" id="segMing" class="on">Mingguan</button><button type="button" id="segAjar">Perangkat Ajar</button><button type="button" id="segRiw">Riwayat</button></div>
   <div id="paneMing">
   <div class="mrow"><button type="button" id="prev" aria-label="Bulan sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><b id="bulanLabel">-</b><button type="button" id="next" aria-label="Bulan berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div>
   <div class="wks" id="wks"></div>
   <div id="isi"><div class="sk"></div></div>
   </div>
   <div id="paneAjar" style="display:none"><div class="sk"></div></div>
+  <div id="paneRiw" style="display:none"><div class="sk"></div></div>
 </div>
 
 <nav class="bnav" id="bnav">
@@ -305,13 +323,60 @@ button, input, textarea { font-family: inherit; }
       .withFailureHandler(function () { box.innerHTML = '<div class="empty">Tidak bisa terhubung ke server. Periksa internet, lalu buka lagi.</div>'; ajMuat = false; })
       .getPerangkatGuru(kode, dev);
   }
-  function ajTab(ajar) {
-    $('segMing').classList.toggle('on', !ajar); $('segAjar').classList.toggle('on', ajar);
-    var g1 = document.querySelector('.g1'), g2 = $('sub'); if (g1) g1.textContent = ajar ? 'Perangkat Ajar' : 'Laporan Minggu Ini'; if (g2) g2.textContent = ajar ? 'Centang yang sudah kamu siapkan' : 'Ketuk yang sudah kamu kerjakan';
-    $('paneMing').style.display = ajar ? 'none' : ''; $('paneAjar').style.display = ajar ? '' : 'none';
-    if (ajar && !aj && !ajMuat) ajMuatData();
-    try { if (location.hash !== (ajar ? '#ajar' : '')) history.replaceState(null, '', ajar ? '#ajar' : location.pathname + location.search); } catch (e) { }
+  function ajTab(tab) {
+    if (tab === true) tab = 'ajar'; else if (tab === false) tab = 'ming';
+    $('segMing').classList.toggle('on', tab === 'ming'); $('segAjar').classList.toggle('on', tab === 'ajar'); $('segRiw').classList.toggle('on', tab === 'riw');
+    var T = { ming: ['Laporan Minggu Ini', 'Ketuk yang sudah kamu kerjakan'], ajar: ['Perangkat Ajar', 'Centang yang sudah kamu siapkan'], riw: ['Riwayat Laporan', 'Skor dan laporan bulan-bulan sebelumnya'] }[tab];
+    var g1 = document.querySelector('.g1'), g2 = $('sub'); if (g1) g1.textContent = T[0]; if (g2) g2.textContent = T[1];
+    $('paneMing').style.display = tab === 'ming' ? '' : 'none'; $('paneAjar').style.display = tab === 'ajar' ? '' : 'none'; $('paneRiw').style.display = tab === 'riw' ? '' : 'none';
+    if (tab === 'ajar' && !aj && !ajMuat) ajMuatData();
+    if (tab === 'riw' && !riw && !riwMuat) riwMuatData();
+    var hs = tab === 'ajar' ? '#ajar' : (tab === 'riw' ? '#riwayat' : '');
+    try { if (location.hash !== hs) history.replaceState(null, '', hs || location.pathname + location.search); } catch (e) { }
   }
+  // ================= RIWAYAT LAPORAN =================
+  var riw = null, riwMuat = false, riwBuka = {};
+  var BLN2 = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  function riwNamaBulan(b) { var p = b.split('-'); return BLN2[+p[1] - 1] + ' ' + p[0]; }
+  function riwGambar() {
+    var box = $('paneRiw');
+    if (riw.tidak) { box.innerHTML = '<div class="empty">Jabatanmu tidak memiliki laporan mingguan.</div>'; return; }
+    if (!riw.bulan.length) { box.innerHTML = '<div class="empty">Belum ada riwayat. Riwayat akan muncul setelah ada data absen atau laporan.</div>'; return; }
+    var nm = {}; (riw.labelIndikator || []).forEach(function (x) { nm[x.key] = x.label; });
+    var html = '<div class="rw-sum"><div><b>' + (riw.rata === null ? '-' : riw.rata) + '</b><small>Rata-rata skor</small></div><div><b>' + riw.jumlahBulan + '</b><small>Bulan tercatat</small></div><div><b>' + riw.terisi + '/' + riw.total + '</b><small>Minggu terisi</small></div></div>';
+    html += riw.bulan.map(function (m) {
+      var chip = m.status === 'Terverifikasi' ? '<span class="rw-chip v">Terverifikasi</span>' : (m.status === 'Menunggu' ? '<span class="rw-chip m">Menunggu</span>' : (m.status === 'Perlu revisi' ? '<span class="rw-chip r">Perlu revisi</span>' : '<span class="rw-chip b">Belum ada laporan</span>'));
+      var lingk = m.skor === null ? '<div class="rw-sc kosong"><b>' + (m.hadirPct === null ? '-' : m.hadirPct + '%') + '</b><small>hadir</small></div>' : '<div class="rw-sc' + (m.skor < 70 ? (m.skor < 55 ? ' k' : ' c') : '') + '"><b>' + m.skor + '</b><small>dari 100</small></div>';
+      var sub = m.total ? (m.terisi + ' dari ' + m.total + ' minggu terisi') : 'Belum ada minggu berjalan';
+      if (m.skor !== null && m.sementara) sub += ' \u00B7 sementara';
+      var det = '<div class="rw-det">' + m.indikator.map(function (i) {
+        return '<div class="rw-row"><span>' + esc(i.label) + '</span><div class="rw-bar"><i style="width:' + i.persen + '%"></i></div><em>' + i.persen + '%</em></div>';
+      }).join('') + (m.minggu.length ? m.minggu.map(function (w) {
+        return '<div class="rw-wk"><b>' + esc(w.label) + ' <span>' + esc(w.rentang) + '</span></b>' + Object.keys(w.isi).map(function (k) {
+          return '<div class="rw-wi ' + (w.isi[k] ? 'y' : 'n') + '">' + esc(nm[k] || k) + '</div>'; }).join('') + (w.catatan ? '<div class="rw-cat">\u201C' + esc(w.catatan) + '\u201D</div>' : '') + (w.status === 'Revisi' ? '<div class="rw-al">Perlu revisi' + (w.alasan ? ': ' + esc(w.alasan) : '') + '</div>' : '') + '</div>';
+      }).join('') : '<div class="rw-kosong">Belum ada laporan mingguan di bulan ini.</div>') + '</div>';
+      return '<div class="rw-m' + (riwBuka[m.bulan] ? ' buka' : '') + '" data-b="' + m.bulan + '"><button type="button" class="rw-h">' + lingk + '<div class="rw-t"><b>' + riwNamaBulan(m.bulan) + '</b><small>' + esc(sub) + '</small></div>' + chip + '</button>' + det + '</div>';
+    }).join('');
+    box.innerHTML = html;
+  }
+  function riwMuatData() {
+    var box = $('paneRiw');
+    if (!kode) { box.innerHTML = '<div class="empty">Nama guru belum dipilih. Kembali ke halaman Absen, pilih namamu, lalu buka lagi.</div>'; return; }
+    box.innerHTML = '<div class="sk"></div>'; riwMuat = true;
+    google.script.run
+      .withSuccessHandler(function (r) {
+        riwMuat = false;
+        if (!r || !r.ok) { box.innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; return; }
+        riw = r; $('guruPill').textContent = r.nama.split(',')[0]; $('guruKelas').textContent = r.jabatan || ''; riwGambar();
+      })
+      .withFailureHandler(function () { riwMuat = false; box.innerHTML = '<div class="empty">Tidak bisa terhubung ke server. Periksa internet, lalu buka lagi.</div>'; })
+      .getRiwayatLaporanGuru(kode, dev);
+  }
+  $('paneRiw').addEventListener('click', function (e) {
+    var hd = e.target.closest('.rw-h'); if (!hd) return;
+    var m = hd.parentNode; m.classList.toggle('buka'); riwBuka[m.getAttribute('data-b')] = m.classList.contains('buka');
+  });
+  $('segRiw').addEventListener('click', function () { ajTab('riw'); });
   $('segMing').addEventListener('click', function () { ajTab(false); });
   $('segAjar').addEventListener('click', function () { ajTab(true); });
   $('paneAjar').addEventListener('click', function (e) {
@@ -337,7 +402,7 @@ button, input, textarea { font-family: inherit; }
   $('paneAjar').addEventListener('input', function (e) {
     if (e.target.classList.contains('pj-lnk')) ajDraft[e.target.parentNode.getAttribute('data-k')].link = e.target.value;
   });
-  if (location.hash === '#ajar') ajTab(true);
+  if (location.hash === '#ajar') ajTab('ajar'); else if (location.hash === '#riwayat') ajTab('riw');
 })();
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
 </script>
