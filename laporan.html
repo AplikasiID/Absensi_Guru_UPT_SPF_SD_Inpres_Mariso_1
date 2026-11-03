@@ -147,6 +147,7 @@ button, input, textarea { font-family: inherit; }
 .rw-wi{font-size:12.5px;font-weight:600;padding:2px 0}.rw-wi.y::before{content:"\2713  ";color:#15803d;font-weight:800}.rw-wi.n{color:var(--muted)}.rw-wi.n::before{content:"\2715  ";color:#b91c1c;font-weight:800}
 .rw-cat{margin-top:6px;font-size:12px;font-style:italic;color:var(--muted);word-break:break-word}.rw-al{margin-top:6px;font-size:12px;font-weight:700;color:#b91c1c}.rw-kosong{font-size:12.5px;color:var(--muted);margin-top:8px}
 @media (prefers-color-scheme: dark){.rw-sum b{color:#9DB7FF}.rw-chip.v{background:rgba(34,197,94,.18);color:#5EE08A}.rw-chip.m{background:rgba(245,158,11,.18);color:#FBBF4D}.rw-chip.r{background:rgba(249,115,22,.2);color:#FDBA74}.rw-wi.y::before{color:#5EE08A}.rw-wi.n::before,.rw-al{color:#FF8F86}}
+.pj-b.up{background:#eff6ff;color:#1d4ed8}@media (prefers-color-scheme: dark){.pj-b.up{background:rgba(59,130,246,.22);color:#BFD3FF}}
 </style>
 </head>
 <body>
@@ -157,7 +158,9 @@ button, input, textarea { font-family: inherit; }
 </div>
 
 <div class="wrap">
+  <div class="seg" id="seg"><button type="button" id="segAjar" class="on">Perangkat Ajar</button><button type="button" id="segRiw">Riwayat</button></div>
   <div id="paneAjar"><div class="sk"></div></div>
+  <div id="paneRiw" style="display:none"><div class="sk"></div></div>
 </div>
 
 <nav class="bnav" id="bnav">
@@ -219,7 +222,7 @@ button, input, textarea { font-family: inherit; }
       if (it.grup !== grup) {
         if (grup) html += '</div>';
         grup = it.grup;
-        html += '<div class="pj-h">' + (grup === 'Perencanaan' ? 'Perencanaan \u00B7 sekali per semester \u00B7 tautan wajib' : 'Berjalan \u00B7 diperbarui tiap bulan') + '</div><div class="card">';
+        html += '<div class="pj-h">' + (grup === 'Perencanaan' ? 'Perencanaan \u00B7 sekali per semester \u00B7 tautan atau file wajib' : 'Berjalan \u00B7 diperbarui tiap bulan') + '</div><div class="card">';
       }
       var d = ajDraft[it.key], kunci = it.ada && !d.edit, wj = it.grup === 'Perencanaan';
       var cls = 'pj-it' + (kunci ? ' kunci' : ' ed') + (d.ada ? ' on' : '') + (wj ? ' wj' : '') + (it.revisi ? ' rv' : '');
@@ -228,9 +231,10 @@ button, input, textarea { font-family: inherit; }
       if (kunci) {
         html += '<div class="pj-btns">' + (it.link ? '<a class="pj-b lh" href="' + esc(ajHref(it.link)).replace(/"/g, '&quot;') + '" target="_blank" rel="noopener">Lihat</a>' : '<span class="pj-m" style="margin:0">Tanpa tautan</span>') + (bisa ? '<button type="button" class="pj-b ub" data-a="ubah">Ubah</button>' : '') + '</div>';
       } else {
-        html += '<div class="pj-need' + (d.need ? ' show' : '') + '">Tempel tautan dulu, baru bisa dicentang.</div>' +
-          '<input type="url" class="pj-lnk' + (d.need ? ' bad' : '') + '" inputmode="url" maxlength="300" placeholder="' + (wj ? 'Tempel tautan Google Drive (wajib)' : 'Tempel tautan Google Drive (opsional)') + '" value="' + esc(d.link).replace(/"/g, '&quot;') + '"' + (bisa ? '' : ' disabled') + '>' +
-          (bisa ? '<div class="pj-btns"><button type="button" class="pj-b sv" data-a="simpan"' + (d.busy ? ' disabled' : '') + '>' + (d.busy ? 'Menyimpan...' : 'Simpan') + '</button>' +
+        html += '<div class="pj-need' + (d.need ? ' show' : '') + '">Tempel tautan atau unggah file dulu, baru bisa dicentang.</div>' +
+          '<input type="url" class="pj-lnk' + (d.need ? ' bad' : '') + '" inputmode="url" maxlength="300" placeholder="' + (wj ? 'Tempel tautan, atau unggah file (wajib)' : 'Tempel tautan, atau unggah file (opsional)') + '" value="' + esc(d.link).replace(/"/g, '&quot;') + '"' + (bisa ? '' : ' disabled') + '>' +
+          (bisa ? '<div class="pj-btns"><button type="button" class="pj-b sv" data-a="simpan"' + ((d.busy || d.up) ? ' disabled' : '') + '>' + (d.busy ? 'Menyimpan...' : 'Simpan') + '</button>' +
+            '<button type="button" class="pj-b up" data-a="unggah"' + ((d.up || d.busy) ? ' disabled' : '') + '>' + (d.up ? 'Mengunggah...' : 'Unggah file') + '</button><input type="file" class="pj-file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none">' +
             (ajLinkOk(d.link) ? '<a class="pj-b lh" href="' + esc(ajHref(d.link)).replace(/"/g, '&quot;') + '" target="_blank" rel="noopener">Lihat</a>' : '') +
             (it.ada ? '<button type="button" class="pj-b bt" data-a="batal">Batal</button>' : '') + '</div>' : '');
       }
@@ -254,12 +258,62 @@ button, input, textarea { font-family: inherit; }
       .withSuccessHandler(function (r) {
         if (!r || !r.ok) { box.innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; ajMuat = false; return; }
         aj = r; $('guruPill').textContent = r.nama.split(',')[0]; $('guruKelas').textContent = r.jabatan || '';
-        ajDraft = {}; (r.items || []).forEach(function (it) { ajDraft[it.key] = { ada: !!it.ada, link: it.link || '', edit: false, need: false, busy: false, msg: '', msgJ: '' }; });
+        ajDraft = {}; (r.items || []).forEach(function (it) { ajDraft[it.key] = { ada: !!it.ada, link: it.link || '', edit: false, need: false, busy: false, up: false, msg: '', msgJ: '' }; });
         ajGambar();
       })
       .withFailureHandler(function () { box.innerHTML = '<div class="empty">Tidak bisa terhubung ke server. Periksa internet, lalu buka lagi.</div>'; ajMuat = false; })
       .getPerangkatGuru(kode, dev);
   }
+  function ajTab(tab) {
+    if (tab !== 'riw') tab = 'ajar';
+    $('segAjar').classList.toggle('on', tab === 'ajar'); $('segRiw').classList.toggle('on', tab === 'riw');
+    var T = { ajar: ['Perangkat Ajar', 'Centang yang sudah kamu siapkan'], riw: ['Riwayat Perangkat Ajar', 'Semester-semester sebelumnya'] }[tab];
+    var g1 = document.querySelector('.g1'), g2 = $('sub'); if (g1) g1.textContent = T[0]; if (g2) g2.textContent = T[1];
+    $('paneAjar').style.display = tab === 'ajar' ? '' : 'none'; $('paneRiw').style.display = tab === 'riw' ? '' : 'none';
+    if (tab === 'ajar' && !aj && !ajMuat) ajMuatData();
+    if (tab === 'riw' && !riw && !riwMuat) riwMuatData();
+    var hs = tab === 'riw' ? '#riwayat' : '';
+    try { if (location.hash !== hs) history.replaceState(null, '', hs || location.pathname + location.search); } catch (e) { }
+  }
+  // ================= RIWAYAT PERANGKAT AJAR =================
+  var riw = null, riwMuat = false, riwBuka = {};
+  function riwChip(st) {
+    return st === 'Lengkap' ? '<span class="rw-chip v">Lengkap</span>' : (st === 'Menunggu' ? '<span class="rw-chip m">Menunggu</span>' : (st === 'Perlu revisi' ? '<span class="rw-chip r">Perlu revisi</span>' : '<span class="rw-chip b">Belum dikirim</span>'));
+  }
+  function riwGambar() {
+    var box = $('paneRiw');
+    if (riw.tidak) { box.innerHTML = '<div class="empty">Jabatanmu tidak memiliki perangkat ajar yang perlu dilaporkan.</div>'; return; }
+    if (!riw.semester.length) { box.innerHTML = '<div class="empty">Belum ada riwayat. Riwayat muncul setelah kamu menyimpan perangkat ajar.</div>'; return; }
+    box.innerHTML = riw.semester.map(function (m) {
+      var pct = m.total ? Math.round(m.jumlah / m.total * 100) : 0;
+      var lingk = '<div class="rw-sc' + (pct < 50 ? ' k' : (pct < 80 ? ' c' : '')) + '"><b>' + m.jumlah + '</b><small>dari ' + m.total + '</small></div>';
+      var sub = (m.berjalan ? 'Semester berjalan' : 'Semester lalu') + (m.dikirim ? ' \u00B7 dikirim ' + m.dikirim : '');
+      var det = '<div class="rw-det">' + m.items.map(function (it) {
+        var lh = (it.ada && it.link) ? ' <a href="' + esc(ajHref(it.link)).replace(/"/g, '&quot;') + '" target="_blank" rel="noopener" style="margin-left:6px;font-weight:800;color:#1d4ed8">Lihat</a>' : '';
+        return '<div class="rw-wi ' + (it.ada ? 'y' : 'n') + '">' + esc(it.label) + lh + '</div>' + (it.revisi ? '<div class="rw-al">Perlu diperbaiki: ' + esc(it.revisi) + '</div>' : '');
+      }).join('') + (m.catatan ? '<div class="rw-cat">\u201C' + esc(m.catatan) + '\u201D</div>' : '') + '</div>';
+      return '<div class="rw-m' + (riwBuka[m.key] ? ' buka' : '') + '" data-b="' + esc(m.key) + '"><button type="button" class="rw-h">' + lingk + '<div class="rw-t"><b>' + esc(m.label) + '</b><small>' + esc(sub) + '</small></div>' + riwChip(m.status) + '</button>' + det + '</div>';
+    }).join('');
+  }
+  function riwMuatData() {
+    var box = $('paneRiw');
+    if (!kode) { box.innerHTML = '<div class="empty">Nama guru belum dipilih. Kembali ke halaman Absen, pilih namamu, lalu buka lagi.</div>'; return; }
+    box.innerHTML = '<div class="sk"></div>'; riwMuat = true;
+    google.script.run
+      .withSuccessHandler(function (r) {
+        riwMuat = false;
+        if (!r || !r.ok) { box.innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; return; }
+        riw = r; $('guruPill').textContent = r.nama.split(',')[0]; $('guruKelas').textContent = r.jabatan || ''; riwGambar();
+      })
+      .withFailureHandler(function () { riwMuat = false; box.innerHTML = '<div class="empty">Tidak bisa terhubung ke server. Periksa internet, lalu buka lagi.</div>'; })
+      .getRiwayatPerangkatGuru(kode, dev);
+  }
+  $('paneRiw').addEventListener('click', function (e) {
+    var hd = e.target.closest('.rw-h'); if (!hd) return;
+    var m = hd.parentNode; m.classList.toggle('buka'); riwBuka[m.getAttribute('data-b')] = m.classList.contains('buka');
+  });
+  $('segRiw').addEventListener('click', function () { ajTab('riw'); });
+  $('segAjar').addEventListener('click', function () { ajTab('ajar'); });
   function ajItemEl(el) { var it = el.closest('.pj-it'); return it ? it.getAttribute('data-k') : null; }
   $('paneAjar').addEventListener('click', function (e) {
     if (!aj) return;
@@ -287,11 +341,12 @@ button, input, textarea { font-family: inherit; }
       return;
     }
     k = ajItemEl(tb); var d2 = ajDraft[k], it2 = ajItem(k), a = tb.getAttribute('data-a');
+    if (a === 'unggah') { var fi = tb.closest('.pj-it').querySelector('.pj-file'); if (fi) fi.click(); return; }
     if (a === 'ubah') { d2.edit = true; d2.msg = ''; ajGambar(); return; }
     if (a === 'batal') { d2.edit = false; d2.ada = it2.ada; d2.link = it2.link || ''; d2.need = false; d2.msg = ''; ajGambar(); return; }
     if (a === 'simpan') {
       var link = String(d2.link || '').trim();
-      if (d2.ada && ajWajib(k) && !ajLinkOk(link)) { d2.need = true; d2.msg = 'Tautan wajib diisi dengan alamat yang benar.'; d2.msgJ = 'err'; ajGambar(); return; }
+      if (d2.ada && ajWajib(k) && !ajLinkOk(link)) { d2.need = true; d2.msg = 'Tautan atau file wajib diisi.'; d2.msgJ = 'err'; ajGambar(); return; }
       if (!d2.ada && !it2.ada) { d2.msg = 'Centang dulu, lalu simpan.'; d2.msgJ = 'err'; ajGambar(); return; }
       if (d2.ada && link && !/^https?:\/\//i.test(link)) { link = 'https://' + link; d2.link = link; }
       d2.busy = true; d2.msg = ''; ajGambar();
@@ -310,6 +365,29 @@ button, input, textarea { font-family: inherit; }
         .simpanItemPerangkatGuru(kode, dev, k, !!d2.ada, link);
     }
   });
+  $('paneAjar').addEventListener('change', function (e) {
+    if (!e.target.classList.contains('pj-file') || !aj) return;
+    var f = e.target.files && e.target.files[0]; if (!f) return;
+    var k = ajItemEl(e.target), d = ajDraft[k]; if (!d) return;
+    var ext = (f.name.split('.').pop() || '').toLowerCase();
+    if (['pdf', 'doc', 'docx'].indexOf(ext) < 0) { d.msg = 'Format file harus PDF, DOC, atau DOCX.'; d.msgJ = 'err'; ajGambar(); return; }
+    if (f.size > 5 * 1024 * 1024) { d.msg = 'Ukuran file maksimal 5 MB.'; d.msgJ = 'err'; ajGambar(); return; }
+    d.up = true; d.msg = 'Mengunggah ' + f.name + '...'; d.msgJ = ''; ajGambar();
+    var rd = new FileReader();
+    rd.onload = function () {
+      google.script.run
+        .withSuccessHandler(function (res) {
+          d.up = false;
+          if (res && res.ok) { d.link = res.link; d.ada = true; d.need = false; d.msg = 'File terunggah: ' + res.nama + '. Tekan Simpan.'; d.msgJ = 'ok'; }
+          else { d.msg = (res && res.message) || 'Gagal mengunggah.'; d.msgJ = 'err'; }
+          ajGambar();
+        })
+        .withFailureHandler(function () { d.up = false; d.msg = 'Tidak bisa terhubung ke server. Coba lagi.'; d.msgJ = 'err'; ajGambar(); })
+        .unggahItemPerangkatGuru(kode, dev, k, f.name, f.type, rd.result);
+    };
+    rd.onerror = function () { d.up = false; d.msg = 'File tidak terbaca. Coba pilih ulang.'; d.msgJ = 'err'; ajGambar(); };
+    rd.readAsDataURL(f);
+  });
   $('paneAjar').addEventListener('input', function (e) {
     if (!e.target.classList.contains('pj-lnk') || !aj) return;
     var it = e.target.parentNode, k = it.getAttribute('data-k'), d = ajDraft[k]; d.link = e.target.value;
@@ -318,8 +396,7 @@ button, input, textarea { font-family: inherit; }
       else if (d.ada) { d.ada = false; it.classList.remove('on'); }
     }
   });
-  try { if (location.hash) history.replaceState(null, '', location.pathname + location.search); } catch (e) { }
-  ajMuatData();
+  ajTab(location.hash === '#riwayat' ? 'riw' : 'ajar');
 })();
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
 </script>
