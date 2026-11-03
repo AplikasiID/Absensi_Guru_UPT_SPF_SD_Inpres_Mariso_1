@@ -1070,6 +1070,35 @@ body.adm-sub .adm-pill { display: none !important; }
 .lap-toast{position:fixed;left:50%;bottom:calc(120px + env(safe-area-inset-bottom,0px));transform:translate(-50%,12px);max-width:min(380px,calc(100% - 32px));padding:11px 16px;border-radius:14px;font-size:13.5px;font-weight:800;color:#fff;background:#0f172a;box-shadow:0 8px 24px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:90;text-align:center}
 .lap-toast.show{opacity:1;transform:translate(-50%,0)}.lap-toast.ok{background:#15803d}.lap-toast.err{background:#b91c1c}
 </style>
+<style>
+#ajBox{display:none;margin-top:14px}#ajBox.open{display:block}
+.aj-sem{font-size:13px;font-weight:800;color:#14213d;background:#f1f5f9;border-radius:14px;padding:10px 12px;margin-bottom:10px;text-align:center}
+.aj-it{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;padding:3px 0}.aj-it i{font-style:normal;width:16px;font-weight:800}.aj-it.y i{color:#15803d}.aj-it.n{color:#8a93a5}.aj-it.n i{color:#b91c1c}.aj-it a{color:#1d4ed8;font-weight:800;text-decoration:none;margin-left:auto;white-space:nowrap}
+.aj-det{display:none;background:#f1f5f9;border-radius:14px;padding:10px 12px;margin:2px 0 12px}.lap-card.buka .aj-det{display:block}
+.aj-ri{margin-left:auto;padding:3px 9px;border-radius:99px;font-size:10.5px;font-weight:800;background:#fee2e2;color:#b91c1c;box-shadow:none}.aj-it.rv{color:#b91c1c}.aj-itn{margin:0 0 4px 24px;font-size:11.5px;font-weight:700;color:#b91c1c}
+.aj-it a{margin-left:auto}.aj-it a + .aj-ri{margin-left:6px}
+.aj-cat{margin-top:6px;font-size:12px;color:#b91c1c;font-weight:600}
+.aj-act{display:flex;gap:8px;margin-top:10px}.aj-act button{flex:1;padding:10px;border-radius:12px;font-size:13px;font-weight:800;box-shadow:none}.aj-rev{background:#fee2e2;color:#b91c1c}.aj-lgk{background:#dcfce7;color:#15803d}.aj-act button:disabled{opacity:.5}
+@media (prefers-color-scheme: dark){.aj-ri{background:rgba(239,68,68,.18);color:#FF8F86}.aj-it.rv,.aj-itn{color:#FF8F86}.aj-sem,.aj-det{background:#262a36;color:#F2F2F7}.aj-it a{color:#9DB7FF}.aj-it.y i{color:#5EE08A}.aj-it.n i,.aj-cat{color:#FF8F86}.aj-rev{background:rgba(239,68,68,.18);color:#FF8F86}.aj-lgk{background:rgba(34,197,94,.18);color:#5EE08A}}
+</style>
+<style>
+/* ===== Animasi ikon menu bawah (halus; mati otomatis kalau HP memilih "kurangi gerakan") ===== */
+.bnav .bn-row > * { -webkit-tap-highlight-color: transparent; transition: background-color .28s ease, color .28s ease, transform .15s ease; }
+.bnav .bn-row > *:active { transform: scale(.92); }
+.bnav .bn-row > .on .ni svg, .bnav .bn-row > [aria-current] .ni svg { animation: ni-pop .55s cubic-bezier(.34,1.56,.64,1) both; }
+.bnav .bn-row > .on, .bnav .bn-row > [aria-current] { animation: ni-pill .35s ease-out both; }
+.bnav .bn-row > :nth-child(1).on .ni svg { animation-name: ni-hop; animation-duration: .6s; }
+.bnav .bn-row > :nth-child(2).on .ni svg path, .bnav .bn-row > :nth-child(2)[aria-current] .ni svg path { transform-box: view-box; transform-origin: 12px 12px; animation: ni-spin .9s cubic-bezier(.22,1,.36,1) both; }
+.bnav .bn-row > :nth-child(3).on .ni svg path:first-child, .bnav .bn-row > :nth-child(3)[aria-current] .ni svg path:first-child { stroke-dasharray: 14; animation: ni-draw .6s .1s ease-out both; }
+.bnav .bn-row > :nth-child(4).on .ni svg { animation-name: ni-shield; animation-duration: .7s; }
+@keyframes ni-pop { 0% { transform: scale(.55); opacity: .4; } 60% { transform: scale(1.18); opacity: 1; } 100% { transform: scale(1); } }
+@keyframes ni-hop { 0% { transform: translateY(6px) scale(.8); } 45% { transform: translateY(-5px) scale(1.12); } 70% { transform: translateY(1px); } 100% { transform: none; } }
+@keyframes ni-spin { from { transform: rotate(-300deg); } to { transform: rotate(0); } }
+@keyframes ni-draw { from { stroke-dashoffset: 14; } to { stroke-dashoffset: 0; } }
+@keyframes ni-shield { 0% { transform: scale(.6) rotate(-12deg); } 55% { transform: scale(1.15) rotate(6deg); } 100% { transform: none; } }
+@keyframes ni-pill { from { opacity: .35; transform: scale(.9); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .bnav .bn-row > *, .bnav .bn-row > * .ni svg, .bnav .bn-row > * .ni svg path { animation: none !important; transition: none !important; } }
+</style>
 </head>
 <body>
   <!-- Layar pembuka -->
@@ -1175,6 +1204,7 @@ body.adm-sub .adm-pill { display: none !important; }
         <button type="button" class="adm-item" onclick="window.admSub('dev')"><span class="adm-ic merah"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg></span><span class="adm-tx"><b>Perangkat Guru</b><small>Daftar HP dan reset</small></span><span class="adm-badge" id="badgeDev" style="display:none"></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
         <button type="button" class="adm-item" onclick="window.admSub('lap')"><span class="adm-ic hijau"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></span><span class="adm-tx"><b>Verifikasi Laporan</b><small>Laporan mingguan guru</small></span><span class="adm-badge" id="badgeLap" style="display:none;"></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
         <button type="button" class="adm-item" onclick="window.admSub('rek')"><span class="adm-ic biru"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg></span><span class="adm-tx"><b>Ringkasan Sekolah</b><small>Skor guru dan rekap bulanan</small></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button type="button" class="adm-item" onclick="window.admSub('aj')"><span class="adm-ic kuning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h12l4 4v12H4z"/><path d="M8 12h8M8 16h5"/></svg></span><span class="adm-tx"><b>Perangkat Ajar</b><small>Pemeriksaan per semester</small></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
       </div>
       </div>
 
@@ -1252,6 +1282,23 @@ body.adm-sub .adm-pill { display: none !important; }
             <input type="search" id="devCari" placeholder="Cari nama guru" autocomplete="off">
             <div class="dev-sum" id="devSum"></div>
             <div id="devList"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="adm-pane" id="admPaneAj">
+        <div class="card2">
+          <h2>Perangkat Ajar</h2>
+          <p class="hint-small" id="ajSub">Periksa Kalender Pendidikan, Prota, Prosem, Silabus, Modul Ajar, Jurnal, dan Nilai tiap guru. Perlu PIN admin.</p>
+          <div class="pin-row" id="ajPinRow">
+            <input type="password" id="ajPin" inputmode="numeric" placeholder="Masukkan PIN admin" autocomplete="off">
+            <button type="button" id="btnAjMuat" aria-label="Muat perangkat ajar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>
+          </div>
+          <div id="ajStatus" class="status"></div>
+          <div id="ajBox">
+            <div class="aj-sem" id="ajSem">-</div>
+            <div class="lap-kp"><div><b id="ajLengkap">0</b><span>Lengkap</span></div><div><b id="ajMenunggu">0</b><span>Menunggu</span></div><div><b id="ajBelum">0</b><span>Belum</span></div></div>
+            <div id="ajList"></div>
           </div>
         </div>
       </div>
@@ -2780,9 +2827,9 @@ body.adm-sub .adm-pill { display: none !important; }
     try { window.scrollTo(0, 0); } catch (e) { }
   }
   window.admSub = function (k) {
-    var peta = { menu: 'admPaneMenu', ket: 'admPaneKet', dev: 'admPaneDev', lap: 'admPaneLap', rek: 'admPaneRek' };
+    var peta = { menu: 'admPaneMenu', ket: 'admPaneKet', dev: 'admPaneDev', lap: 'admPaneLap', rek: 'admPaneRek', aj: 'admPaneAj' };
     for (var id in peta) $(peta[id]).classList.toggle('on', id === k);
-    var T = { menu: ['Menu Admin', 'Kelola absensi sekolah'], ket: ['Ajukan Keterangan', 'Sakit, izin, dinas luar, cuti'], dev: ['Perangkat Guru', 'Daftar HP dan reset'], lap: ['Verifikasi Laporan', 'Laporan mingguan guru'], rek: ['Ringkasan Sekolah', 'Skor guru dan rekap bulanan'] }[k] || ['Menu Admin', 'Kelola absensi sekolah'];
+    var T = { menu: ['Menu Admin', 'Kelola absensi sekolah'], ket: ['Ajukan Keterangan', 'Sakit, izin, dinas luar, cuti'], dev: ['Perangkat Guru', 'Daftar HP dan reset'], lap: ['Verifikasi Laporan', 'Laporan mingguan guru'], rek: ['Ringkasan Sekolah', 'Skor guru dan rekap bulanan'], aj: ['Perangkat Ajar', 'Pemeriksaan per semester'] }[k] || ['Menu Admin', 'Kelola absensi sekolah'];
     $('admGt1').textContent = T[0]; $('admGt2').textContent = T[1];
     document.body.classList.toggle('adm-sub', k !== 'menu');
     try { window.scrollTo(0, 0); } catch (e) { }
@@ -2889,6 +2936,8 @@ body.adm-sub .adm-pill { display: none !important; }
     void el.offsetWidth; el.classList.add('show');
     clearTimeout(toastT); toastT = setTimeout(function () { el.classList.remove('show'); }, tipe === 'err' ? 6000 : 4000);
   }
+
+  window.lapToast = toast;
 
   function gambar() {
     $('lapBulan').textContent = label(bulan);
@@ -3059,6 +3108,77 @@ body.adm-sub .adm-pill { display: none !important; }
   // Kalau PIN sudah dimasukkan di menu lain pada sesi ini, langsung muat saat menu dibuka.
   var asli = window.admSub;
   window.admSub = function (k) { asli(k); if (k === 'rek' && window.__admPin && !data) muat(bulanIni()); };
+})();
+</script>
+<script>
+// ===== Pemeriksaan Perangkat Ajar (Admin > Perangkat Ajar) =====
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var data = null, seq = 0, terbuka = {};
+  function esc(x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function toast(t, s) { if (window.lapToast) window.lapToast(t, s); }
+  function kls(s) { return s === 'Lengkap' ? 'v' : (s === 'Menunggu' ? 'm' : (s === 'Perlu revisi' ? 'r' : 'b')); }
+
+  function gambar() {
+    $('ajSem').textContent = data.semester;
+    $('ajLengkap').textContent = data.lengkap; $('ajMenunggu').textContent = data.menunggu; $('ajBelum').textContent = data.belum;
+    $('ajList').innerHTML = data.rows.length ? data.rows.map(function (r) {
+      var det = '';
+      if (r.status !== 'Belum isi') {
+        det = '<div class="aj-det">' + r.items.map(function (it) {
+          return '<div class="aj-it ' + (it.ada ? 'y' : 'n') + (it.revisi ? ' rv' : '') + '"><i>' + (it.ada ? '\u2713' : '\u2715') + '</i>' + esc(it.label) + (it.ada && it.link ? '<a href="' + esc(it.link) + '" target="_blank" rel="noopener">buka tautan</a>' : '') +
+            (it.ada && r.status !== 'Lengkap' ? '<button type="button" class="aj-ri" data-a="revisi_item" data-item="' + esc(it.key) + '" data-nama="' + esc(it.label) + '" data-kode="' + esc(r.kode) + '">Revisi</button>' : '') + '</div>' +
+            (it.revisi ? '<div class="aj-itn">Diminta revisi: ' + esc(it.revisi) + '</div>' : '');
+        }).join('') + (r.status === 'Perlu revisi' && r.catatan ? '<div class="aj-cat">Catatan revisi: ' + esc(r.catatan) + '</div>' : '') +
+          (r.status !== 'Lengkap' ? '<div class="aj-act"><button type="button" class="aj-rev" data-a="revisi" data-kode="' + esc(r.kode) + '">Revisi</button>' + (r.status === 'Perlu revisi' ? '' : '<button type="button" class="aj-lgk" data-a="lengkap" data-kode="' + esc(r.kode) + '">Lengkap</button>') + '</div>' : '') + '</div>';
+      }
+      return '<div class="lap-card' + (terbuka[r.kode] ? ' buka' : '') + '" data-k="' + esc(r.kode) + '"><div class="lap-row' + (det ? ' bisa' : '') + '"><div class="lap-main"><div class="lap-nama">' + esc(r.nama) + '</div><div class="lap-info">' + esc(r.jabatan || '') + ' \u00B7 ' + r.jumlah + ' dari ' + r.total + (det ? ' \u00B7 <u>lihat</u>' : '') + '</div></div><span class="lap-chip ' + kls(r.status) + '">' + esc(r.status) + '</span></div>' + det + '</div>';
+    }).join('') : '<div class="dev-kosong">Belum ada guru yang wajib mengisi.</div>';
+  }
+
+  function muat(pinBaru, diam) {
+    var pin = pinBaru || window.__admPin;
+    if (!pin) { setStatus('ajStatus', 'err', 'Isi PIN admin dulu.'); return; }
+    var id = getDeviceId();
+    if (!id) { setStatus('ajStatus', 'err', 'Device ID tidak terdeteksi.'); return; }
+    var my = ++seq, btn = $('btnAjMuat'); btn.disabled = true;
+    if (!diam) setStatus('ajStatus', 'info', 'Memuat...');
+    google.script.run
+      .withSuccessHandler(function (res) {
+        btn.disabled = false; if (my !== seq) return;
+        if (!res || !res.ok) { if (diam) toast('err', (res && res.message) || 'Gagal memuat.'); else setStatus('ajStatus', 'err', (res && res.message) || 'Gagal memuat.'); return; }
+        window.__admPin = pin; $('ajPin').value = ''; $('ajPinRow').style.display = 'none';
+        data = res; $('ajStatus').className = 'status'; $('ajStatus').textContent = '';
+        $('ajBox').classList.add('open'); gambar();
+      })
+      .withFailureHandler(function (err) { btn.disabled = false; if (diam) toast('err', 'Error: ' + pesanError(err)); else setStatus('ajStatus', 'err', 'Error: ' + pesanError(err)); })
+      .getPerangkatAdmin(pin, id);
+  }
+
+  function tinjau(tb) {
+    var a = tb.getAttribute('data-a'), cat = '', item = tb.getAttribute('data-item') || '';
+    if (a === 'revisi_item') { cat = prompt('Apa yang perlu diperbaiki pada "' + (tb.getAttribute('data-nama') || 'item ini') + '"?', ''); if (cat === null) return; }
+    else if (a === 'revisi') { cat = prompt('Catatan revisi untuk guru (apa yang perlu dilengkapi):', ''); if (cat === null) return; }
+    else if (!confirm('Nyatakan perangkat ajar guru ini LENGKAP? Setelah itu guru tidak bisa mengubahnya lagi.')) return;
+    tb.disabled = true; toast('info', 'Menyimpan...');
+    google.script.run
+      .withSuccessHandler(function (res) {
+        if (!res || !res.ok) { tb.disabled = false; toast('err', (res && res.message) || 'Gagal.'); return; }
+        toast('ok', res.message || 'Selesai.'); muat(null, true);
+      })
+      .withFailureHandler(function (err) { tb.disabled = false; toast('err', 'Error: ' + pesanError(err)); })
+      .tinjauPerangkatAdmin(window.__admPin, getDeviceId(), tb.getAttribute('data-kode'), a, cat, item);
+  }
+
+  $('btnAjMuat').addEventListener('click', function () { muat($('ajPin').value.trim()); });
+  $('ajPin').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('btnAjMuat').click(); });
+  $('ajList').addEventListener('click', function (e) {
+    var b = e.target.closest('.aj-act button, .aj-ri'); if (b) { tinjau(b); return; }
+    if (e.target.closest('a')) return;
+    var row = e.target.closest('.lap-row.bisa'); if (row) { var cd = row.parentNode; cd.classList.toggle('buka'); terbuka[cd.getAttribute('data-k')] = cd.classList.contains('buka'); }
+  });
+  var asli2 = window.admSub;
+  window.admSub = function (k) { asli2(k); if (k === 'aj' && window.__admPin && !data) muat(null); };
 })();
 </script>
 <script>
