@@ -100,7 +100,14 @@ button, input, textarea { font-family: inherit; }
 .pj-row b{font-size:14px;font-weight:700}
 .pj-it.on .cb{background:var(--ok);border-color:var(--ok)}.pj-it.on .cb svg{opacity:1}
 .pj-lnk{display:none;width:calc(100% - 40px);margin:8px 0 0 40px;padding:10px 12px;font-size:13px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font-family:inherit}
-.pj-it.on .pj-lnk{display:block}
+.pj-it.on .pj-lnk,.pj-it.wj .pj-lnk,.pj-it.ed .pj-lnk{display:block}.pj-it.kunci .pj-lnk{display:none}
+.pj-btns{display:flex;gap:8px;margin:8px 0 0 40px;flex-wrap:wrap;align-items:center}
+.pj-b{border:0;border-radius:10px;padding:8px 14px;font-family:inherit;font-weight:800;font-size:12.5px;text-decoration:none;display:inline-block;line-height:1.2}
+.pj-b.sv{background:#1d4ed8;color:#fff}.pj-b.ub{background:#e0e7ff;color:#1e3a8a}.pj-b.lh{background:#dcfce7;color:#166534}.pj-b.bt{background:transparent;color:var(--muted)}.pj-b[disabled]{opacity:.55}
+.pj-tk{font-size:11.5px;font-weight:800;color:#15803d;margin-left:auto}.pj-it .pj-row{align-items:center}
+.pj-m{margin:6px 0 0 40px;font-size:12px;font-weight:700}.pj-m.err{color:#b91c1c}.pj-m.ok{color:#15803d}
+.pj-kirim{margin-top:14px}.btn[disabled]{opacity:.5;box-shadow:none}
+@media (prefers-color-scheme: dark){.pj-b.ub{background:rgba(99,102,241,.25);color:#C7D2FE}.pj-b.lh{background:rgba(34,197,94,.18);color:#5EE08A}.pj-tk,.pj-m.ok{color:#5EE08A}.pj-m.err{color:#FF8F86}}.pj-it.wj .pj-lnk.bad{border-color:#dc2626;box-shadow:0 0 0 3px rgba(220,38,38,.15)}.pj-need{margin:6px 0 0 40px;font-size:12px;font-weight:700;color:#b91c1c;display:none}.pj-it.wj .pj-need.show{display:block}
 .pj-rev{background:#fef2f2;border:1px solid #fecaca;color:#991b1b;border-radius:14px;padding:10px 12px;margin:0 0 8px;font-size:12.5px;font-weight:600;line-height:1.4}.pj-rev b{display:block;font-weight:800;margin-bottom:2px}
 .pj-it.rv{background:#fef2f2}.pj-ntc{margin:6px 0 0 40px;font-size:12px;font-weight:700;color:#b91c1c}
 .pj-ok{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;border-radius:14px;padding:10px 12px;margin:0 0 8px;font-size:12.5px;font-weight:800}
@@ -280,32 +287,52 @@ button, input, textarea { font-family: inherit; }
 
   // ================= PERANGKAT AJAR (per semester) =================
   var aj = null, ajDraft = null, ajMuat = false;
+  function ajLinkOk(v) { v = String(v || '').trim(); return v.length >= 8 && /^(https?:\/\/)?[^\s\/]+\.[^\s]{2,}/i.test(v); }
+  function ajHref(v) { v = String(v || '').trim(); return /^https?:\/\//i.test(v) ? v : 'https://' + v; }
+  function ajWajib(k) { for (var i = 0; i < aj.items.length; i++) if (aj.items[i].key === k) return aj.items[i].grup === 'Perencanaan'; return false; }
+  function ajItem(k) { for (var i = 0; i < aj.items.length; i++) if (aj.items[i].key === k) return aj.items[i]; return null; }
+  function ajJumlahTersimpan() { var n = 0; aj.items.forEach(function (it) { if (it.ada) n++; }); return n; }
   function ajGambar() {
     var box = $('paneAjar');
     if (!aj) return;
     if (aj.tidak) { box.innerHTML = '<div class="empty">Jabatanmu tidak memiliki perangkat ajar yang perlu dilaporkan.</div>'; return; }
-    var bisa = aj.bisaIsi, jml = 0;
-    aj.items.forEach(function (it) { if (ajDraft[it.key].ada) jml++; });
-    var html = '<div class="pj-sum"><div class="r"><b>Kelengkapan ' + esc(aj.semester) + '</b><span class="sp"></span><span class="n" id="ajN">' + jml + ' dari ' + aj.items.length + '</span></div><div class="pj-bar"><i id="ajBar" style="width:' + Math.round(jml / aj.items.length * 100) + '%"></i></div></div>';
+    var bisa = aj.bisaIsi, jml = ajJumlahTersimpan();
+    var wajib = aj.items.filter(function (it) { return it.grup === 'Perencanaan'; }).length;
+    var html = '<div class="pj-sum"><div class="r"><b>Tersimpan ' + esc(aj.semester) + '</b><span class="sp"></span><span class="n" id="ajN">' + jml + ' dari ' + aj.items.length + '</span></div><div class="pj-bar"><i id="ajBar" style="width:' + Math.round(jml / aj.items.length * 100) + '%"></i></div></div>';
     var adaRevItem = aj.items.some(function (it) { return it.revisi; });
-    if (aj.status === 'Revisi') html += '<div class="pj-rev"><b>Kepala sekolah meminta revisi</b>' + (aj.catatan ? esc(aj.catatan) : (adaRevItem ? 'Ada item yang perlu diperbaiki (ditandai merah di bawah). Item lain sudah baik.' : 'Mohon periksa perangkat ajar, perbaiki, lalu simpan lagi.')) + '</div>';
+    if (aj.status === 'Revisi') html += '<div class="pj-rev"><b>Kepala sekolah meminta revisi</b>' + (aj.catatan ? esc(aj.catatan) : (adaRevItem ? 'Ada item yang perlu diperbaiki (ditandai merah di bawah). Perbaiki lewat tombol Ubah, simpan, lalu kirim ulang.' : 'Mohon periksa perangkat ajar, perbaiki, lalu kirim ulang.')) + '</div>';
     else if (aj.status === 'Lengkap') html += '<div class="pj-ok">Dinyatakan lengkap oleh kepala sekolah.</div>';
     else if (aj.status === 'Menunggu') html += '<div class="pj-ok" style="background:#fffbeb;border-color:#fde68a;color:#92400e">Sudah dikirim, menunggu pemeriksaan kepala sekolah.</div>';
+    else html += '<div class="pj-ok" style="background:#eff6ff;border-color:#bfdbfe;color:#1e40af">Belum dikirim ke kepala sekolah. Simpan tiap item, lalu tekan Kirim di bawah.</div>';
     var grup = '';
     aj.items.forEach(function (it) {
       if (it.grup !== grup) {
         if (grup) html += '</div>';
         grup = it.grup;
-        html += '<div class="pj-h">' + (grup === 'Perencanaan' ? 'Perencanaan \u00B7 sekali per semester' : 'Berjalan \u00B7 diperbarui tiap bulan') + '</div><div class="card">';
+        html += '<div class="pj-h">' + (grup === 'Perencanaan' ? 'Perencanaan \u00B7 sekali per semester \u00B7 tautan wajib' : 'Berjalan \u00B7 diperbarui tiap bulan') + '</div><div class="card">';
       }
-      var d = ajDraft[it.key];
-      html += '<div class="pj-it' + (d.ada ? ' on' : '') + (it.revisi ? ' rv' : '') + '" data-k="' + it.key + '"><button type="button" class="pj-row" data-t="1"' + (bisa ? '' : ' disabled') + '><span class="cb">' + CEK + '</span><b>' + esc(it.label) + '</b></button>' +
-        (it.revisi ? '<div class="pj-ntc">Perlu diperbaiki: ' + esc(it.revisi) + '</div>' : '') +
-        '<input type="url" class="pj-lnk" inputmode="url" maxlength="300" placeholder="Tempel tautan Google Drive (opsional)" value="' + esc(d.link).replace(/"/g, '&quot;') + '"' + (bisa ? '' : ' disabled') + '></div>';
+      var d = ajDraft[it.key], kunci = it.ada && !d.edit, wj = it.grup === 'Perencanaan';
+      var cls = 'pj-it' + (kunci ? ' kunci' : ' ed') + (d.ada ? ' on' : '') + (wj ? ' wj' : '') + (it.revisi ? ' rv' : '');
+      html += '<div class="' + cls + '" data-k="' + it.key + '"><button type="button" class="pj-row" data-t="1"' + ((bisa && !kunci) ? '' : ' disabled') + '><span class="cb">' + CEK + '</span><b>' + esc(it.label) + '</b>' + (kunci ? '<span class="pj-tk">Tersimpan</span>' : '') + '</button>' +
+        (it.revisi ? '<div class="pj-ntc">Perlu diperbaiki: ' + esc(it.revisi) + '</div>' : '');
+      if (kunci) {
+        html += '<div class="pj-btns">' + (it.link ? '<a class="pj-b lh" href="' + esc(ajHref(it.link)).replace(/"/g, '&quot;') + '" target="_blank" rel="noopener">Lihat</a>' : '<span class="pj-m" style="margin:0">Tanpa tautan</span>') + (bisa ? '<button type="button" class="pj-b ub" data-a="ubah">Ubah</button>' : '') + '</div>';
+      } else {
+        html += '<div class="pj-need' + (d.need ? ' show' : '') + '">Tempel tautan dulu, baru bisa dicentang.</div>' +
+          '<input type="url" class="pj-lnk' + (d.need ? ' bad' : '') + '" inputmode="url" maxlength="300" placeholder="' + (wj ? 'Tempel tautan Google Drive (wajib)' : 'Tempel tautan Google Drive (opsional)') + '" value="' + esc(d.link).replace(/"/g, '&quot;') + '"' + (bisa ? '' : ' disabled') + '>' +
+          (bisa ? '<div class="pj-btns"><button type="button" class="pj-b sv" data-a="simpan"' + (d.busy ? ' disabled' : '') + '>' + (d.busy ? 'Menyimpan...' : 'Simpan') + '</button>' +
+            (ajLinkOk(d.link) ? '<a class="pj-b lh" href="' + esc(ajHref(d.link)).replace(/"/g, '&quot;') + '" target="_blank" rel="noopener">Lihat</a>' : '') +
+            (it.ada ? '<button type="button" class="pj-b bt" data-a="batal">Batal</button>' : '') + '</div>' : '');
+      }
+      if (d.msg) html += '<div class="pj-m ' + (d.msgJ || '') + '">' + esc(d.msg) + '</div>';
+      html += '</div>';
     });
     if (grup) html += '</div>';
-    if (bisa) html += '<button type="button" class="btn" id="ajSimpan">Simpan perangkat ajar</button><div class="st" id="ajSt"></div><div class="hint">Bisa diubah sampai dinyatakan lengkap</div>';
-    else html += '<div class="hint">Sudah lengkap, tidak bisa diubah lagi.</div>';
+    if (bisa) {
+      if (aj.status === 'Menunggu') html += '<div class="hint">Sudah dikirim. Kalau kamu mengubah item perencanaan, kirim ulang bila diminta.</div>';
+      else html += '<button type="button" class="btn pj-kirim" id="ajKirim"' + (aj.bisaKirim ? '' : ' disabled') + '>' + (aj.status === 'Revisi' ? 'Kirim ulang ke kepala sekolah' : 'Kirim ke kepala sekolah') + '</button>' +
+        '<div class="st" id="ajSt"></div><div class="hint">' + (aj.bisaKirim ? 'Semua item perencanaan sudah lengkap.' : ('Tombol aktif setelah ' + wajib + ' item perencanaan tersimpan dengan tautan (sekarang ' + (aj.perencanaanSiap || 0) + ' dari ' + wajib + (adaRevItem ? ', dan item bertanda merah diperbaiki' : '') + ').')) + '</div>';
+    } else html += '<div class="hint">Sudah lengkap, tidak bisa diubah lagi.</div>';
     box.innerHTML = html;
   }
   function ajPesan(t, j) { var e = $('ajSt'); if (!e) return; e.textContent = t || ''; e.className = 'st ' + (j || ''); }
@@ -317,7 +344,7 @@ button, input, textarea { font-family: inherit; }
       .withSuccessHandler(function (r) {
         if (!r || !r.ok) { box.innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; ajMuat = false; return; }
         aj = r; $('guruPill').textContent = r.nama.split(',')[0]; $('guruKelas').textContent = r.jabatan || '';
-        ajDraft = {}; (r.items || []).forEach(function (it) { ajDraft[it.key] = { ada: !!it.ada, link: it.link || '' }; });
+        ajDraft = {}; (r.items || []).forEach(function (it) { ajDraft[it.key] = { ada: !!it.ada, link: it.link || '', edit: false, need: false, busy: false, msg: '', msgJ: '' }; });
         ajGambar();
       })
       .withFailureHandler(function () { box.innerHTML = '<div class="empty">Tidak bisa terhubung ke server. Periksa internet, lalu buka lagi.</div>'; ajMuat = false; })
@@ -379,28 +406,63 @@ button, input, textarea { font-family: inherit; }
   $('segRiw').addEventListener('click', function () { ajTab('riw'); });
   $('segMing').addEventListener('click', function () { ajTab(false); });
   $('segAjar').addEventListener('click', function () { ajTab(true); });
+  function ajItemEl(el) { var it = el.closest('.pj-it'); return it ? it.getAttribute('data-k') : null; }
   $('paneAjar').addEventListener('click', function (e) {
-    var r = e.target.closest('.pj-row');
+    if (!aj) return;
+    var r = e.target.closest('.pj-row'), tb = e.target.closest('.pj-b[data-a]'), k;
     if (r && !r.disabled) {
-      var it = r.parentNode, k = it.getAttribute('data-k'); ajDraft[k].ada = !ajDraft[k].ada; it.classList.toggle('on', ajDraft[k].ada);
-      var jml = 0; for (var x in ajDraft) if (ajDraft[x].ada) jml++;
-      $('ajN').textContent = jml + ' dari ' + aj.items.length; $('ajBar').style.width = Math.round(jml / aj.items.length * 100) + '%';
-      try { if (navigator.vibrate) navigator.vibrate(8); } catch (x2) { } return;
+      k = ajItemEl(r); var it = r.parentNode, inp = it.querySelector('.pj-lnk'), d = ajDraft[k];
+      if (!d.ada && ajWajib(k) && !ajLinkOk(d.link)) {
+        d.need = true; it.querySelector('.pj-need').classList.add('show'); inp.classList.add('bad'); inp.focus(); return;
+      }
+      d.ada = !d.ada; d.msg = ''; it.classList.toggle('on', d.ada);
+      try { if (navigator.vibrate) navigator.vibrate(8); } catch (x2) { }
+      return;
     }
-    if (e.target.id === 'ajSimpan') {
-      var btn = e.target; btn.disabled = true; btn.textContent = 'Menyimpan...'; ajPesan('');
+    if (!tb) {
+      if (e.target.id === 'ajKirim') {
+        var kb = e.target; kb.disabled = true; kb.textContent = 'Mengirim...'; ajPesan('');
+        google.script.run
+          .withSuccessHandler(function (res) {
+            if (res && res.ok) { ajPesan(res.message || 'Terkirim.', 'ok'); ajMuat = false; aj = null; setTimeout(ajMuatData, 900); }
+            else { kb.disabled = false; kb.textContent = 'Kirim ke kepala sekolah'; ajPesan((res && res.message) || 'Gagal mengirim.', 'err'); }
+          })
+          .withFailureHandler(function () { kb.disabled = false; kb.textContent = 'Kirim ke kepala sekolah'; ajPesan('Tidak bisa terhubung ke server. Coba lagi.', 'err'); })
+          .kirimPerangkatGuru(kode, dev);
+      }
+      return;
+    }
+    k = ajItemEl(tb); var d2 = ajDraft[k], it2 = ajItem(k), a = tb.getAttribute('data-a');
+    if (a === 'ubah') { d2.edit = true; d2.msg = ''; ajGambar(); return; }
+    if (a === 'batal') { d2.edit = false; d2.ada = it2.ada; d2.link = it2.link || ''; d2.need = false; d2.msg = ''; ajGambar(); return; }
+    if (a === 'simpan') {
+      var link = String(d2.link || '').trim();
+      if (d2.ada && ajWajib(k) && !ajLinkOk(link)) { d2.need = true; d2.msg = 'Tautan wajib diisi dengan alamat yang benar.'; d2.msgJ = 'err'; ajGambar(); return; }
+      if (!d2.ada && !it2.ada) { d2.msg = 'Centang dulu, lalu simpan.'; d2.msgJ = 'err'; ajGambar(); return; }
+      if (d2.ada && link && !/^https?:\/\//i.test(link)) { link = 'https://' + link; d2.link = link; }
+      d2.busy = true; d2.msg = ''; ajGambar();
       google.script.run
         .withSuccessHandler(function (res) {
-          btn.disabled = false; btn.textContent = 'Simpan perangkat ajar';
-          if (res && res.ok) { ajPesan(res.message || 'Tersimpan. Terima kasih!', res.masihRevisi ? 'err' : 'ok'); aj.status = res.masihRevisi ? 'Revisi' : 'Menunggu'; aj.catatan = ''; ajMuat = false; aj = null; setTimeout(ajMuatData, 900); }
-          else ajPesan((res && res.message) || 'Gagal menyimpan.', 'err');
+          d2.busy = false;
+          if (res && res.ok) {
+            it2.ada = !!res.item.ada; it2.link = res.item.link || ''; it2.revisi = res.item.revisi || '';
+            d2.ada = it2.ada; d2.link = it2.link; d2.edit = false; d2.need = false;
+            aj.status = res.status || aj.status; aj.bisaKirim = !!res.bisaKirim; aj.perencanaanSiap = res.perencanaanSiap || 0;
+            d2.msg = res.message || 'Tersimpan.'; d2.msgJ = 'ok';
+          } else { d2.msg = (res && res.message) || 'Gagal menyimpan.'; d2.msgJ = 'err'; }
+          ajGambar();
         })
-        .withFailureHandler(function () { btn.disabled = false; btn.textContent = 'Simpan perangkat ajar'; ajPesan('Tidak bisa terhubung ke server. Coba lagi.', 'err'); })
-        .simpanPerangkatGuru(kode, dev, ajDraft);
+        .withFailureHandler(function () { d2.busy = false; d2.msg = 'Tidak bisa terhubung ke server. Coba lagi.'; d2.msgJ = 'err'; ajGambar(); })
+        .simpanItemPerangkatGuru(kode, dev, k, !!d2.ada, link);
     }
   });
   $('paneAjar').addEventListener('input', function (e) {
-    if (e.target.classList.contains('pj-lnk')) ajDraft[e.target.parentNode.getAttribute('data-k')].link = e.target.value;
+    if (!e.target.classList.contains('pj-lnk') || !aj) return;
+    var it = e.target.parentNode, k = it.getAttribute('data-k'), d = ajDraft[k]; d.link = e.target.value;
+    if (ajWajib(k)) {
+      if (ajLinkOk(e.target.value)) { d.need = false; e.target.classList.remove('bad'); it.querySelector('.pj-need').classList.remove('show'); }
+      else if (d.ada) { d.ada = false; it.classList.remove('on'); }
+    }
   });
   if (location.hash === '#ajar') ajTab('ajar'); else if (location.hash === '#riwayat') ajTab('riw');
 })();
