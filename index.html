@@ -3179,7 +3179,7 @@ body.adm-terbatas [data-terbatas]{display:none!important}
       '<div class="k"><div><b>' + (d.rata === null ? '-' : d.rata) + '</b>Rata-rata skor sekolah</div><div><b>' + d.rows.length + '</b>Guru dinilai</div><div><b style="font-size:13px">' + esc(banding) + '</b>Perbandingan bulan lalu</div></div>' +
       '<h2>Capaian per indikator</h2><table><tr><th>Indikator</th><th style="width:80px">Capaian</th></tr>' + ind + '</table>' +
       '<h2>Skor per guru</h2><table><tr><th style="width:28px">No</th><th>Nama</th><th>Jabatan</th><th style="width:60px">Hadir</th><th style="width:48px">Skor</th><th style="width:90px">Predikat</th></tr>' + baris + '</table>' +
-      '<p>Skor = kehadiran otomatis dari absen + laporan mingguan guru (bobot: kehadiran 30, administrasi 25, konten 15, media 10, kegiatan 10, interaksi 10).</p>' +
+      '<p>Skor = kehadiran otomatis dari absen (bobot 50) + kelengkapan perangkat ajar guru pada semester berjalan (bobot 50, dibagi rata ke 7 item).</p>' +
       '<div class="ttd"><div>Kepala Sekolah<br><br><br><br>(................................)</div></div></body></html>';
     var w = window.open('', '_blank');
     if (w) { w.document.open(); w.document.write(h); w.document.close(); setTimeout(function () { try { w.focus(); w.print(); } catch (e) { } }, 400); return; }
