@@ -1097,17 +1097,43 @@ body.adm-terbatas [data-terbatas]{display:none!important}
 .aj-act{gap:10px;margin-top:12px}
 .aj-act button{min-height:46px;padding:12px 10px;font-size:14px;touch-action:manipulation}
 .aj-itn{margin:0 0 6px 24px}
-.aj-dlg{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:99999;padding:20px}
-.aj-dlg.show{display:flex}
-.aj-dlg-box{width:100%;max-width:400px;background:#fff;color:#0f172a;border-radius:22px;padding:20px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
-.aj-dlg-box h3{margin:0 0 6px;font-size:17px;font-weight:800}
-.aj-dlg-box p{margin:0 0 12px;font-size:13.5px;line-height:1.45;color:#475569}
-.aj-dlg-box textarea{width:100%;box-sizing:border-box;min-height:84px;padding:12px;border:1.5px solid #cbd5e1;border-radius:14px;font:inherit;font-size:14px;color:inherit;background:#f8fafc;resize:vertical;margin-bottom:12px}
-.aj-dlg-box textarea:focus{outline:none;border-color:#2563eb}
+.aj-dlg{position:fixed;inset:0;background:rgba(8,10,20,.6);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);display:none;align-items:flex-end;justify-content:center;z-index:99999}
+.aj-dlg.show{display:flex;animation:ajFade .2s ease-out}
+.aj-dlg-box{width:100%;max-width:480px;background:#fff;color:#0f172a;border-radius:28px 28px 0 0;padding:10px 20px calc(20px + env(safe-area-inset-bottom,0px));box-shadow:0 -12px 40px rgba(0,0,0,.28);animation:ajUp .28s cubic-bezier(.2,.9,.3,1)}
+@keyframes ajFade{from{opacity:0}to{opacity:1}}
+@keyframes ajUp{from{transform:translateY(40px);opacity:.6}to{transform:none;opacity:1}}
+.aj-dlg-grip{width:40px;height:4px;border-radius:99px;background:#cbd5e1;margin:0 auto 14px}
+.aj-dlg-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.aj-dlg-ic{flex-shrink:0;width:46px;height:46px;border-radius:15px;display:flex;align-items:center;justify-content:center;background:#fee2e2;color:#dc2626}
+.aj-dlg-ic.lg{background:#dcfce7;color:#16a34a}
+.aj-dlg-ic svg{width:24px;height:24px}
+.aj-dlg-box h3{margin:0;font-size:18px;font-weight:800;line-height:1.25}
+.aj-dlg-sub{margin:2px 0 0;font-size:12.5px;font-weight:600;color:#64748b}
+.aj-dlg-item{display:flex;align-items:center;gap:8px;background:#f1f5f9;border-radius:14px;padding:10px 12px;margin-bottom:12px;font-size:13.5px;font-weight:700}
+.aj-dlg-item i{font-style:normal;font-size:11px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:.6px}
+.aj-dlg-box p{margin:0 0 12px;font-size:13.5px;line-height:1.5;color:#475569}
+.aj-dlg-lbl{display:flex;justify-content:space-between;font-size:12px;font-weight:800;color:#475569;margin-bottom:6px}
+.aj-dlg-lbl em{font-style:normal;font-weight:700;color:#94a3b8}
+.aj-dlg-box textarea{width:100%;box-sizing:border-box;min-height:96px;padding:12px 14px;border:1.5px solid #e2e8f0;border-radius:16px;font:inherit;font-size:14.5px;line-height:1.45;color:inherit;background:#f8fafc;resize:none;margin:0 0 10px}
+.aj-dlg-box textarea:focus{outline:none;border-color:#ef4444;background:#fff;box-shadow:0 0 0 4px rgba(239,68,68,.12)}
+.aj-dlg-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
+.aj-dlg-chips button{padding:7px 12px;border-radius:99px;background:#f1f5f9;color:#334155;font-size:12px;font-weight:700;box-shadow:none;border:1px solid #e2e8f0;touch-action:manipulation}
+.aj-dlg-chips button:active{background:#fee2e2;border-color:#fca5a5;color:#b91c1c}
 .aj-dlg-btn{display:flex;gap:10px}
-.aj-dlg-btn button{flex:1;min-height:46px;border-radius:14px;font-size:14px;font-weight:800;box-shadow:none}
-.aj-dlg-batal{background:#e2e8f0;color:#334155}.aj-dlg-ok{background:#2563eb;color:#fff}.aj-dlg-ok.rv{background:#dc2626}.aj-dlg-ok.lg{background:#16a34a}
-@media (prefers-color-scheme: dark){.aj-dlg-box{background:#1c1c24;color:#F2F2F7}.aj-dlg-box p{color:#A8AFBF}.aj-dlg-box textarea{background:#262a36;border-color:#3a3f4d;color:#F2F2F7}.aj-dlg-batal{background:#262a36;color:#D5D9E3}}
+.aj-dlg-btn button{min-height:50px;border-radius:16px;font-size:15px;font-weight:800;box-shadow:none;touch-action:manipulation}
+.aj-dlg-batal{flex:1;background:#eef2f6;color:#475569}
+.aj-dlg-ok{flex:1.6;background:#2563eb;color:#fff}.aj-dlg-ok.rv{background:#dc2626;box-shadow:0 6px 16px rgba(220,38,38,.3)}.aj-dlg-ok.lg{background:#16a34a;box-shadow:0 6px 16px rgba(22,163,74,.3)}
+@media (prefers-color-scheme: dark){
+.aj-dlg-box{background:#1c1c24;color:#F2F2F7;box-shadow:0 -12px 40px rgba(0,0,0,.6)}
+.aj-dlg-grip{background:#3a3f4d}
+.aj-dlg-ic{background:rgba(239,68,68,.18);color:#FF8F86}.aj-dlg-ic.lg{background:rgba(34,197,94,.18);color:#5EE08A}
+.aj-dlg-sub,.aj-dlg-lbl,.aj-dlg-box p{color:#A8AFBF}.aj-dlg-lbl em,.aj-dlg-item i{color:#7d8496}
+.aj-dlg-item{background:#262a36}
+.aj-dlg-box textarea{background:#262a36;border-color:#3a3f4d;color:#F2F2F7}
+.aj-dlg-box textarea:focus{background:#2b3040;border-color:#FF8F86;box-shadow:0 0 0 4px rgba(255,143,134,.15)}
+.aj-dlg-chips button{background:#262a36;border-color:#3a3f4d;color:#D5D9E3}
+.aj-dlg-chips button:active{background:rgba(239,68,68,.2);border-color:#FF8F86;color:#FF8F86}
+.aj-dlg-batal{background:#262a36;color:#D5D9E3}}
 </style>
 <style>
 /* ===== Animasi ikon menu bawah (halus; mati otomatis kalau HP memilih "kurangi gerakan") ===== */
@@ -1328,11 +1354,20 @@ body.adm-terbatas [data-terbatas]{display:none!important}
             <div class="lap-kp"><div><b id="ajLengkap">0</b><span>Lengkap</span></div><div><b id="ajMenunggu">0</b><span>Menunggu</span></div><div><b id="ajBelum">0</b><span>Belum</span></div></div>
             <div id="ajList"></div>
           </div>
-          <div class="aj-dlg" id="ajDlg" role="dialog" aria-modal="true">
+          <div class="aj-dlg" id="ajDlg" role="dialog" aria-modal="true" aria-labelledby="ajDlgJ">
             <div class="aj-dlg-box">
-              <h3 id="ajDlgJ"></h3>
+              <div class="aj-dlg-grip"></div>
+              <div class="aj-dlg-head">
+                <span class="aj-dlg-ic" id="ajDlgIc"></span>
+                <div><h3 id="ajDlgJ"></h3><div class="aj-dlg-sub" id="ajDlgS"></div></div>
+              </div>
+              <div class="aj-dlg-item" id="ajDlgItem" style="display:none"><i>Item</i><span id="ajDlgItemN"></span></div>
               <p id="ajDlgT"></p>
-              <textarea id="ajDlgC" maxlength="200" placeholder="Tulis catatan untuk guru..."></textarea>
+              <div id="ajDlgForm">
+                <div class="aj-dlg-lbl"><span>Catatan untuk guru</span><em id="ajDlgN">0/200</em></div>
+                <textarea id="ajDlgC" maxlength="200" placeholder="Contoh: tautan tidak bisa dibuka, mohon periksa izin akses."></textarea>
+                <div class="aj-dlg-chips" id="ajDlgChips"></div>
+              </div>
               <div class="aj-dlg-btn"><button type="button" class="aj-dlg-batal" id="ajDlgBatal">Batal</button><button type="button" class="aj-dlg-ok" id="ajDlgOk">OK</button></div>
             </div>
           </div>
@@ -3208,16 +3243,35 @@ body.adm-terbatas [data-terbatas]{display:none!important}
   }
 
   var dlgCb = null;
-  function tanya(judul, teks, pakaiCatatan, labelOk, kelas, cb) {
-    $('ajDlgJ').textContent = judul; $('ajDlgT').textContent = teks;
-    var ta = $('ajDlgC'); ta.value = ''; ta.style.display = pakaiCatatan ? '' : 'none';
+  var IC_RV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg>';
+  var IC_LG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg>';
+  var SARAN = ['Tautan tidak bisa dibuka', 'Isi belum lengkap', 'Salah semester', 'Format tidak sesuai', 'Mohon diperbaiki'];
+  function tanya(judul, teks, pakaiCatatan, labelOk, kelas, cb, opsi) {
+    opsi = opsi || {};
+    $('ajDlgJ').textContent = judul;
+    $('ajDlgS').textContent = opsi.guru || '';
+    $('ajDlgS').style.display = opsi.guru ? '' : 'none';
+    var ic = $('ajDlgIc'); ic.className = 'aj-dlg-ic ' + (kelas === 'lg' ? 'lg' : ''); ic.innerHTML = kelas === 'lg' ? IC_LG : IC_RV;
+    var it = $('ajDlgItem'); it.style.display = opsi.item ? '' : 'none'; $('ajDlgItemN').textContent = opsi.item || '';
+    $('ajDlgT').textContent = teks; $('ajDlgT').style.display = teks ? '' : 'none';
+    var ta = $('ajDlgC'); ta.value = ''; $('ajDlgN').textContent = '0/200';
+    $('ajDlgForm').style.display = pakaiCatatan ? '' : 'none';
+    $('ajDlgChips').innerHTML = SARAN.map(function (s) { return '<button type="button" data-s="' + s + '">' + s + '</button>'; }).join('');
     var ok = $('ajDlgOk'); ok.textContent = labelOk; ok.className = 'aj-dlg-ok ' + (kelas || '');
     dlgCb = cb; $('ajDlg').classList.add('show');
-    if (pakaiCatatan) setTimeout(function () { try { ta.focus(); } catch (e) { } }, 150);
+    if (pakaiCatatan) setTimeout(function () { try { ta.focus(); } catch (e) { } }, 250);
   }
   function tutupDlg() { $('ajDlg').classList.remove('show'); dlgCb = null; }
   $('ajDlgBatal').addEventListener('click', tutupDlg);
   $('ajDlg').addEventListener('click', function (e) { if (e.target === this) tutupDlg(); });
+  $('ajDlgC').addEventListener('input', function () { $('ajDlgN').textContent = this.value.length + '/200'; });
+  $('ajDlgChips').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    var ta = $('ajDlgC'), s = b.getAttribute('data-s');
+    ta.value = ta.value && ta.value.trim() ? ta.value.replace(/[\s.]+$/, '') + '. ' + s : s;
+    ta.value = ta.value.slice(0, 200); $('ajDlgN').textContent = ta.value.length + '/200';
+    try { ta.focus(); } catch (x) { }
+  });
   $('ajDlgOk').addEventListener('click', function () {
     var cb = dlgCb, cat = $('ajDlgC').value.trim(); tutupDlg(); if (cb) cb(cat);
   });
@@ -3233,12 +3287,13 @@ body.adm-terbatas [data-terbatas]{display:none!important}
       .tinjauPerangkatAdmin(window.__admPin, getDeviceId(), kode, a, cat, item);
   }
 
+  function namaGuru(tb) { var c = tb.closest('.lap-card'); var n = c && c.querySelector('.lap-nama'); return n ? n.textContent : ''; }
   function tinjau(tb) {
-    var a = tb.getAttribute('data-a'), item = tb.getAttribute('data-item') || '', kode = tb.getAttribute('data-kode');
+    var a = tb.getAttribute('data-a'), item = tb.getAttribute('data-item') || '', kode = tb.getAttribute('data-kode'), guru = namaGuru(tb);
     if (!window.__admPin) { toast('err', 'Masukkan PIN admin dulu, lalu muat ulang.'); return; }
-    if (a === 'revisi_item') tanya('Minta revisi item', 'Apa yang perlu diperbaiki pada "' + (tb.getAttribute('data-nama') || 'item ini') + '"?', true, 'Kirim revisi', 'rv', function (c) { kirimTinjau(a, kode, item, c); });
-    else if (a === 'revisi') tanya('Kembalikan ke guru', 'Tulis catatan: apa yang perlu dilengkapi atau diperbaiki.', true, 'Kirim revisi', 'rv', function (c) { kirimTinjau(a, kode, '', c); });
-    else tanya('Nyatakan lengkap?', 'Setelah dinyatakan LENGKAP, guru tidak bisa mengubah perangkat ajarnya lagi.', false, 'Ya, lengkap', 'lg', function () { kirimTinjau(a, kode, '', ''); });
+    if (a === 'revisi_item') tanya('Minta revisi', 'Guru akan melihat catatan ini dan memperbaiki item tersebut.', true, 'Kirim revisi', 'rv', function (c) { kirimTinjau(a, kode, item, c); }, { guru: guru, item: tb.getAttribute('data-nama') || 'Item' });
+    else if (a === 'revisi') tanya('Kembalikan ke guru', 'Tulis bagian mana yang perlu dilengkapi atau diperbaiki.', true, 'Kirim revisi', 'rv', function (c) { kirimTinjau(a, kode, '', c); }, { guru: guru });
+    else tanya('Nyatakan lengkap?', 'Setelah dinyatakan lengkap, guru tidak bisa mengubah perangkat ajarnya lagi.', false, 'Ya, lengkap', 'lg', function () { kirimTinjau(a, kode, '', ''); }, { guru: guru });
   }
 
   $('btnAjMuat').addEventListener('click', function () { muat($('ajPin').value.trim()); });
