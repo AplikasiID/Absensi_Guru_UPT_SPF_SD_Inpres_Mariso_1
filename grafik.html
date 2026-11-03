@@ -738,6 +738,24 @@
 .seg a.on{background:#fff;color:#1e3a8a;box-shadow:0 2px 8px rgba(30,41,59,.12)}
 @media (prefers-color-scheme: dark){.seg a{color:#A8AFBF}.seg a.on{background:#1E3A8A;color:#fff}}
 </style>
+<style>
+/* ===== Animasi ikon menu bawah (halus; mati otomatis kalau HP memilih "kurangi gerakan") ===== */
+.bnav .bn-row > * { -webkit-tap-highlight-color: transparent; transition: background-color .28s ease, color .28s ease, transform .15s ease; }
+.bnav .bn-row > *:active { transform: scale(.92); }
+.bnav .bn-row > .on .ni svg, .bnav .bn-row > [aria-current] .ni svg { animation: ni-pop .55s cubic-bezier(.34,1.56,.64,1) both; }
+.bnav .bn-row > .on, .bnav .bn-row > [aria-current] { animation: ni-pill .35s ease-out both; }
+.bnav .bn-row > :nth-child(1).on .ni svg { animation-name: ni-hop; animation-duration: .6s; }
+.bnav .bn-row > :nth-child(2).on .ni svg path, .bnav .bn-row > :nth-child(2)[aria-current] .ni svg path { transform-box: view-box; transform-origin: 12px 12px; animation: ni-spin .9s cubic-bezier(.22,1,.36,1) both; }
+.bnav .bn-row > :nth-child(3).on .ni svg path:first-child, .bnav .bn-row > :nth-child(3)[aria-current] .ni svg path:first-child { stroke-dasharray: 14; animation: ni-draw .6s .1s ease-out both; }
+.bnav .bn-row > :nth-child(4).on .ni svg { animation-name: ni-shield; animation-duration: .7s; }
+@keyframes ni-pop { 0% { transform: scale(.55); opacity: .4; } 60% { transform: scale(1.18); opacity: 1; } 100% { transform: scale(1); } }
+@keyframes ni-hop { 0% { transform: translateY(6px) scale(.8); } 45% { transform: translateY(-5px) scale(1.12); } 70% { transform: translateY(1px); } 100% { transform: none; } }
+@keyframes ni-spin { from { transform: rotate(-300deg); } to { transform: rotate(0); } }
+@keyframes ni-draw { from { stroke-dashoffset: 14; } to { stroke-dashoffset: 0; } }
+@keyframes ni-shield { 0% { transform: scale(.6) rotate(-12deg); } 55% { transform: scale(1.15) rotate(6deg); } 100% { transform: none; } }
+@keyframes ni-pill { from { opacity: .35; transform: scale(.9); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .bnav .bn-row > *, .bnav .bn-row > * .ni svg, .bnav .bn-row > * .ni svg path { animation: none !important; transition: none !important; } }
+</style>
 </head>
 <body>
   <div class="page-shell">
