@@ -157,9 +157,7 @@ button, input, textarea { font-family: inherit; }
 </div>
 
 <div class="wrap">
-  <div class="seg" id="seg"><button type="button" id="segAjar" class="on">Perangkat Ajar</button><button type="button" id="segRiw">Riwayat</button></div>
   <div id="paneAjar"><div class="sk"></div></div>
-  <div id="paneRiw" style="display:none"><div class="sk"></div></div>
 </div>
 
 <nav class="bnav" id="bnav">
@@ -262,61 +260,6 @@ button, input, textarea { font-family: inherit; }
       .withFailureHandler(function () { box.innerHTML = '<div class="empty">Tidak bisa terhubung ke server. Periksa internet, lalu buka lagi.</div>'; ajMuat = false; })
       .getPerangkatGuru(kode, dev);
   }
-  function ajTab(tab) {
-    if (tab === true || tab !== 'riw') tab = 'ajar';
-    $('segAjar').classList.toggle('on', tab === 'ajar'); $('segRiw').classList.toggle('on', tab === 'riw');
-    var T = { ajar: ['Perangkat Ajar', 'Centang yang sudah kamu siapkan'], riw: ['Riwayat Laporan', 'Skor dan laporan bulan-bulan sebelumnya'] }[tab];
-    var g1 = document.querySelector('.g1'), g2 = $('sub'); if (g1) g1.textContent = T[0]; if (g2) g2.textContent = T[1];
-    $('paneAjar').style.display = tab === 'ajar' ? '' : 'none'; $('paneRiw').style.display = tab === 'riw' ? '' : 'none';
-    if (tab === 'ajar' && !aj && !ajMuat) ajMuatData();
-    if (tab === 'riw' && !riw && !riwMuat) riwMuatData();
-    var hs = tab === 'riw' ? '#riwayat' : '';
-    try { if (location.hash !== hs) history.replaceState(null, '', hs || location.pathname + location.search); } catch (e) { }
-  }
-  // ================= RIWAYAT LAPORAN =================
-  var riw = null, riwMuat = false, riwBuka = {};
-  var BLN2 = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-  function riwNamaBulan(b) { var p = b.split('-'); return BLN2[+p[1] - 1] + ' ' + p[0]; }
-  function riwGambar() {
-    var box = $('paneRiw');
-    if (riw.tidak) { box.innerHTML = '<div class="empty">Jabatanmu tidak memiliki laporan mingguan.</div>'; return; }
-    if (!riw.bulan.length) { box.innerHTML = '<div class="empty">Belum ada riwayat. Riwayat akan muncul setelah ada data absen atau laporan.</div>'; return; }
-    var nm = {}; (riw.labelIndikator || []).forEach(function (x) { nm[x.key] = x.label; });
-    var html = '<div class="rw-sum"><div><b>' + (riw.rata === null ? '-' : riw.rata) + '</b><small>Rata-rata skor</small></div><div><b>' + riw.jumlahBulan + '</b><small>Bulan tercatat</small></div><div><b>' + riw.terisi + '/' + riw.total + '</b><small>Minggu terisi</small></div></div>';
-    html += riw.bulan.map(function (m) {
-      var chip = m.status === 'Terverifikasi' ? '<span class="rw-chip v">Terverifikasi</span>' : (m.status === 'Menunggu' ? '<span class="rw-chip m">Menunggu</span>' : (m.status === 'Perlu revisi' ? '<span class="rw-chip r">Perlu revisi</span>' : '<span class="rw-chip b">Belum ada laporan</span>'));
-      var lingk = m.skor === null ? '<div class="rw-sc kosong"><b>' + (m.hadirPct === null ? '-' : m.hadirPct + '%') + '</b><small>hadir</small></div>' : '<div class="rw-sc' + (m.skor < 70 ? (m.skor < 55 ? ' k' : ' c') : '') + '"><b>' + m.skor + '</b><small>dari 100</small></div>';
-      var sub = m.total ? (m.terisi + ' dari ' + m.total + ' minggu terisi') : 'Belum ada minggu berjalan';
-      if (m.skor !== null && m.sementara) sub += ' \u00B7 sementara';
-      var det = '<div class="rw-det">' + m.indikator.map(function (i) {
-        return '<div class="rw-row"><span>' + esc(i.label) + '</span><div class="rw-bar"><i style="width:' + i.persen + '%"></i></div><em>' + i.persen + '%</em></div>';
-      }).join('') + (m.minggu.length ? m.minggu.map(function (w) {
-        return '<div class="rw-wk"><b>' + esc(w.label) + ' <span>' + esc(w.rentang) + '</span></b>' + Object.keys(w.isi).map(function (k) {
-          return '<div class="rw-wi ' + (w.isi[k] ? 'y' : 'n') + '">' + esc(nm[k] || k) + '</div>'; }).join('') + (w.catatan ? '<div class="rw-cat">\u201C' + esc(w.catatan) + '\u201D</div>' : '') + (w.status === 'Revisi' ? '<div class="rw-al">Perlu revisi' + (w.alasan ? ': ' + esc(w.alasan) : '') + '</div>' : '') + '</div>';
-      }).join('') : '<div class="rw-kosong">Belum ada laporan mingguan di bulan ini.</div>') + '</div>';
-      return '<div class="rw-m' + (riwBuka[m.bulan] ? ' buka' : '') + '" data-b="' + m.bulan + '"><button type="button" class="rw-h">' + lingk + '<div class="rw-t"><b>' + riwNamaBulan(m.bulan) + '</b><small>' + esc(sub) + '</small></div>' + chip + '</button>' + det + '</div>';
-    }).join('');
-    box.innerHTML = html;
-  }
-  function riwMuatData() {
-    var box = $('paneRiw');
-    if (!kode) { box.innerHTML = '<div class="empty">Nama guru belum dipilih. Kembali ke halaman Absen, pilih namamu, lalu buka lagi.</div>'; return; }
-    box.innerHTML = '<div class="sk"></div>'; riwMuat = true;
-    google.script.run
-      .withSuccessHandler(function (r) {
-        riwMuat = false;
-        if (!r || !r.ok) { box.innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; return; }
-        riw = r; $('guruPill').textContent = r.nama.split(',')[0]; $('guruKelas').textContent = r.jabatan || ''; riwGambar();
-      })
-      .withFailureHandler(function () { riwMuat = false; box.innerHTML = '<div class="empty">Tidak bisa terhubung ke server. Periksa internet, lalu buka lagi.</div>'; })
-      .getRiwayatLaporanGuru(kode, dev);
-  }
-  $('paneRiw').addEventListener('click', function (e) {
-    var hd = e.target.closest('.rw-h'); if (!hd) return;
-    var m = hd.parentNode; m.classList.toggle('buka'); riwBuka[m.getAttribute('data-b')] = m.classList.contains('buka');
-  });
-  $('segRiw').addEventListener('click', function () { ajTab('riw'); });
-  $('segAjar').addEventListener('click', function () { ajTab(true); });
   function ajItemEl(el) { var it = el.closest('.pj-it'); return it ? it.getAttribute('data-k') : null; }
   $('paneAjar').addEventListener('click', function (e) {
     if (!aj) return;
@@ -375,7 +318,8 @@ button, input, textarea { font-family: inherit; }
       else if (d.ada) { d.ada = false; it.classList.remove('on'); }
     }
   });
-  ajTab(location.hash === '#riwayat' ? 'riw' : 'ajar');
+  try { if (location.hash) history.replaceState(null, '', location.pathname + location.search); } catch (e) { }
+  ajMuatData();
 })();
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
 </script>
