@@ -1383,7 +1383,7 @@ body.adm-terbatas [data-terbatas]{display:none!important}
           <p class="hint-small">Catatan kegiatan harian guru. Langsung tercatat, tanpa persetujuan. Perlu PIN admin.</p>
           <div class="pin-row" id="kgaPinRow">
             <input type="password" id="kgaPin" inputmode="numeric" placeholder="Masukkan PIN admin" autocomplete="off">
-            <button type="button" id="btnKgaMuat" aria-label="Muat daftar kegiatan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>
+            <button type="button" id="btnKgaMuat" aria-label="Muat daftar kegiatan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg><span>Muat</span></button>
           </div>
           <div id="kgaStatus" class="status"></div>
           <div id="kgaBox" style="display:none">
@@ -1401,7 +1401,7 @@ body.adm-terbatas [data-terbatas]{display:none!important}
           <p class="hint-small">Jumlah kegiatan dan total jam tiap guru per bulan, siap dicetak untuk dinas. Catatan yang dihapus tidak dihitung. Perlu PIN admin.</p>
           <div class="pin-row" id="krPinRow">
             <input type="password" id="krPin" inputmode="numeric" placeholder="Masukkan PIN admin" autocomplete="off">
-            <button type="button" id="btnKrMuat" aria-label="Muat rekap kegiatan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>
+            <button type="button" id="btnKrMuat" aria-label="Muat rekap kegiatan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg><span>Muat</span></button>
           </div>
           <div id="krStatus" class="status"></div>
           <div id="krBox" style="display:none">
@@ -1419,7 +1419,7 @@ body.adm-terbatas [data-terbatas]{display:none!important}
           <p class="hint-small">Tetapkan penanggung jawab (PJ), periksa bukti, dan nyatakan standar lengkap. Perlu PIN admin.</p>
           <div class="pin-row" id="stPinRow">
             <input type="password" id="stPin" inputmode="numeric" placeholder="Masukkan PIN admin" autocomplete="off">
-            <button type="button" id="btnStMuat" aria-label="Muat 8 standar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>
+            <button type="button" id="btnStMuat" aria-label="Muat 8 standar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg><span>Muat</span></button>
           </div>
           <div id="stStatus" class="status"></div>
           <div id="stBox" style="display:none">
@@ -3458,6 +3458,8 @@ body.adm-terbatas [data-terbatas]{display:none!important}
 </script>
 <style>
 /* ===== Admin: Daftar Kegiatan, Rekap Kegiatan, 8 Standar ===== */
+#viewAdmin #btnKgaMuat, #viewAdmin #btnKrMuat, #viewAdmin #btnStMuat { flex-shrink: 0; width: auto; min-width: 84px; min-height: 48px; padding: 0 16px; border-radius: 14px; background: linear-gradient(135deg, #1d4ed8, #1e3a8a); color: #fff; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 14px; font-weight: 800; box-shadow: 0 6px 14px rgba(29,78,216,.28); margin: 0; }
+#viewAdmin #btnKgaMuat svg, #viewAdmin #btnKrMuat svg, #viewAdmin #btnStMuat svg { width: 18px; height: 18px; }
 #viewAdmin .kgx-bar { display: flex; align-items: center; justify-content: space-between; background: #f1f5f9; border-radius: 14px; padding: 4px; margin: 10px 0; }
 #viewAdmin .kgx-bar button { width: 44px; height: 44px; min-height: 44px; background: transparent; color: #1e3a8a; border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: none; padding: 0; margin: 0; }
 #viewAdmin .kgx-bar button:disabled { opacity: .3; } #viewAdmin .kgx-bar svg { width: 20px; height: 20px; } #viewAdmin .kgx-bar b { font-size: 14px; font-weight: 800; color: #14213d; }
@@ -3539,7 +3541,8 @@ body.adm-terbatas [data-terbatas]{display:none!important}
     if (!id) { setStatus(statusId, 'err', 'Device ID tidak terdeteksi.'); return null; }
     return { pin: pin, id: id };
   }
-  function pesanGagal(diam, statusId, msg) { if (diam) toast('err', msg); else setStatus(statusId, 'err', msg); }
+  var BARIS_PIN = { kgaStatus: 'kgaPinRow', krStatus: 'krPinRow', stStatus: 'stPinRow' };
+  function pesanGagal(diam, statusId, msg) { if (diam) { toast('err', msg); return; } setStatus(statusId, 'err', msg); if (BARIS_PIN[statusId]) $(BARIS_PIN[statusId]).style.display = ''; }
   function berhasilMasuk(pin, pinId, rowId, statusId) {
     window.__admPin = pin; $(pinId).value = ''; $(rowId).style.display = 'none';
     $(statusId).className = 'status'; $(statusId).textContent = '';
@@ -3716,9 +3719,9 @@ body.adm-terbatas [data-terbatas]{display:none!important}
   window.admSub = function (k) {
     asli(k);
     if (!window.__admPin) return;
-    if (k === 'kg' && !kg) kgMuat('');
-    if (k === 'kr' && !kr) krMuat('');
-    if (k === 'st' && !sd) sdMuat('');
+    if (k === 'kg' && !kg) { $('kgaPinRow').style.display = 'none'; kgMuat(''); }
+    if (k === 'kr' && !kr) { $('krPinRow').style.display = 'none'; krMuat(''); }
+    if (k === 'st' && !sd) { $('stPinRow').style.display = 'none'; sdMuat(''); }
   };
 })();
 </script>
