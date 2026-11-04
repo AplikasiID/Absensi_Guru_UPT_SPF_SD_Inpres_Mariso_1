@@ -317,10 +317,11 @@ textarea.kg-in{resize:vertical;min-height:84px}
   function tglLabel(t) { var p = String(t).substring(0, 10).split('-'); return (+p[2]) + ' ' + BULAN[+p[1] - 1].substring(0, 3) + ' ' + p[0]; }
   function fmtJam(n) { return String(n).replace('.', ','); }
   function geserBulan(b, d) { var p = b.split('-'), y = +p[0], m = +p[1] - 1 + d; y += Math.floor(m / 12); m = ((m % 12) + 12) % 12; return y + '-' + (m < 9 ? '0' : '') + (m + 1); }
-  function cekFile(f) {
+  function cekFile(f, hanyaJpg) {
     if (!f) return '';
     var ext = (f.name.split('.').pop() || '').toLowerCase();
-    if (FILE_EXT.indexOf(ext) < 0) return 'Format file harus PDF, DOC, DOCX, JPG, atau PNG.';
+    if (hanyaJpg) { if (ext !== 'jpg' && ext !== 'jpeg') return 'Bukti harus berupa foto JPG.'; }
+    else if (FILE_EXT.indexOf(ext) < 0) return 'Format file harus PDF, DOC, DOCX, JPG, atau PNG.';
     if (f.size > FILE_MAKS) return 'Ukuran file maksimal 5 MB.';
     if (!f.size) return 'File kosong.';
     return '';
@@ -351,9 +352,9 @@ textarea.kg-in{resize:vertical;min-height:84px}
         '<textarea class="kg-in" id="kgKet" maxlength="300" rows="3" placeholder="Contoh: Mengikuti rapat koordinasi di kantor dinas"></textarea>' +
         '<label class="kg-lbl" for="kgDur">Durasi (opsional)</label><select class="kg-in" id="kgDur"></select>' +
         '<div class="kg-lbl kg-lbl2"><span>Bukti</span><span class="kg-bd" id="kgBd">opsional</span></div>' +
-        '<div class="pj-btns" style="margin:0"><label class="pj-b up kg-pick">Pilih file<input type="file" id="kgFile" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" hidden></label>' +
+        '<div class="pj-btns" style="margin:0"><label class="pj-b up kg-pick">Pilih file<input type="file" id="kgFile" accept=".jpg,.jpeg,image/jpeg" hidden></label>' +
           '<span class="kg-fn" id="kgFn"></span><button type="button" class="pj-b bt" id="kgLepas" style="display:none;min-height:44px">Lepas</button></div>' +
-        '<div class="hint" style="text-align:left;margin-top:6px">PDF, DOC, DOCX, JPG, atau PNG. Maksimal 5 MB.</div>' +
+        '<div class="hint" style="text-align:left;margin-top:6px">Hanya foto JPG. Maksimal 5 MB.</div>' +
         '<div class="st" id="kgSt" role="status"></div>' +
         '<button type="button" class="btn" id="kgSimpan">Simpan catatan</button>' +
         '<button type="button" class="btn" id="kgBatal" style="display:none">Batal ubah</button>' +
@@ -369,7 +370,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
     $('kgChips').addEventListener('click', function (e) { var b = e.target.closest('.kg-chip'); if (b) kgPilihJenis(b.getAttribute('data-j')); });
     $('kgKet').addEventListener('input', function () { $('kgCnt').textContent = this.value.length + '/300'; });
     $('kgFile').addEventListener('change', function () {
-      var f = this.files[0], m = cekFile(f);
+      var f = this.files[0], m = cekFile(f, true);
       if (m) { this.value = ''; setSt($('kgSt'), 'err', m); kgNamaFile(); return; }
       setSt($('kgSt'), 'ok', ''); kgNamaFile();
     });
@@ -451,7 +452,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
     if (!kgJenis) { setSt($('kgSt'), 'err', 'Pilih jenis kegiatan.'); return; }
     if (!ket) { setSt($('kgSt'), 'err', 'Keterangan wajib diisi.'); return; }
     if (kgWajib(kgJenis) && !f && !kgLink) { setSt($('kgSt'), 'err', 'Bukti wajib untuk jenis ' + kgJenis + '.'); return; }
-    var m = cekFile(f); if (m) { setSt($('kgSt'), 'err', m); return; }
+    var m = cekFile(f, true); if (m) { setSt($('kgSt'), 'err', m); return; }
     kgBusy = true; $('kgSimpan').disabled = true; setSt($('kgSt'), 'ok', f ? 'Mengunggah bukti...' : 'Menyimpan...');
     function simpan() {
       google.script.run
