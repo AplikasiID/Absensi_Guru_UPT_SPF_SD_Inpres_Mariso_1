@@ -967,6 +967,13 @@
 .rek-cp{min-height:36px;padding:0 12px;border-radius:10px;border:1px solid #1d4ed8;background:transparent;color:#1d4ed8;font-weight:800;font-size:12px;font-family:inherit}
 .rek-cp:disabled{opacity:.5}
 @media (prefers-color-scheme: dark){.rek-cp{color:#9DB7FF;border-color:#9DB7FF}.cari-kosong{color:#A8AFBF}}
+
+.rev-ntf{display:flex;align-items:center;gap:12px;width:100%;margin:0 0 12px;padding:14px;border-radius:20px;border:1.5px solid #fca5a5;background:#fef2f2;color:#7f1d1d;text-align:left;font-family:inherit;box-shadow:0 6px 16px rgba(239,68,68,.12)}
+.rev-ic{flex:0 0 40px;height:40px;border-radius:12px;background:#ef4444;color:#fff;font-weight:900;font-size:22px;display:flex;align-items:center;justify-content:center}
+.rev-tx{flex:1;min-width:0}.rev-tx b{display:block;font-size:14.5px;font-weight:800}.rev-tx small{display:block;font-size:12.5px;font-weight:600;margin-top:2px;opacity:.9}
+.rev-ntf .adm-chev{flex:0 0 20px;width:20px;height:20px}
+.bnav .bn-row>.punya-rev{position:relative}.bnav .bn-row>.punya-rev::after{content:"";position:absolute;top:6px;left:calc(50% + 8px);width:10px;height:10px;border-radius:50%;background:#ef4444;box-shadow:0 0 0 2px #fff}
+@media (prefers-color-scheme: dark){.rev-ntf{background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.45);color:#FFB4AE}.bnav .bn-row>.punya-rev::after{box-shadow:0 0 0 2px #1c1c24}}
 </style>
 
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -1239,6 +1246,8 @@ body.adm-terbatas [data-terbatas]{display:none!important}
       </div>
     </div>
 
+
+    <button type="button" class="rev-ntf" id="revNtf" style="display:none" aria-live="polite"><span class="rev-ic" aria-hidden="true">!</span><span class="rev-tx"><b id="revJudul"></b><small id="revIsi"></small></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
 
     <button type="button" class="lap-cta" id="lapCta"><span class="adm-ic biru"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></span><span class="adm-tx"><b>Perangkat ajar</b><small>Centang perangkat ajar yang sudah kamu siapkan</small></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
 
@@ -3809,6 +3818,37 @@ body.adm-terbatas [data-terbatas]{display:none!important}
       .withFailureHandler(function (err) { b.disabled = false; b.textContent = teks; setStatus('rekStatus', 'err', 'Error: ' + pesanError(err)); })
       .getRekapGuruBulan(pin, id, bulan, b.getAttribute('data-kode'));
   });
+})();
+</script>
+<script>
+// ===== Pemberitahuan revisi di halaman Absen (banner + titik merah di menu Laporan) =====
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var terakhir = null, sibuk = false;
+  function tampil(r) {
+    var n = (r && r.jumlah) || 0, b = $('revNtf'), nav = $('navLaporan');
+    if (nav) nav.classList.toggle('punya-rev', n > 0);
+    if (!n) { b.style.display = 'none'; return; }
+    var butir = (r.butir && r.butir.length) ? r.butir.join(', ') : (r.catatan || 'Buka Laporan untuk melihat catatannya.');
+    $('revJudul').textContent = 'Kepala sekolah meminta revisi (' + n + (r.butir && r.butir.length ? ' item' : '') + ')';
+    $('revIsi').textContent = 'Perangkat ajar: ' + butir + '. Ketuk untuk memperbaiki.';
+    b.style.display = '';
+  }
+  function cek(paksa) {
+    var kode = ''; try { kode = $('guruSelect').value || ''; } catch (e) { }
+    if (!kode) { tampil(null); terakhir = ''; return; }
+    if (sibuk || (!paksa && kode === terakhir)) return;
+    terakhir = kode; sibuk = true;
+    var id = ''; try { id = getDeviceId() || ''; } catch (e) { }
+    google.script.run
+      .withSuccessHandler(function (r) { sibuk = false; if ($('guruSelect').value === kode) tampil(r); })
+      .withFailureHandler(function () { sibuk = false; terakhir = null; })
+      .cekRevisiGuru(kode, id);
+  }
+  $('revNtf').addEventListener('click', function () { $('lapCta').onclick(); });
+  setInterval(function () { cek(false); }, 1500);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) cek(true); });
+  window.addEventListener('pageshow', function () { cek(true); });
 })();
 </script>
 </body>
