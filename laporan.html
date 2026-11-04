@@ -89,6 +89,10 @@ button, input, textarea { font-family: inherit; }
 </style>
 <style>
 .seg{display:flex;background:var(--card);border-radius:16px;padding:4px;box-shadow:0 6px 18px rgba(30,58,138,.12);margin-bottom:10px}
+.ban{position:sticky;top:0;z-index:40;transition:padding .18s}
+.ban .g1,.ban .g2,.bt img{transition:all .18s}
+.seg{top:var(--banh,0px)!important}
+.seg{position:sticky;top:0;z-index:30;box-shadow:0 6px 18px rgba(30,58,138,.12),0 0 0 8px var(--bg)}
 .seg button{flex:1;border:0;background:transparent;padding:10px 0;border-radius:12px;font-size:13.5px;font-weight:800;color:var(--muted);font-family:inherit}
 .seg button.on{background:#1e3a8a;color:#fff}
 .pj-sum{background:var(--card);border-radius:20px;padding:14px;box-shadow:0 8px 20px rgba(30,58,138,.10);margin-bottom:6px}
@@ -322,15 +326,44 @@ textarea.kg-in{resize:vertical;min-height:84px}
     var ext = (f.name.split('.').pop() || '').toLowerCase();
     if (hanyaJpg) { if (ext !== 'jpg' && ext !== 'jpeg') return 'Bukti harus berupa foto JPG.'; }
     else if (FILE_EXT.indexOf(ext) < 0) return 'Format file harus PDF, DOC, DOCX, JPG, atau PNG.';
-    if (f.size > FILE_MAKS) return 'Ukuran file maksimal 5 MB.';
+    if (f.size > (adalahFoto(f) ? FOTO_MAKS_AWAL : FILE_MAKS)) return adalahFoto(f) ? 'Ukuran foto terlalu besar.' : 'Ukuran file maksimal 5 MB.';
     if (!f.size) return 'File kosong.';
     return '';
   }
-  function bacaFile(f, ok, gagal) {
+  // Foto (JPG/PNG) dikecilkan otomatis: sisi terpanjang maks 1600 px, JPEG kualitas ~0,72 (biasanya 200-400 KB).
+  var FOTO_MAKS_AWAL = 25 * 1024 * 1024, SISI_MAKS = 1600, KUALITAS = 0.72;
+  function adalahFoto(f) { var e = (f.name.split('.').pop() || '').toLowerCase(); return e === 'jpg' || e === 'jpeg' || e === 'png'; }
+  function bacaAsli(f, ok, gagal) {
     var rd = new FileReader();
-    rd.onload = function () { ok(rd.result); };
+    rd.onload = function () { ok(rd.result, f.name, f.type); };
     rd.onerror = function () { gagal(); };
     rd.readAsDataURL(f);
+  }
+  function bacaFile(f, ok, gagal) {
+    if (!adalahFoto(f)) { bacaAsli(f, ok, gagal); return; }
+    var url = null;
+    function asli() { if (f.size > FILE_MAKS) { gagal('Foto terlalu besar dan gagal dikecilkan. Coba foto lain.'); } else { bacaAsli(f, ok, gagal); } }
+    try {
+      url = (window.URL || window.webkitURL).createObjectURL(f);
+      var im = new Image();
+      im.onload = function () {
+        try {
+          var w = im.naturalWidth, h = im.naturalHeight, k = Math.min(1, SISI_MAKS / Math.max(w, h));
+          var cw = Math.max(1, Math.round(w * k)), ch = Math.max(1, Math.round(h * k));
+          var cv = document.createElement('canvas'); cv.width = cw; cv.height = ch;
+          var cx = cv.getContext('2d'); cx.fillStyle = '#fff'; cx.fillRect(0, 0, cw, ch); cx.drawImage(im, 0, 0, cw, ch);
+          var d = cv.toDataURL('image/jpeg', KUALITAS);
+          try { (window.URL || window.webkitURL).revokeObjectURL(url); } catch (e) { }
+          // Pakai hasil kecil hanya bila lebih kecil dari aslinya (atau asli melebihi batas).
+          var kecil = Math.round((d.length - 23) * 0.75);
+          if (d.indexOf('data:image/jpeg') !== 0 || (kecil >= f.size && f.size <= FILE_MAKS)) { asli(); return; }
+          if (kecil > FILE_MAKS) { gagal('Foto terlalu besar. Coba foto lain.'); return; }
+          ok(d, f.name.replace(/\.[^.]+$/, '') + '.jpg', 'image/jpeg');
+        } catch (e) { asli(); }
+      };
+      im.onerror = function () { try { (window.URL || window.webkitURL).revokeObjectURL(url); } catch (e) { } asli(); };
+      im.src = url;
+    } catch (e) { asli(); }
   }
   function setSt(el, tipe, teks) { if (!el) return; el.className = (el.className.replace(/\b(ok|err)\b/g, '').replace(/\s+/g, ' ').trim()) + (teks ? ' ' + tipe : ''); el.textContent = teks || ''; }
   var IC_KIRI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
@@ -354,7 +387,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
         '<div class="kg-lbl kg-lbl2"><span>Bukti</span><span class="kg-bd" id="kgBd">opsional</span></div>' +
         '<div class="pj-btns" style="margin:0"><label class="pj-b up kg-pick">Pilih file<input type="file" id="kgFile" accept=".jpg,.jpeg,image/jpeg" hidden></label>' +
           '<span class="kg-fn" id="kgFn"></span><button type="button" class="pj-b bt" id="kgLepas" style="display:none;min-height:44px">Lepas</button></div>' +
-        '<div class="hint" style="text-align:left;margin-top:6px">Hanya foto JPG. Maksimal 5 MB.</div>' +
+        '<div class="hint" style="text-align:left;margin-top:6px">Hanya foto JPG. Otomatis dikecilkan agar hemat penyimpanan.</div>' +
         '<div class="st" id="kgSt" role="status"></div>' +
         '<button type="button" class="btn" id="kgSimpan">Simpan catatan</button>' +
         '<button type="button" class="btn" id="kgBatal" style="display:none">Batal ubah</button>' +
@@ -467,15 +500,15 @@ textarea.kg-in{resize:vertical;min-height:84px}
         .simpanKegiatanGuru(kode, dev, { id: kgEdit, tanggal: tgl, jenis: kgJenis, keterangan: ket, durasi: dur, buktiLink: kgLink, buktiNama: kgNama });
     }
     if (!f) { simpan(); return; }
-    bacaFile(f, function (dataUrl) {
+    bacaFile(f, function (dataUrl, nmF, tpF) {
       google.script.run
         .withSuccessHandler(function (r) {
           if (!r || !r.ok) { kgSelesai(false, 'err', (r && r.message) || 'Gagal mengunggah bukti.'); return; }
           kgLink = r.link; kgNama = r.nama; $('kgFile').value = ''; kgNamaFile(); setSt($('kgSt'), 'ok', 'Menyimpan...'); simpan();
         })
         .withFailureHandler(function () { kgSelesai(false, 'err', 'Tidak bisa terhubung ke server. Coba lagi.'); })
-        .unggahBuktiKegiatan(kode, dev, f.name, f.type, dataUrl);
-    }, function () { kgSelesai(false, 'err', 'File tidak terbaca. Coba pilih ulang.'); });
+        .unggahBuktiKegiatan(kode, dev, nmF, tpF, dataUrl);
+    }, function (m) { kgSelesai(false, 'err', (typeof m === 'string' && m) || 'File tidak terbaca. Coba pilih ulang.'); });
   }
   function kgKlikList(e) {
     var b = e.target.closest('button[data-a]'); if (!b || !kg || kgBusy) return;
@@ -526,7 +559,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
           '<input class="kg-in sf-link" type="url" inputmode="url" placeholder="Tempel tautan bukti (https://...)" aria-label="Tautan bukti">' +
           '<div class="sd-atau">atau</div>' +
           '<div class="pj-btns" style="margin:0"><label class="pj-b up kg-pick">Pilih file<input type="file" class="sf-file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" hidden></label><span class="kg-fn sf-fn"></span></div>' +
-          '<div class="sd-hint">PDF, DOC, DOCX, JPG, atau PNG. Maksimal 5 MB.</div><div class="st sf-st" role="status"></div>' +
+          '<div class="sd-hint">PDF, DOC, DOCX, JPG, atau PNG (maks. 5 MB). Foto otomatis dikecilkan.</div><div class="st sf-st" role="status"></div>' +
           '<button type="button" class="btn" data-a="tambah">Tambah bukti</button></div>';
       } else det += '<div class="sd-hint">Hanya penanggung jawab standar ini yang bisa menambah bukti.</div>';
       det += '</div>';
@@ -573,9 +606,9 @@ textarea.kg-in{resize:vertical;min-height:84px}
       google.script.run.withSuccessHandler(selesai).withFailureHandler(gagal).tambahBuktiStandar(kode, dev, n, judul, ket, link);
       return;
     }
-    bacaFile(f, function (dataUrl) {
-      google.script.run.withSuccessHandler(selesai).withFailureHandler(gagal).unggahBuktiStandar(kode, dev, n, judul, ket, f.name, f.type, dataUrl);
-    }, function () { stBusy[n] = false; btn.disabled = false; setSt(msg, 'err', 'File tidak terbaca. Coba pilih ulang.'); });
+    bacaFile(f, function (dataUrl, nmF, tpF) {
+      google.script.run.withSuccessHandler(selesai).withFailureHandler(gagal).unggahBuktiStandar(kode, dev, n, judul, ket, nmF, tpF, dataUrl);
+    }, function (m) { stBusy[n] = false; btn.disabled = false; setSt(msg, 'err', (typeof m === 'string' && m) || 'File tidak terbaca. Coba pilih ulang.'); });
   }
   $('paneStd').addEventListener('click', function (e) {
     var hd = e.target.closest('.rw-h');
@@ -742,6 +775,13 @@ textarea.kg-in{resize:vertical;min-height:84px}
   ajTab({ '#riwayat': 'riw', '#kegiatan': 'keg', '#standar': 'std' }[location.hash] || 'ajar');
 })();
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
+</script>
+<script>
+(function(){var b=document.body,ban=document.querySelector('.ban'),mini=false,tk=false;
+function h(){document.documentElement.style.setProperty('--banh',(ban.offsetHeight-8)+'px');}
+function f(){tk=false;h();}
+window.addEventListener('scroll',function(){if(!tk){tk=true;requestAnimationFrame(f);}},{passive:true});
+window.addEventListener('resize',h);h();setTimeout(h,400);})();
 </script>
 </body>
 </html>
