@@ -959,7 +959,15 @@
     /* Jam di spanduk dibesarkan */
     .ban .clock { font-size: 25px; font-weight: 800; letter-spacing: .01em; font-variant-numeric: tabular-nums; line-height: 1; padding: 8px 12px; border-radius: 14px; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.28); opacity: 1; white-space: nowrap; }
     @media (max-width: 350px) { .ban .clock { font-size: 21px; padding: 7px 9px; } }
-  </style>
+  
+.cari-box{display:flex;gap:8px;margin:10px 0 6px}
+.cari-box input,.cari-box select{flex:1;min-width:0;min-height:44px;padding:0 12px;border-radius:12px;border:1px solid var(--divider,#E6EAF2);background:var(--card,#fff);color:inherit;font:inherit;font-size:14px}
+.cari-box select{flex:0 0 42%}
+.cari-kosong{padding:14px 0;text-align:center;color:#5b6475;font-size:13px;display:none}
+.rek-cp{min-height:36px;padding:0 12px;border-radius:10px;border:1px solid #1d4ed8;background:transparent;color:#1d4ed8;font-weight:800;font-size:12px;font-family:inherit}
+.rek-cp:disabled{opacity:.5}
+@media (prefers-color-scheme: dark){.rek-cp{color:#9DB7FF;border-color:#9DB7FF}.cari-kosong{color:#A8AFBF}}
+</style>
 
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
@@ -3194,7 +3202,7 @@ body.adm-terbatas [data-terbatas]{display:none!important}
       return '<div class="rek-row"><span>' + esc(i.label) + '</span><div class="rek-bar"><i class="' + (i.persen < 50 ? 'rendah' : '') + '" style="width:' + i.persen + '%"></i></div><em>' + i.persen + '%</em></div>';
     }).join('') || '<div class="dev-kosong">Belum ada data.</div>';
     $('rekList').innerHTML = data.rows.map(function (r, n) {
-      return '<div class="rek-g"><span class="no">' + (n + 1) + '</span><div class="nm">' + esc(r.nama) + '<small>' + esc(r.jabatan || '') + '</small></div><b>' + r.skor + '</b><span class="lb ' + kls(r.label) + '">' + esc(r.label) + '</span></div>';
+      return '<div class="rek-g"><span class="no">' + (n + 1) + '</span><div class="nm">' + esc(r.nama) + '<small>' + esc(r.jabatan || '') + '</small></div><b>' + r.skor + '</b><span class="lb ' + kls(r.label) + '">' + esc(r.label) + '</span><button type="button" class="rek-cp" data-kode="' + esc(r.kode || '') + '" aria-label="Cetak rekap ' + esc(r.nama) + '"' + (r.kode ? '' : ' hidden') + '>Cetak</button></div>';
     }).join('') || '<div class="dev-kosong">Belum ada data guru.</div>';
     $('btnRekCetak').disabled = !data.rows.length;
   }
@@ -3723,6 +3731,84 @@ body.adm-terbatas [data-terbatas]{display:none!important}
     if (k === 'kr' && !kr) { $('krPinRow').style.display = 'none'; krMuat(''); }
     if (k === 'st' && !sd) { $('stPinRow').style.display = 'none'; sdMuat(''); }
   };
+})();
+</script>
+<script>
+// ===== Pencarian/filter di Admin + rekap cetak per guru =====
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var BLN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  function esc(x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function lbl(b) { var p = String(b).split('-'); return BLN[+p[1] - 1] + ' ' + p[0]; }
+  function norm(x) { return String(x || '').toLowerCase().replace(/\s+/g, ' ').trim(); }
+
+  // Pasang kotak cari (dan filter status) di atas sebuah daftar. Daftar boleh digambar ulang kapan saja.
+  function pasangCari(listId, itemSel, statusSel, opsiStatus, placeholder) {
+    var list = $(listId); if (!list || list.__cari) return; list.__cari = 1;
+    var box = document.createElement('div'); box.className = 'cari-box';
+    box.innerHTML = '<input type="search" placeholder="' + placeholder + '" aria-label="' + placeholder + '" autocomplete="off">' +
+      (opsiStatus ? '<select aria-label="Filter status"><option value="">Semua status</option>' + opsiStatus.map(function (o) { return '<option>' + o + '</option>'; }).join('') + '</select>' : '');
+    var kosong = document.createElement('div'); kosong.className = 'cari-kosong'; kosong.textContent = 'Tidak ada yang cocok.';
+    list.parentNode.insertBefore(box, list); list.parentNode.insertBefore(kosong, list.nextSibling);
+    var inp = box.querySelector('input'), sel = box.querySelector('select'), lock = false;
+    function terapkan() {
+      if (lock) return; lock = true;
+      var q = norm(inp.value), st = sel ? sel.value : '', n = 0, tampil = 0;
+      Array.prototype.forEach.call(list.querySelectorAll(itemSel), function (el) {
+        n++;
+        var nm = el.querySelector('.nm, .lap-nama'); var teks = norm(nm ? nm.textContent : el.textContent);
+        var ok = (!q || teks.indexOf(q) >= 0);
+        if (ok && st && statusSel) { var c = el.querySelector(statusSel); ok = !!c && norm(c.textContent) === norm(st); }
+        el.style.display = ok ? '' : 'none'; if (ok) tampil++;
+      });
+      kosong.style.display = (n && !tampil) ? 'block' : 'none';
+      lock = false;
+    }
+    inp.addEventListener('input', terapkan); if (sel) sel.addEventListener('change', terapkan);
+    new MutationObserver(terapkan).observe(list, { childList: true });
+  }
+  pasangCari('lapList', '.lap-card', '.lap-chip', ['Menunggu', 'Terverifikasi', 'Revisi', 'Belum lapor'], 'Cari nama guru');
+  pasangCari('rekList', '.rek-g', null, null, 'Cari nama guru');
+
+  // ---- cetak rekap satu guru ----
+  function cetak(d) {
+    var hdr = '<tr><th>Tanggal</th><th>Jenis</th><th>Keterangan</th><th style="width:60px">Durasi</th></tr>';
+    var kg = d.kegiatan.daftar.map(function (k) { return '<tr><td>' + esc(k.tanggal) + '</td><td>' + esc(k.jenis) + '</td><td>' + esc(k.keterangan) + '</td><td class="c">' + (k.durasi == null ? '-' : String(k.durasi).replace('.', ',') + ' jam') + '</td></tr>'; }).join('') || '<tr><td colspan="4" class="c">Belum ada catatan kegiatan.</td></tr>';
+    var pj = d.perangkat.items.map(function (i) { return '<tr><td>' + esc(i.label) + '</td><td class="c">' + esc(i.status) + '</td></tr>'; }).join('');
+    var mg = d.minggu.length ? '<h2>Laporan mingguan</h2><table><tr><th>Minggu</th><th>Tanggal</th><th>Status</th></tr>' + d.minggu.map(function (m) { return '<tr><td>' + esc(m.label) + '</td><td>' + esc(m.rentang) + '</td><td>' + esc(m.status) + '</td></tr>'; }).join('') + '</table>' : '';
+    var h = '<!doctype html><html lang="id"><head><meta charset="utf-8"><title>Rekap ' + esc(d.nama) + ' ' + lbl(d.bulan) + '</title><style>' +
+      'body{font-family:Arial,sans-serif;color:#111;margin:24px;font-size:12px}h1{font-size:17px;margin:0}h2{font-size:13px;margin:18px 0 6px}.s{color:#555;margin:2px 0 14px}' +
+      'table{border-collapse:collapse;width:100%}th,td{border:1px solid #999;padding:5px 7px;text-align:left}th{background:#e8eefc}td.c{text-align:center}' +
+      '.k{display:flex;gap:12px;margin:10px 0}.k div{border:1px solid #999;padding:8px 12px;flex:1}.k b{font-size:20px;display:block}' +
+      '.ttd{margin-top:36px;display:flex;justify-content:space-between}.ttd div{text-align:center;width:220px}@media print{body{margin:12mm}}' +
+      '</style></head><body><h1>Rekap Bulanan Guru – ' + lbl(d.bulan) + '</h1><div class="s">' + esc(d.sekolah) + ' · dicetak ' + esc(d.dibuat) + '</div>' +
+      '<table style="margin-bottom:10px"><tr><th style="width:90px">Nama</th><td>' + esc(d.nama) + '</td></tr><tr><th>Jabatan</th><td>' + esc(d.jabatan || '-') + '</td></tr></table>' +
+      '<div class="k"><div><b>' + (d.skor == null ? '-' : d.skor) + '</b>Skor' + (d.label ? ' (' + esc(d.label) + ')' : '') + '</div><div><b>' + d.hadir + '</b>Hari hadir</div><div><b>' + d.izin + ' / ' + d.alpa + '</b>Izin / Alpa</div><div><b>' + d.kegiatan.jumlah + '</b>Kegiatan (' + String(d.kegiatan.jam).replace('.', ',') + ' jam)</div></div>' +
+      '<h2>Kehadiran</h2><p>Persentase hadir: ' + (d.hadirPct == null ? '-' : d.hadirPct + '%') + ' (hadir ' + d.hadir + ', izin ' + d.izin + ', alpa ' + d.alpa + ').</p>' +
+      '<h2>Perangkat ajar – ' + esc(d.perangkat.semester) + ' (' + d.perangkat.siap + ' dari ' + d.perangkat.total + ' siap)</h2><table><tr><th>Item</th><th style="width:110px">Status</th></tr>' + pj + '</table>' +
+      mg + '<h2>Catatan kegiatan</h2><table>' + hdr + kg + '</table>' +
+      '<div class="ttd"><div>Guru<br><br><br><br>(' + esc(d.nama) + ')</div><div>Kepala Sekolah<br><br><br><br>(................................)</div></div></body></html>';
+    var w = window.open('', '_blank');
+    if (w) { w.document.open(); w.document.write(h); w.document.close(); setTimeout(function () { try { w.focus(); w.print(); } catch (e) { } }, 400); return; }
+    var f = document.createElement('iframe'); f.style.cssText = 'position:fixed;width:0;height:0;border:0;'; document.body.appendChild(f);
+    f.srcdoc = h; f.onload = function () { try { f.contentWindow.print(); } catch (e) { } setTimeout(function () { f.remove(); }, 4000); };
+  }
+  $('rekList').addEventListener('click', function (e) {
+    var b = e.target.closest('.rek-cp'); if (!b || b.disabled) return;
+    var pin = window.__admPin, id = getDeviceId(), bln = (($('rekBulan') || {}).textContent || '');
+    if (!pin) { setStatus('rekStatus', 'err', 'Isi PIN admin dulu.'); return; }
+    // ambil bulan "yyyy-MM" dari label "Bulan Tahun"
+    var p = bln.split(' '), bi = BLN.indexOf(p[0]), bulan = (bi >= 0 && p[1]) ? p[1] + '-' + ('0' + (bi + 1)).slice(-2) : '';
+    var teks = b.textContent; b.disabled = true; b.textContent = '...';
+    google.script.run
+      .withSuccessHandler(function (res) {
+        b.disabled = false; b.textContent = teks;
+        if (!res || !res.ok) { setStatus('rekStatus', 'err', (res && res.message) || 'Gagal memuat rekap.'); return; }
+        cetak(res);
+      })
+      .withFailureHandler(function (err) { b.disabled = false; b.textContent = teks; setStatus('rekStatus', 'err', 'Error: ' + pesanError(err)); })
+      .getRekapGuruBulan(pin, id, bulan, b.getAttribute('data-kode'));
+  });
 })();
 </script>
 </body>
