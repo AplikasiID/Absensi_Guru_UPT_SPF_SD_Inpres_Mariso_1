@@ -218,9 +218,16 @@
   .cell-status.pill-absen { color: #767d87; }
   .cell-status.pill-ket { color: #3d6a86; }
   .table-empty-cell { padding: 24px; color: rgba(29,29,31,0.4); font-size: 12.5px; text-align: center; }
+
+  #pinGate{position:fixed;inset:0;z-index:9999;background:#0b1220;color:#fff;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:24px;text-align:center;font-family:inherit}
+  #pinGate h2{margin:0;font-size:20px}#pinGate p{margin:0;opacity:.75;font-size:14px}
+  #pinGate input{font-size:22px;padding:10px 16px;border-radius:12px;border:2px solid #5b6b8f;background:#14234A;color:#fff;text-align:center;width:min(260px,70vw);letter-spacing:6px}
+  #pinGate button{font-size:16px;padding:10px 28px;border:0;border-radius:12px;background:#7db2ff;color:#0b1220;font-weight:800;cursor:pointer}
+  #pinGateErr{color:#ff8f86;min-height:20px;font-size:14px}
 </style>
 </head>
 <body>
+<div id="pinGate"><h2>Dashboard Absensi Guru</h2><p>Masukkan PIN admin untuk membuka.</p><input id="pinGateInput" type="password" inputmode="numeric" autocomplete="off"><div id="pinGateErr" role="alert"></div><button type="button" id="pinGateBtn">Buka</button></div>
 <div class="wrap">
 
   <div class="header">
@@ -546,8 +553,17 @@ function reloadDashboardData() {
   btn.classList.add('loading');
   label.textContent = 'Memuat...';
 
+  var pinDash = ''; try { pinDash = localStorage.getItem('absensi_dash_pin') || ''; } catch (e) { }
+  if (!pinDash) { btn.disabled = false; btn.classList.remove('loading'); label.textContent = 'Refresh Data'; tampilPinDash(''); return; }
   google.script.run
     .withSuccessHandler(function (data) {
+      if (data && data.ok === false) {
+        try { localStorage.removeItem('absensi_dash_pin'); } catch (e) { }
+        btn.disabled = false; btn.classList.remove('loading'); label.textContent = 'Refresh Data';
+        document.getElementById('appContent').style.display = 'none';
+        tampilPinDash(data.message || 'PIN salah.'); return;
+      }
+      document.getElementById('pinGate').style.display = 'none';
       document.getElementById('loadingMsg').style.display = 'none';
       document.getElementById('appContent').style.display = 'block';
       requestAnimationFrame(function () {
@@ -566,8 +582,23 @@ function reloadDashboardData() {
       label.textContent = 'Refresh Data';
       alert('Gagal memuat ulang data: ' + (err && err.message ? err.message : err));
     })
-    .getDashboardData();
+    .getDashboardData(pinDash);
 }
+
+function tampilPinDash(pesan) {
+  document.getElementById('loadingMsg').style.display = 'none';
+  document.getElementById('pinGateErr').textContent = pesan || '';
+  var g = document.getElementById('pinGate'); g.style.display = 'flex';
+  var inp = document.getElementById('pinGateInput'); inp.value = ''; inp.focus();
+}
+function kirimPinDash() {
+  var v = document.getElementById('pinGateInput').value.trim(); if (!v) return;
+  try { localStorage.setItem('absensi_dash_pin', v); } catch (e) { }
+  document.getElementById('pinGateErr').textContent = 'Memeriksa...';
+  reloadDashboardData();
+}
+document.getElementById('pinGateBtn').addEventListener('click', kirimPinDash);
+document.getElementById('pinGateInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') kirimPinDash(); });
 
 reloadDashboardData();
 
