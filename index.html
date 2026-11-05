@@ -974,6 +974,12 @@
 .rev-ntf .adm-chev{flex:0 0 20px;width:20px;height:20px}
 .bnav .bn-row>.punya-rev{position:relative}.bnav .bn-row>.punya-rev::after{content:"";position:absolute;top:6px;left:calc(50% + 8px);width:10px;height:10px;border-radius:50%;background:#ef4444;box-shadow:0 0 0 2px #fff}
 @media (prefers-color-scheme: dark){.rev-ntf{background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.45);color:#FFB4AE}.bnav .bn-row>.punya-rev::after{box-shadow:0 0 0 2px #1c1c24}}
+
+#viewAdmin .pin-lock{display:block}
+#viewAdmin .pin-lock h2{font-size:17px;margin:0 0 4px}
+#viewAdmin .pin-lock input{display:block;width:100%;margin-bottom:12px}
+#viewAdmin .pin-lock>button{width:100%!important;min-width:0!important;height:auto!important;min-height:0!important;padding:14px!important;font-size:15.5px;font-weight:800;display:block!important;border-radius:16px!important;background:linear-gradient(135deg,#1d4ed8,#1e3a8a)!important;color:#fff;box-shadow:0 6px 16px rgba(30,58,138,.28)}
+#viewAdmin .pin-lock>button:disabled{opacity:.6}
 </style>
 
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -1362,12 +1368,7 @@ body.adm-terbatas [data-terbatas]{display:none!important}
 
       <div class="adm-pane" id="admPaneAj">
         <div class="card2">
-          <h2>Perangkat Ajar</h2>
-          <p class="hint-small" id="ajSub">Periksa Kalender Pendidikan, Prota, Prosem, Silabus, Modul Ajar, Jurnal, dan Nilai tiap guru. Perlu PIN admin.</p>
-          <div class="pin-row" id="ajPinRow">
-            <input type="password" id="ajPin" inputmode="numeric" placeholder="Masukkan PIN admin" autocomplete="off">
-            <button type="button" id="btnAjMuat" aria-label="Muat perangkat ajar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>
-          </div>
+          <div class="pin-row pin-lock step1" id="ajPinRow"><div class="lk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><h2>Masukkan PIN Admin</h2><p class="sub">PIN diperlukan untuk membuka halaman ini</p><input type="password" id="ajPin" inputmode="numeric" placeholder="PIN admin" autocomplete="off"><button type="button" id="btnAjMuat" aria-label="Muat perangkat ajar">Buka</button></div>
           <div id="ajStatus" class="status"></div>
           <div id="ajBox">
             <div class="aj-sem" id="ajSem">-</div>
@@ -1396,12 +1397,7 @@ body.adm-terbatas [data-terbatas]{display:none!important}
 
       <div class="adm-pane" id="admPaneKg">
         <div class="card2">
-          <h2>Daftar Kegiatan</h2>
-          <p class="hint-small">Catatan kegiatan harian guru. Langsung tercatat, tanpa persetujuan. Perlu PIN admin.</p>
-          <div class="pin-row" id="kgaPinRow">
-            <input type="password" id="kgaPin" inputmode="numeric" placeholder="Masukkan PIN admin" autocomplete="off">
-            <button type="button" id="btnKgaMuat" aria-label="Muat daftar kegiatan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg><span>Muat</span></button>
-          </div>
+          <div class="pin-row pin-lock step1" id="kgaPinRow"><div class="lk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><h2>Masukkan PIN Admin</h2><p class="sub">PIN diperlukan untuk membuka halaman ini</p><input type="password" id="kgaPin" inputmode="numeric" placeholder="PIN admin" autocomplete="off"><button type="button" id="btnKgaMuat" aria-label="Muat daftar kegiatan">Buka</button></div>
           <div id="kgaStatus" class="status"></div>
           <div id="kgaBox" style="display:none">
             <div class="kgx-bar"><button type="button" id="kgaPrev" aria-label="Bulan sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><b id="kgaBln">-</b><button type="button" id="kgaNext" aria-label="Bulan berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div>
@@ -1414,12 +1410,7 @@ body.adm-terbatas [data-terbatas]{display:none!important}
 
       <div class="adm-pane" id="admPaneKr">
         <div class="card2">
-          <h2>Rekap Kegiatan</h2>
-          <p class="hint-small">Jumlah kegiatan dan total jam tiap guru per bulan, siap dicetak untuk dinas. Catatan yang dihapus tidak dihitung. Perlu PIN admin.</p>
-          <div class="pin-row" id="krPinRow">
-            <input type="password" id="krPin" inputmode="numeric" placeholder="Masukkan PIN admin" autocomplete="off">
-            <button type="button" id="btnKrMuat" aria-label="Muat rekap kegiatan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg><span>Muat</span></button>
-          </div>
+          <div class="pin-row pin-lock step1" id="krPinRow"><div class="lk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><h2>Masukkan PIN Admin</h2><p class="sub">PIN diperlukan untuk membuka halaman ini</p><input type="password" id="krPin" inputmode="numeric" placeholder="PIN admin" autocomplete="off"><button type="button" id="btnKrMuat" aria-label="Muat rekap kegiatan">Buka</button></div>
           <div id="krStatus" class="status"></div>
           <div id="krBox" style="display:none">
             <div class="kgx-bar"><button type="button" id="krPrev" aria-label="Bulan sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><b id="krBln">-</b><button type="button" id="krNext" aria-label="Bulan berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div>
@@ -1432,12 +1423,7 @@ body.adm-terbatas [data-terbatas]{display:none!important}
 
       <div class="adm-pane" id="admPaneSt">
         <div class="card2">
-          <h2>8 Standar</h2>
-          <p class="hint-small">Tetapkan penanggung jawab (PJ), periksa bukti, dan nyatakan standar lengkap. Perlu PIN admin.</p>
-          <div class="pin-row" id="stPinRow">
-            <input type="password" id="stPin" inputmode="numeric" placeholder="Masukkan PIN admin" autocomplete="off">
-            <button type="button" id="btnStMuat" aria-label="Muat 8 standar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg><span>Muat</span></button>
-          </div>
+          <div class="pin-row pin-lock step1" id="stPinRow"><div class="lk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><h2>Masukkan PIN Admin</h2><p class="sub">PIN diperlukan untuk membuka halaman ini</p><input type="password" id="stPin" inputmode="numeric" placeholder="PIN admin" autocomplete="off"><button type="button" id="btnStMuat" aria-label="Muat 8 standar">Buka</button></div>
           <div id="stStatus" class="status"></div>
           <div id="stBox" style="display:none">
             <div class="kgx-sum"><div><b id="stLengkap">0</b><span id="stTa">Lengkap</span></div><div><b id="stTotal">8</b><span>Standar</span></div></div>
@@ -1448,12 +1434,7 @@ body.adm-terbatas [data-terbatas]{display:none!important}
 
       <div class="adm-pane" id="admPaneRek">
         <div class="card2">
-          <h2>Ringkasan Sekolah</h2>
-          <p class="hint-small">Rata-rata skor guru, indikator yang perlu dibina, dan rekap untuk rapat. Perlu PIN admin.</p>
-          <div class="pin-row" id="rekPinRow">
-            <input type="password" id="rekPin" inputmode="numeric" placeholder="Masukkan PIN admin" autocomplete="off">
-            <button type="button" id="btnRekMuat" aria-label="Muat ringkasan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>
-          </div>
+          <div class="pin-row pin-lock step1" id="rekPinRow"><div class="lk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><h2>Masukkan PIN Admin</h2><p class="sub">PIN diperlukan untuk membuka halaman ini</p><input type="password" id="rekPin" inputmode="numeric" placeholder="PIN admin" autocomplete="off"><button type="button" id="btnRekMuat" aria-label="Muat ringkasan">Buka</button></div>
           <div id="rekStatus" class="status"></div>
           <div id="rekBox">
             <div class="lap-mrow"><button type="button" id="rekPrev" aria-label="Bulan sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><b id="rekBulan">-</b><button type="button" id="rekNext" aria-label="Bulan berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div>
@@ -1467,12 +1448,7 @@ body.adm-terbatas [data-terbatas]{display:none!important}
 
       <div class="adm-pane" id="admPaneLap">
         <div class="card2" id="lapCard">
-          <h2>Verifikasi Laporan</h2>
-          <p class="hint-small">Periksa laporan mingguan guru, lalu verifikasi sebulan sekali. Perlu PIN admin.</p>
-          <div class="pin-row" id="lapPinRow">
-            <input type="password" id="lapPin" inputmode="numeric" placeholder="Masukkan PIN admin" autocomplete="off">
-            <button type="button" id="btnLapMuat" aria-label="Muat laporan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>
-          </div>
+          <div class="pin-row pin-lock step1" id="lapPinRow"><div class="lk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><h2>Masukkan PIN Admin</h2><p class="sub">PIN diperlukan untuk membuka halaman ini</p><input type="password" id="lapPin" inputmode="numeric" placeholder="PIN admin" autocomplete="off"><button type="button" id="btnLapMuat" aria-label="Muat laporan">Buka</button></div>
           <div id="lapStatus" class="status"></div>
           <div id="lapBox">
             <div class="lap-mrow"><button type="button" id="lapPrev" aria-label="Bulan sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><b id="lapBulan">-</b><button type="button" id="lapNext" aria-label="Bulan berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div>
