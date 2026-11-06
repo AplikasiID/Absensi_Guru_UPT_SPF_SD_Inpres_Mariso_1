@@ -95,7 +95,7 @@
       <div class="tt"><small>UPTD SPF</small><b>SD Inpres Mariso I</b></div>
     </div>
     <h1>Pengaturan</h1>
-    <div class="subtitle">Mode absen, izin daring, pengumuman</div>
+    <div class="subtitle">Mode absen dan izin daring</div>
   </div>
 
   <div class="wrap">
@@ -121,12 +121,6 @@
       <div class="catatan" style="margin:0 0 12px;">Guru yang diizinkan absen dari luar sekolah</div>
       <input type="text" id="cariGuru" class="search-box" placeholder="Cari nama guru...">
       <div id="daftarGuru"></div>
-    </div>
-
-    <div class="card">
-      <h2>Pengumuman Layar TV</h2>
-      <div class="catatan" style="margin:0 0 12px;">Satu pengumuman per baris. Kosongkan untuk menyembunyikan.</div>
-      <textarea id="teksPengumuman" rows="4" placeholder="Contoh: Rapat guru hari Senin pukul 10:00" style="resize:vertical;margin-bottom:0;"></textarea>
     </div>
 
     <div class="card">
@@ -191,19 +185,8 @@
   }
 
   var pengumumanAwal = '';
-  function ambilPengumuman() {
-    google.script.run
-      .withSuccessHandler(function (daftar) {
-        var teks = (daftar || []).join('\n');
-        pengumumanAwal = teks;
-        document.getElementById('teksPengumuman').value = teks;
-      })
-      .withFailureHandler(function () { })
-      .getPengumumanTeks();
-  }
 
   window.onload = function () {
-    ambilPengumuman();
     google.script.run
       .withSuccessHandler(renderData)
       .withFailureHandler(function (err) {
@@ -313,8 +296,8 @@
 
     var modeBerubah = dataAwal && (modeDipilih !== dataAwal.modeSekolah);
     var kodeIzinBerubah = Object.keys(izinDiubah);
-    var teksBaru = document.getElementById('teksPengumuman').value;
-    var pengumumanBerubah = (teksBaru.trim() !== pengumumanAwal.trim());
+    var teksBaru = '';
+    var pengumumanBerubah = false;
 
     if (!modeBerubah && kodeIzinBerubah.length === 0 && !pengumumanBerubah) {
       tampilkanPesan('Tidak ada perubahan untuk disimpan.', 'error');
