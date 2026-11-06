@@ -1433,7 +1433,7 @@ body.adm-terbatas [data-terbatas]{display:none!important}
           <div id="kgaBox" style="display:none">
             <div class="kgx-bar"><button type="button" id="kgaPrev" aria-label="Bulan sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><b id="kgaBln">-</b><button type="button" id="kgaNext" aria-label="Bulan berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div>
             <select id="kgaGuru" class="kgx-sel" aria-label="Saring per guru"><option value="">Semua guru</option></select>
-            <div class="kgx-sum"><div><b id="kgaJml">0</b><span>Kegiatan</span></div><div><b id="kgaJam">0</b><span>Total jam</span></div></div>
+            <div class="kgx-sum k3"><div><b id="kgaJml">0</b><span>Kegiatan</span></div><div><b id="kgaJam">0</b><span>Total jam</span></div><div><b id="kgaAktif">0</b><span>Guru aktif</span></div></div>
             <div id="kgaList"></div>
           </div>
         </div>
@@ -2747,9 +2747,9 @@ body.adm-terbatas [data-terbatas]{display:none!important}
     }
 
     function resetDeviceManual() {
-      var pin = prompt('Masukkan PIN admin untuk reset device:');
-      if (!pin) return;
-
+      Popup.isi('Masukkan PIN admin untuk mereset perangkat ini.', { judul: 'PIN admin', ok: 'Reset', sandi: true, wajib: true, placeholder: 'PIN' }, function (pin) { resetDeviceKirim(pin); });
+    }
+    function resetDeviceKirim(pin) {
       var deviceId = getDeviceId();
       if (!deviceId) {
         showModal('err', 'Error', 'Device ID tidak terdeteksi.');
@@ -3152,12 +3152,14 @@ body.adm-terbatas [data-terbatas]{display:none!important}
       .getLaporanAdmin(pin, id, b);
   }
 
+  function namaKartu(el) { var c = el.closest('.lap-card'), n = c && c.querySelector('.lap-nama'); return n ? n.textContent : ''; }
   function tinjau(tb) {
     var a = tb.getAttribute('data-a'), alasan = '';
     if (a === 'revisi') {
-      alasan = prompt('Catatan revisi untuk guru (apa yang perlu diperbaiki):', '');
-      if (alasan === null) return;
-    } else if (!confirm('Setujui laporan minggu ini?')) return;
+      Popup.isi('Tulis apa yang perlu diperbaiki guru.', { judul: 'Catatan revisi', rincianJudul: 'Guru \u00B7 minggu ' + tb.getAttribute('data-mg'), rincian: namaKartu(tb), ok: 'Kirim revisi', placeholder: 'Contoh: lampirkan RPP minggu ini', wajib: false }, function (t) { tinjauKirim(tb, a, t); });
+    } else Popup.tanya('Laporan minggu ini akan ditandai disetujui.', { judul: 'Setujui laporan?', rincianJudul: 'Guru \u00B7 minggu ' + tb.getAttribute('data-mg'), rincian: namaKartu(tb), ok: 'Ya, setujui', tipe: 'ok', ikon: 'ok' }, function () { tinjauKirim(tb, a, ''); });
+  }
+  function tinjauKirim(tb, a, alasan) {
     tb.disabled = true; toast('info', 'Menyimpan...');
     google.script.run
       .withSuccessHandler(function (res) {
@@ -3170,7 +3172,9 @@ body.adm-terbatas [data-terbatas]{display:none!important}
 
   function setuju(daftar, tombol) {
     var teks = daftar && daftar.length ? 'Verifikasi laporan guru ini?' : 'Verifikasi SEMUA laporan yang menunggu di ' + label(bulan) + '?\n\nLaporan yang sudah diverifikasi tidak bisa diubah guru lagi.';
-    if (!confirm(teks)) return;
+    Popup.tanya(teks, { judul: 'Verifikasi laporan?', rincianJudul: tombol && tombol.closest('.lap-card') ? 'Guru' : '', rincian: tombol && tombol.closest('.lap-card') ? namaKartu(tombol) : '', ok: 'Ya, verifikasi', tipe: 'ok', ikon: 'ok' }, function () { setujuKirim(daftar, tombol); });
+  }
+  function setujuKirim(daftar, tombol) {
     if (tombol) tombol.disabled = true;
     toast('info', 'Memverifikasi...');
     google.script.run
@@ -3451,7 +3455,9 @@ body.adm-terbatas [data-terbatas]{display:none!important}
   function reset(kode, tombol) {
     var r = rows.filter(function (x) { return x.kode === kode; })[0];
     if (!r) return;
-    if (!confirm('Reset HP terdaftar untuk ' + r.nama + '?\n\nGuru ini harus absen lagi dari HP barunya, dan HP itu akan otomatis terdaftar.')) return;
+    Popup.tanya('Guru ini harus absen lagi dari HP barunya, dan HP itu akan otomatis terdaftar.', { judul: 'Reset HP ' + r.nama + '?', ok: 'Ya, reset', bahaya: true, ikon: 'warn' }, function () { resetKirim(r, tombol); });
+  }
+  function resetKirim(r, tombol) {
     tombol.disabled = true; tombol.textContent = 'Memproses...';
     setStatus('devStatus', 'info', 'Mereset perangkat ' + r.nama + '...');
     google.script.run
@@ -3504,6 +3510,18 @@ body.adm-terbatas [data-terbatas]{display:none!important}
 #viewAdmin .kgx-btn { min-height: 44px; padding: 0 16px; width: auto; margin: 0; border-radius: 12px; font-size: 13px; font-weight: 800; background: #eef2ff; color: #1e3a8a; box-shadow: none; }
 #viewAdmin .kgx-btn.red { background: #fee2e2; color: #b91c1c; } #viewAdmin .kgx-btn.grn { background: #dcfce7; color: #166534; } #viewAdmin .kgx-btn.pri { background: #1d4ed8; color: #fff; }
 #viewAdmin .kgx-btn.ghost { background: transparent; color: #64748b; border: 1px solid #e6eaf2; } #viewAdmin .kgx-btn:disabled { opacity: .5; }
+#viewAdmin .kgx-sum.k3 { grid-template-columns: repeat(3, 1fr); }
+#viewAdmin .kgx-g { border: 1px solid #e6eaf2; border-radius: 18px; margin-top: 10px; overflow: hidden; }
+#viewAdmin .kgx-gh { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 64px; padding: 10px 12px; background: transparent; border: 0; border-radius: 0; text-align: left; font-family: inherit; color: #14213d; box-shadow: none; margin: 0; }
+#viewAdmin .kgx-av { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #1d4ed8, #16a34a); color: #fff; font-weight: 800; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+#viewAdmin .kgx-gt { flex: 1; min-width: 0; } #viewAdmin .kgx-gt b { display: block; font-size: 14px; font-weight: 800; word-break: break-word; } #viewAdmin .kgx-gt small { font-size: 12px; font-weight: 700; color: #475569; }
+#viewAdmin .kgx-pb { display: block; height: 6px; border-radius: 99px; background: rgba(100,116,139,.2); margin-top: 6px; overflow: hidden; } #viewAdmin .kgx-pb i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #1d4ed8, #16a34a); }
+#viewAdmin .kgx-cv { font-size: 16px; color: #64748b; transition: transform .2s; } #viewAdmin .kgx-g.buka .kgx-cv { transform: rotate(180deg); }
+#viewAdmin .kgx-gb { display: none; padding: 0 12px 12px; border-top: 1px solid #e6eaf2; } #viewAdmin .kgx-g.buka .kgx-gb { display: block; }
+#viewAdmin .kgx-it.kgx-b { border: 0; border-bottom: 1px solid #e6eaf2; border-radius: 0; padding: 12px 0; margin: 0; } #viewAdmin .kgx-it.kgx-b:last-child { border-bottom: 0; padding-bottom: 0; }
+#viewAdmin .kgx-btn.kgx-sm { min-height: 36px; padding: 0 14px; font-size: 12px; margin-left: auto; }
+#viewAdmin .kgx-it.kgx-b .kgx-ft { margin-top: 6px; } #viewAdmin .kgx-it.kgx-b .ft-row { margin-top: 6px; }
+@media (prefers-color-scheme: dark) { #viewAdmin .kgx-g, #viewAdmin .kgx-gb, #viewAdmin .kgx-it.kgx-b { border-color: rgba(255,255,255,.10); } #viewAdmin .kgx-gh { color: #F2F2F7; } #viewAdmin .kgx-gt small { color: #A8AFBF; } }
 #viewAdmin .kgx-sp { margin-left: auto; }
 #viewAdmin .kgx-hapus { display: none; margin-top: 8px; } #viewAdmin .kgx-it.minta .kgx-hapus { display: block; }
 #viewAdmin .kgx-hapus textarea { width: 100%; min-height: 72px; padding: 10px 12px; border: 1px solid #e6eaf2; border-radius: 12px; font-size: 14px; font-family: inherit; font-weight: 600; resize: vertical; margin: 0 0 8px; background: #fff; color: #14213d; }
@@ -3575,17 +3593,43 @@ body.adm-terbatas [data-terbatas]{display:none!important}
 
   // ---------------- Daftar Kegiatan ----------------
   var kg = null, kgBulan = '', kgFilter = '', kgSeq = 0, kgMinta = '';
+  var kgBuka = {};
+  function inisial(n) { var p = String(n || '').split(',')[0].trim().split(/\s+/); return ((p[0] || '?').charAt(0) + (p.length > 1 ? p[1].charAt(0) : '')).toUpperCase(); }
+  function kgItem(r) {
+    var meta = tglLabel(r.tanggal) + (r.durasi != null ? ' \u00B7 ' + fmtJam(r.durasi) + ' jam' : '');
+    var hs = String(r.buktiLink || '').split(/\s+/).map(hrefAman).filter(function (x) { return x; });
+    var ft = '';
+    if (r.dihapus) ft = '<div class="kgx-alasan">Dihapus: ' + esc(r.alasanHapus || '-') + (r.dihapusPada ? ' \u00B7 ' + esc(r.dihapusPada.substring(0, 10)) : '') + '</div>';
+    else ft = '<button type="button" class="kgx-btn red kgx-sm" data-a="minta" data-id="' + esc(r.id) + '">Hapus</button>';
+    var form = r.dihapus ? '' : '<div class="kgx-hapus"><textarea maxlength="200" placeholder="Alasan penghapusan (wajib)" aria-label="Alasan penghapusan"></textarea><div class="kgx-row"><button type="button" class="kgx-btn red" data-a="ok" data-id="' + esc(r.id) + '">Hapus catatan</button><button type="button" class="kgx-btn ghost" data-a="batal">Batal</button></div></div>';
+    return '<div class="kgx-it kgx-b' + (r.dihapus ? ' del' : '') + (kgMinta === r.id ? ' minta' : '') + '" data-id="' + esc(r.id) + '">' +
+      '<div class="kgx-r1"><span class="kgx-m" style="margin:0">' + esc(meta) + '</span><span class="kgx-jn">' + esc(r.jenis) + '</span></div>' +
+      '<div class="kgx-ket">' + esc(r.keterangan) + '</div>' +
+      (hs.length && !r.dihapus ? window.Foto.strip(hs, 58) : (hs.length ? window.Foto.strip(hs, 44) : '')) +
+      '<div class="kgx-ft">' + ft + '</div>' + form + '</div>';
+  }
   function kgGambar() {
     $('kgaBln').textContent = bulanLabel(kg.bulan); $('kgaNext').disabled = kg.bulan >= kg.bulanIni;
     $('kgaJml').textContent = kg.total; $('kgaJam').textContent = fmtJam(kg.totalJam);
-    $('kgaList').innerHTML = kg.rows.length ? kg.rows.map(function (r) {
-      var hs = String(r.buktiLink || '').split(/\s+/).map(hrefAman).filter(function (x) { return x; }), nms = String(r.buktiNama || '').split(' | '), meta = tglLabel(r.tanggal) + (r.durasi != null ? ' \u00B7 ' + fmtJam(r.durasi) + ' jam' : '');
-      var isi = '<div class="kgx-r1"><b>' + esc(r.nama) + '</b><span class="kgx-jn">' + esc(r.jenis) + '</span></div><div class="kgx-m">' + esc(meta) + '</div><div class="kgx-ket">' + esc(r.keterangan) + '</div>';
-      var ft = hs.map(function (u, i) { return '<a href="' + esc(u) + '" target="_blank" rel="noopener">' + (hs.length > 1 ? 'Bukti ' + (i + 1) : 'Lihat bukti' + (nms[0] ? ' (' + esc(nms[0]) + ')' : '')) + '</a>'; }).join(' ');
-      if (r.dihapus) ft += '<div style="width:100%" class="kgx-alasan">Dihapus: ' + esc(r.alasanHapus || '-') + (r.dihapusPada ? ' \u00B7 ' + esc(r.dihapusPada.substring(0, 10)) : '') + '</div>';
-      else ft += '<button type="button" class="kgx-btn red kgx-sp" data-a="minta" data-id="' + esc(r.id) + '">Hapus</button>';
-      var form = r.dihapus ? '' : '<div class="kgx-hapus"><textarea maxlength="200" placeholder="Alasan penghapusan (wajib)" aria-label="Alasan penghapusan"></textarea><div class="kgx-row"><button type="button" class="kgx-btn red" data-a="ok" data-id="' + esc(r.id) + '">Hapus catatan</button><button type="button" class="kgx-btn ghost" data-a="batal">Batal</button></div></div>';
-      return '<div class="kgx-it' + (r.dihapus ? ' del' : '') + (kgMinta === r.id ? ' minta' : '') + '" data-id="' + esc(r.id) + '">' + isi + '<div class="kgx-ft">' + ft + '</div>' + form + '</div>';
+    var grup = {}, urut = [];
+    kg.guru.forEach(function (g) { if (kgFilter && g.kode !== kgFilter) return; grup[g.kode] = { kode: g.kode, nama: g.nama, rows: [], n: 0, jam: 0 }; urut.push(g.kode); });
+    kg.rows.forEach(function (r) {
+      var g = grup[r.kode]; if (!g) { g = grup[r.kode] = { kode: r.kode, nama: r.nama, rows: [], n: 0, jam: 0 }; urut.push(r.kode); }
+      g.rows.push(r); if (!r.dihapus) { g.n++; g.jam += (+r.durasi || 0); }
+    });
+    var daftar = urut.map(function (k) { return grup[k]; });
+    var aktif = daftar.filter(function (g) { return g.n > 0; }).length, maks = 0;
+    daftar.forEach(function (g) { if (g.jam > maks) maks = g.jam; });
+    daftar.sort(function (a, b) { return (b.n - a.n) || (a.nama < b.nama ? -1 : 1); });
+    var gA = $('kgaAktif'); if (gA) gA.textContent = aktif;
+    $('kgaList').innerHTML = daftar.length ? daftar.map(function (g) {
+      var buka = !!kgBuka[g.kode] || (kgMinta && g.rows.some(function (r) { return r.id === kgMinta; })) || (!!kgFilter && g.rows.length > 0 && kgBuka[g.kode] !== false);
+      var pct = maks ? Math.round(g.jam / maks * 100) : 0;
+      var sub = g.n ? g.n + ' kegiatan \u00B7 ' + fmtJam(Math.round(g.jam * 100) / 100) + ' jam' : '0 kegiatan <span class="kgx-chip m">Belum ada</span>';
+      return '<div class="kgx-g' + (buka ? ' buka' : '') + '" data-k="' + esc(g.kode) + '"><button type="button" class="kgx-gh" aria-expanded="' + (buka ? 'true' : 'false') + '">' +
+        '<span class="kgx-av">' + esc(inisial(g.nama)) + '</span><span class="kgx-gt"><b>' + esc(g.nama) + '</b><small>' + sub + '</small>' +
+        (g.n ? '<i class="kgx-pb"><i style="width:' + pct + '%"></i></i>' : '') + '</span><span class="kgx-cv" aria-hidden="true">\u25BE</span></button>' +
+        '<div class="kgx-gb">' + (g.rows.length ? g.rows.map(kgItem).join('') : '<div class="dev-kosong">Belum ada catatan bulan ini.</div>') + '</div></div>';
     }).join('') : '<div class="dev-kosong">Belum ada catatan kegiatan di bulan ini.</div>';
   }
   function kgMuat(bulan, pinBaru, diam) {
@@ -3610,6 +3654,8 @@ body.adm-terbatas [data-terbatas]{display:none!important}
   $('kgaNext').addEventListener('click', function () { if (kg && kgBulan < kg.bulanIni) { kgMinta = ''; kgMuat(geser(kgBulan, 1)); } });
   $('kgaGuru').addEventListener('change', function () { kgFilter = this.value; kgMinta = ''; kgMuat(kgBulan); });
   $('kgaList').addEventListener('click', function (e) {
+    var gh = e.target.closest('.kgx-gh');
+    if (gh) { var gd = gh.parentNode, k = gd.getAttribute('data-k'), o = !gd.classList.contains('buka'); kgBuka[k] = o; gd.classList.toggle('buka', o); gh.setAttribute('aria-expanded', o ? 'true' : 'false'); return; }
     var b = e.target.closest('button[data-a]'); if (!b || !kg) return;
     var a = b.getAttribute('data-a'), it = b.closest('.kgx-it');
     if (a === 'minta') { kgMinta = b.getAttribute('data-id'); kgGambar(); var ta = $('kgaList').querySelector('.kgx-it.minta textarea'); if (ta) ta.focus(); return; }
@@ -3736,7 +3782,7 @@ body.adm-terbatas [data-terbatas]{display:none!important}
     var cat = kartu.querySelector('.kgx-cat').value.trim();
     if (a === 'lengkap') { sdAksi('setStatusStandar', [no, 'Lengkap', cat], b); return; }
     if (a === 'kembali') { sdAksi('setStatusStandar', [no, 'Kembali', cat], b); return; }
-    if (a === 'hapusb') { if (window.confirm('Hapus bukti ini?')) sdAksi('hapusBuktiStandarAdmin', [b.getAttribute('data-id')], b); }
+    if (a === 'hapusb') { Popup.tanya('Bukti ini akan dihapus dan tidak bisa dikembalikan.', { judul: 'Hapus bukti ini?', ok: 'Ya, hapus', bahaya: true, rincianJudul: ((b.closest('.kgx-bk').querySelector('small:last-of-type') || {}).textContent || ''), rincian: (b.closest('.kgx-bk').querySelector('b') || {}).textContent || '' }, function () { sdAksi('hapusBuktiStandarAdmin', [b.getAttribute('data-id')], b); }); }
   });
 
   // Kalau PIN sudah dimasukkan di menu lain pada sesi ini, langsung muat saat menu dibuka.
@@ -3965,13 +4011,15 @@ body.adm-terbatas [data-terbatas]{display:none!important}
   });
   $('infAktif').addEventListener('click', function (e) {
     var b = e.target.closest('button[data-a="hapus"]'); if (!b || b.disabled) return;
-    if (!window.confirm('Hapus pengumuman ini? Guru tidak akan melihatnya lagi.')) return;
+    Popup.tanya('Guru tidak akan melihat pengumuman ini lagi.', { judul: 'Hapus pengumuman ini?', ok: 'Ya, hapus', bahaya: true, rincian: (b.closest('.inf-it').querySelector('.inf-t b') || {}).textContent || '' }, function () { infHapus(b); });
+  });
+  function infHapus(b) {
     b.disabled = true;
     google.script.run
       .withSuccessHandler(function (r) { if (!r || !r.ok) { b.disabled = false; setStatus('infStatus', 'err', (r && r.message) || 'Gagal menghapus.'); return; } muat(window.__admPin, true); })
       .withFailureHandler(function (err) { b.disabled = false; setStatus('infStatus', 'err', 'Error: ' + pesanError(err)); })
       .hapusInfoGuru(window.__admPin, getDeviceId(), b.getAttribute('data-id'));
-  });
+  }
   var asliSub = window.admSub;
   window.admSub = function (k) {
     asliSub(k);
