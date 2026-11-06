@@ -494,13 +494,13 @@ textarea.kg-in{resize:vertical;min-height:84px}
     $('kgList').innerHTML = kg.items.length ? kg.items.map(function (it) {
       var meta = it.durasi != null ? ' \u00B7 ' + fmtJam(it.durasi) + ' jam' : '';
       var ls = String(it.buktiLink || '').split(/\s+/).map(hrefAman).filter(function (x) { return x; });
-      var bukti = ls.map(function (h, i) { return '<a href="' + escA(h) + '" target="_blank" rel="noopener">' + (ls.length > 1 ? 'Bukti ' + (i + 1) : 'Lihat bukti') + '</a>'; }).join(' ');
+      var bukti = ls.length ? Foto.strip(ls, 54) : '';
       var status, aksi = '';
       if (it.dihapus) status = '<div class="tolak" style="width:100%"><b>Dihapus kepala sekolah</b>' + esc(it.alasanHapus || '') + '</div>';
       else if (it.terkunci) status = '<span class="kg-kc">Terkunci</span>';
       else { status = '<span class="kg-ok">Tercatat</span>'; aksi = '<div class="kg-ac"><button type="button" class="pj-b ub" data-a="ubah" data-id="' + escA(it.id) + '">Ubah</button><button type="button" class="pj-b dl" data-a="hapus" data-id="' + escA(it.id) + '">Hapus</button></div>'; }
       return '<div class="kg-it' + (it.dihapus ? ' del' : '') + '"><div class="kg-r1"><span class="kg-tgl">' + esc(tglLabel(it.tanggal)) + esc(meta) + '</span><span class="kg-jn">' + esc(it.jenis) + '</span></div>' +
-        '<div class="kg-ket">' + esc(it.keterangan) + '</div><div class="kg-ft">' + status + bukti + aksi + '</div></div>';
+        '<div class="kg-ket">' + esc(it.keterangan) + '</div>' + (bukti ? '<div style="margin:2px 0 8px">' + bukti + '</div>' : '') + '<div class="kg-ft">' + status + aksi + '</div></div>';
     }).join('') : '<div class="empty" style="margin-top:10px">Belum ada catatan di bulan ini.</div>';
   }
   function kgMuatData(bulan) {
@@ -599,13 +599,15 @@ textarea.kg-in{resize:vertical;min-height:84px}
     kg.items.forEach(function (x) { if (x.id === id) it = x; });
     if (!it) return;
     if (b.getAttribute('data-a') === 'ubah') { kgIsi(it); return; }
-    if (!window.confirm('Hapus catatan ini?')) return;
+    Popup.tanya('Catatan kegiatan ini akan dihapus dan tidak bisa dikembalikan.', { judul: 'Hapus catatan ini?', ok: 'Ya, hapus', bahaya: true, rincianJudul: tglLabel(it.tanggal) + ' \u00B7 ' + it.jenis, rincian: it.keterangan }, function () { kgHapus(b, it); });
+  }
+  function kgHapus(b, it) {
     kgBusy = true; b.disabled = true;
     google.script.run
       .withSuccessHandler(function (r) {
         kgBusy = false;
         if (!r || !r.ok) { b.disabled = false; setSt($('kgSt'), 'err', (r && r.message) || 'Gagal menghapus.'); return; }
-        if (kgEdit === id) kgReset();
+        if (kgEdit === it.id) kgReset();
         setSt($('kgSt'), 'ok', r.message); kgMuatData(kgBulan);
       })
       .withFailureHandler(function (e_) { kgBusy = false; b.disabled = false; setSt($('kgSt'), 'err', pesanGagal(e_, 'Tidak bisa terhubung ke server. Coba lagi.')); })
@@ -699,14 +701,18 @@ textarea.kg-in{resize:vertical;min-height:84px}
     var b = e.target.closest('button[data-a]'); if (!b || !st) return;
     if (b.getAttribute('data-a') === 'tambah') { stTambah(b); return; }
     if (b.getAttribute('data-a') === 'hapusb') {
-      if (!window.confirm('Hapus bukti ini?')) return;
-      var no = +b.closest('.rw-m').getAttribute('data-n'); b.disabled = true;
-      google.script.run
-        .withSuccessHandler(function (r) { if (!r || !r.ok) { b.disabled = false; window.alert((r && r.message) || 'Gagal menghapus.'); return; } stBuka[no] = true; stMuatData(true); })
-        .withFailureHandler(function (e_) { b.disabled = false; window.alert(pesanGagal(e_, 'Tidak bisa terhubung ke server. Coba lagi.')); })
-        .hapusBuktiStandar(kode, dev, b.getAttribute('data-id'));
+      var no = +b.closest('.rw-m').getAttribute('data-n');
+      Popup.tanya('Bukti ini akan dihapus dan tidak bisa dikembalikan.', { judul: 'Hapus bukti ini?', ok: 'Ya, hapus', bahaya: true, rincianJudul: 'Standar ' + no, rincian: (b.closest('.sd-bk').querySelector('.sd-bt b') || {}).textContent || '' }, function () { hapusBuktiStd(b, no); });
+      return;
     }
   });
+  function hapusBuktiStd(b, no) {
+    b.disabled = true;
+    google.script.run
+      .withSuccessHandler(function (r) { if (!r || !r.ok) { b.disabled = false; Popup.info((r && r.message) || 'Gagal menghapus.'); return; } stBuka[no] = true; stMuatData(true); })
+      .withFailureHandler(function (e_) { b.disabled = false; Popup.info(pesanGagal(e_, 'Tidak bisa terhubung ke server. Coba lagi.'), { judul: 'Tidak bisa terhubung' }); })
+      .hapusBuktiStandar(kode, dev, b.getAttribute('data-id'));
+  }
   $('paneStd').addEventListener('change', function (e) {
     if (!e.target.classList.contains('sf-file')) return;
     var fm = e.target.closest('.std-form'), f = e.target.files[0], m = cekFile(f), msg = fm.querySelector('.sf-st');
