@@ -580,7 +580,7 @@ function reloadDashboardData() {
       btn.disabled = false;
       btn.classList.remove('loading');
       label.textContent = 'Refresh Data';
-      alert('Gagal memuat ulang data: ' + (err && err.message ? err.message : err));
+      Popup.info(err && err.message ? err.message : String(err), { judul: 'Gagal memuat ulang data' });
     })
     .getDashboardData(pinDash);
 }
