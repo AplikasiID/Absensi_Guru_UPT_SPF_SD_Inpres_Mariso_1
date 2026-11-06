@@ -86,6 +86,20 @@ button, input, textarea { font-family: inherit; }
 @media (prefers-color-scheme: dark) { .bnav a.on { background: #1E3A8A; color: #fff; } }
 @media (min-width: 769px) { .ban, .wrap { max-width: 640px; } .bnav { max-width: 616px; } }
 @media (prefers-reduced-motion: no-preference) { .sk { animation: sh 1.2s linear infinite; } @keyframes sh { to { background-position: -200% 0; } } }
+
+.kg-salin{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;min-height:48px;padding:10px 14px;margin:0 0 10px;border-radius:14px;border:1.5px dashed #22c55e;background:#ecfdf5;color:#166534;font-family:inherit;font-weight:800;font-size:13.5px;text-align:left}
+.kg-salin small{font-weight:700;font-size:11.5px;opacity:.85}
+@media (prefers-color-scheme: dark){.kg-salin{background:rgba(34,197,94,.14);color:#86EFAC;border-color:rgba(34,197,94,.55)}}
+.kg-mx{font-weight:600;opacity:.65;font-size:11px}
+.kg-ph{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+.kg-pi{position:relative;width:68px;height:68px;border-radius:14px;overflow:hidden;background:rgba(100,116,139,.16);display:flex;align-items:center;justify-content:center}
+.kg-pi img{width:100%;height:100%;object-fit:cover}.kg-pic{font-size:24px}
+.kg-pi button{position:absolute;top:3px;right:3px;width:24px;height:24px;border-radius:50%;border:0;background:#ef4444;color:#fff;font-size:16px;line-height:1;font-weight:800;padding:0}
+.kg-add{width:68px;height:68px;border-radius:14px;border:2px dashed var(--line,#94a3b8);background:transparent;color:var(--muted,#64748b);font-size:28px;font-family:inherit}
+
+.kg-cetak{background:var(--card,#fff);border-radius:20px;padding:14px;margin:0 0 12px;box-shadow:0 6px 16px rgba(30,58,138,.08)}
+.kg-cb{display:flex;gap:8px}.kg-cbtn{flex:1;margin:0;padding:12px 8px;font-size:13.5px}.kg-cbtn.alt{background:#e0e7ff;color:#1e3a8a;box-shadow:none}
+@media (prefers-color-scheme: dark){.kg-cbtn.alt{background:rgba(99,102,241,.25);color:#C7D2FE}}
 </style>
 <style>
 .seg{display:flex;background:var(--card);border-radius:16px;padding:4px;box-shadow:0 6px 18px rgba(30,58,138,.12);margin-bottom:10px}
@@ -372,27 +386,28 @@ textarea.kg-in{resize:vertical;min-height:84px}
 
   // ================= CATATAN KEGIATAN HARIAN =================
   var kg = null, kgMuat = false, kgSiap = false, kgBusy = false, kgBulan = '', kgSeq = 0;
-  var kgEdit = '', kgJenis = '', kgLink = '', kgNama = '';
+  var kgEdit = '', kgJenis = '', kgFoto = [];
 
   function kgBangun() {
     $('paneKeg').innerHTML =
       '<div class="kg-card" id="kgForm">' +
         '<div class="kg-h" id="kgFormJ">Catat kegiatan</div>' +
+        '<button type="button" class="kg-salin" id="kgSalin" style="display:none"></button>' +
         '<label class="kg-lbl" for="kgTgl">Tanggal</label><input type="date" class="kg-in" id="kgTgl">' +
         '<div class="kg-lbl">Jenis kegiatan</div><div class="kg-chips" id="kgChips" role="radiogroup" aria-label="Jenis kegiatan">' +
           kg.jenis.map(function (j) { return '<button type="button" class="kg-chip" role="radio" aria-checked="false" data-j="' + escA(j) + '">' + esc(j) + '</button>'; }).join('') + '</div>' +
         '<div class="kg-lbl kg-lbl2"><label for="kgKet">Keterangan</label><em id="kgCnt">0/300</em></div>' +
         '<textarea class="kg-in" id="kgKet" maxlength="300" rows="3" placeholder="Contoh: Mengikuti rapat koordinasi di kantor dinas"></textarea>' +
         '<label class="kg-lbl" for="kgDur">Durasi (opsional)</label><select class="kg-in" id="kgDur"></select>' +
-        '<div class="kg-lbl kg-lbl2"><span>Bukti</span><span class="kg-bd" id="kgBd">opsional</span></div>' +
-        '<div class="pj-btns" style="margin:0"><label class="pj-b up kg-pick">Pilih file<input type="file" id="kgFile" accept=".jpg,.jpeg,image/jpeg" hidden></label>' +
-          '<span class="kg-fn" id="kgFn"></span><button type="button" class="pj-b bt" id="kgLepas" style="display:none;min-height:44px">Lepas</button></div>' +
+        '<div class="kg-lbl kg-lbl2"><span>Bukti <small class="kg-mx">(maks. 3 foto)</small></span><span class="kg-bd" id="kgBd">opsional</span></div>' +
+        '<div class="kg-ph" id="kgPh"></div><input type="file" id="kgFile" accept=".jpg,.jpeg,image/jpeg" hidden>' +
         '<div class="hint" style="text-align:left;margin-top:6px">Hanya foto JPG. Otomatis dikecilkan agar hemat penyimpanan.</div>' +
         '<div class="st" id="kgSt" role="status"></div>' +
         '<button type="button" class="btn" id="kgSimpan">Simpan catatan</button>' +
         '<button type="button" class="btn" id="kgBatal" style="display:none">Batal ubah</button>' +
       '</div>' +
       '<div class="rw-sum"><div><b id="kgJml">0</b><small>Kegiatan</small></div><div><b id="kgJam">0</b><small>Total jam</small></div></div>' +
+      '<div class="kg-cetak"><div class="kg-lbl" style="margin-top:0">Cetak rekap saya <small class="kg-mx">(untuk berkas PKG / SKP)</small></div><div class="kg-cb"><button type="button" class="btn kg-cbtn" id="kgCetakBln">Bulan ini</button><button type="button" class="btn kg-cbtn alt" id="kgCetakSem">Semester ini</button></div><div class="st" id="kgCetakSt" role="status"></div></div>' +
       '<div class="mrow kg-nav"><button type="button" id="kgPrev" aria-label="Bulan sebelumnya">' + IC_KIRI + '</button><b id="kgBln"></b><button type="button" id="kgNext" aria-label="Bulan berikutnya">' + IC_KANAN + '</button></div>' +
       '<div id="kgList"></div>';
     var dur = '<option value="">Tidak diisi</option>';
@@ -403,12 +418,30 @@ textarea.kg-in{resize:vertical;min-height:84px}
     $('kgChips').addEventListener('click', function (e) { var b = e.target.closest('.kg-chip'); if (b) kgPilihJenis(b.getAttribute('data-j')); });
     $('kgKet').addEventListener('input', function () { $('kgCnt').textContent = this.value.length + '/300'; });
     $('kgFile').addEventListener('change', function () {
-      var f = this.files[0], m = cekFile(f, true);
-      if (m) { this.value = ''; setSt($('kgSt'), 'err', m); kgNamaFile(); return; }
-      setSt($('kgSt'), 'ok', ''); kgNamaFile();
+      var f = this.files[0]; this.value = '';
+      if (!f) return;
+      if (kgFoto.length >= 3) { setSt($('kgSt'), 'err', 'Bukti maksimal 3 foto.'); return; }
+      var m = cekFile(f, true);
+      if (m) { setSt($('kgSt'), 'err', m); return; }
+      var u = ''; try { u = (window.URL || window.webkitURL).createObjectURL(f); } catch (e) { }
+      kgFoto.push({ file: f, url: u, link: '', nama: f.name }); setSt($('kgSt'), 'ok', ''); kgFotoGambar();
     });
-    $('kgLepas').addEventListener('click', function () { $('kgFile').value = ''; kgLink = ''; kgNama = ''; kgNamaFile(); });
+    $('kgPh').addEventListener('click', function (e) {
+      if (e.target.closest('.kg-add')) { $('kgFile').click(); return; }
+      var b = e.target.closest('button[data-i]'); if (!b || kgBusy) return;
+      var x = kgFoto.splice(parseInt(b.getAttribute('data-i'), 10), 1)[0];
+      if (x && x.url) { try { (window.URL || window.webkitURL).revokeObjectURL(x.url); } catch (e2) { } }
+      kgFotoGambar();
+    });
+    $('kgSalin').addEventListener('click', function () {
+      var t = kg && kg.terakhir; if (!t || kgEdit) return;
+      kgPilihJenis(t.jenis); $('kgKet').value = t.keterangan; $('kgCnt').textContent = t.keterangan.length + '/300';
+      $('kgDur').value = t.durasi == null ? '' : String(t.durasi);
+      setSt($('kgSt'), 'ok', 'Data disalin. Ubah seperlunya, tambahkan bukti, lalu simpan.');
+    });
     $('kgSimpan').addEventListener('click', kgSimpan);
+    $('kgCetakBln').addEventListener('click', function () { kgCetak(kgBulan || kg.bulanIni, this); });
+    $('kgCetakSem').addEventListener('click', function () { kgCetak('semester', this); });
     $('kgBatal').addEventListener('click', function () { kgReset(); setSt($('kgSt'), 'ok', ''); });
     $('kgPrev').addEventListener('click', function () { kgMuatData(geserBulan(kgBulan, -1)); });
     $('kgNext').addEventListener('click', function () { if (kgBulan < kg.bulanIni) kgMuatData(geserBulan(kgBulan, 1)); });
@@ -421,15 +454,26 @@ textarea.kg-in{resize:vertical;min-height:84px}
     for (var i = 0; i < cs.length; i++) { var on = cs[i].getAttribute('data-j') === j; cs[i].classList.toggle('on', on); cs[i].setAttribute('aria-checked', on ? 'true' : 'false'); }
     var bd = $('kgBd'), w = kgWajib(j); bd.textContent = w ? 'wajib' : 'opsional'; bd.className = 'kg-bd' + (w ? ' w' : '');
   }
-  function kgNamaFile() {
-    var f = $('kgFile').files[0], t = f ? f.name : (kgNama ? 'Terlampir: ' + kgNama : '');
-    $('kgFn').textContent = t; $('kgLepas').style.display = t ? '' : 'none';
+  function kgFotoGambar() {
+    var h = kgFoto.map(function (f, i) {
+      var th = (f.file && f.url) ? '<img alt="" src="' + escA(f.url) + '">' : '<span class="kg-pic" aria-hidden="true">&#128206;</span>';
+      return '<div class="kg-pi">' + th + '<button type="button" data-i="' + i + '" aria-label="Hapus foto ' + (i + 1) + '">&times;</button></div>';
+    }).join('');
+    if (kgFoto.length < 3) h += '<button type="button" class="kg-add" aria-label="Tambah foto">&#65291;</button>';
+    $('kgPh').innerHTML = h;
   }
+  function kgSalinTampil() {
+    var b = $('kgSalin'), t = kg && kg.terakhir;
+    if (!t || kgEdit) { b.style.display = 'none'; return; }
+    b.innerHTML = '&#128203; Salin catatan terakhir<small>' + esc(t.jenis) + (t.durasi != null ? ' \u00B7 ' + esc(fmtJam(t.durasi)) + ' jam' : '') + '</small>';
+    b.style.display = '';
+  }
+  function kgBuangFoto() { kgFoto.forEach(function (x) { if (x.url) { try { (window.URL || window.webkitURL).revokeObjectURL(x.url); } catch (e) { } } }); kgFoto = []; }
   function kgReset() {
-    kgEdit = ''; kgLink = ''; kgNama = '';
+    kgEdit = ''; kgBuangFoto();
     var t = $('kgTgl'); t.min = kg.tanggalMin; t.max = kg.hariIni; t.value = kg.hariIni;
     $('kgKet').value = ''; $('kgCnt').textContent = '0/300'; $('kgDur').value = ''; $('kgFile').value = '';
-    kgPilihJenis(''); kgNamaFile();
+    kgPilihJenis(''); kgFotoGambar(); kgSalinTampil();
     $('kgFormJ').textContent = 'Catat kegiatan'; $('kgSimpan').textContent = 'Simpan catatan'; $('kgBatal').style.display = 'none';
   }
   function kgIsi(it) {
@@ -437,18 +481,19 @@ textarea.kg-in{resize:vertical;min-height:84px}
     var t = $('kgTgl'); t.min = it.tanggal < kg.tanggalMin ? it.tanggal : kg.tanggalMin; t.value = it.tanggal;
     kgPilihJenis(it.jenis); $('kgKet').value = it.keterangan; $('kgCnt').textContent = it.keterangan.length + '/300';
     $('kgDur').value = it.durasi == null ? '' : String(it.durasi);
-    kgLink = it.buktiLink || ''; kgNama = it.buktiNama || ''; kgNamaFile();
+    var ls = String(it.buktiLink || '').split(/\s+/).filter(function (x) { return x; }), ns = String(it.buktiNama || '').split(' | ');
+    kgFoto = ls.map(function (l, i) { return { file: null, url: '', link: l, nama: ns[i] || 'Bukti' }; }); kgFotoGambar(); kgSalinTampil();
     $('kgFormJ').textContent = 'Ubah catatan'; $('kgSimpan').textContent = 'Simpan perubahan'; $('kgBatal').style.display = '';
     setSt($('kgSt'), 'ok', '');
     try { $('kgForm').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { }
   }
   function kgGambarList() {
     $('kgJml').textContent = kg.total; $('kgJam').textContent = fmtJam(kg.totalJam);
-    $('kgBln').textContent = bulanLabel(kg.bulan); $('kgNext').disabled = kg.bulan >= kg.bulanIni;
+    $('kgBln').textContent = bulanLabel(kg.bulan); $('kgCetakBln').textContent = 'Bulan ' + bulanLabel(kg.bulan).split(' ')[0]; $('kgNext').disabled = kg.bulan >= kg.bulanIni;
     $('kgList').innerHTML = kg.items.length ? kg.items.map(function (it) {
       var meta = it.durasi != null ? ' \u00B7 ' + fmtJam(it.durasi) + ' jam' : '';
-      var h = hrefAman(it.buktiLink);
-      var bukti = h ? '<a href="' + escA(h) + '" target="_blank" rel="noopener">Lihat bukti</a>' : '';
+      var ls = String(it.buktiLink || '').split(/\s+/).map(hrefAman).filter(function (x) { return x; });
+      var bukti = ls.map(function (h, i) { return '<a href="' + escA(h) + '" target="_blank" rel="noopener">' + (ls.length > 1 ? 'Bukti ' + (i + 1) : 'Lihat bukti') + '</a>'; }).join(' ');
       var status, aksi = '';
       if (it.dihapus) status = '<div class="tolak" style="width:100%"><b>Dihapus kepala sekolah</b>' + esc(it.alasanHapus || '') + '</div>';
       else if (it.terkunci) status = '<span class="kg-kc">Terkunci</span>';
@@ -468,7 +513,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
         if (!r || !r.ok) { var m = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; if (kgSiap) $('kgList').innerHTML = m; else box.innerHTML = m; return; }
         kg = r; kgBulan = r.bulan; isiPill(r);
         if (!kgSiap) kgBangun();
-        kgGambarList();
+        kgGambarList(); kgSalinTampil();
       })
       .withFailureHandler(function () {
         if (my !== kgSeq) return; kgMuat = false;
@@ -479,14 +524,14 @@ textarea.kg-in{resize:vertical;min-height:84px}
   function kgSelesai(ok, tipe, teks) { kgBusy = false; $('kgSimpan').disabled = false; setSt($('kgSt'), tipe, teks); }
   function kgSimpan() {
     if (kgBusy || !kg) return;
-    var tgl = $('kgTgl').value, ket = $('kgKet').value.trim(), dur = $('kgDur').value, f = $('kgFile').files[0];
+    var tgl = $('kgTgl').value, ket = $('kgKet').value.trim(), dur = $('kgDur').value;
     if (!tgl) { setSt($('kgSt'), 'err', 'Pilih tanggal.'); return; }
     if (tgl > kg.hariIni) { setSt($('kgSt'), 'err', 'Tanggal tidak boleh di masa depan.'); return; }
     if (!kgJenis) { setSt($('kgSt'), 'err', 'Pilih jenis kegiatan.'); return; }
     if (!ket) { setSt($('kgSt'), 'err', 'Keterangan wajib diisi.'); return; }
-    if (kgWajib(kgJenis) && !f && !kgLink) { setSt($('kgSt'), 'err', 'Bukti wajib untuk jenis ' + kgJenis + '.'); return; }
-    var m = cekFile(f, true); if (m) { setSt($('kgSt'), 'err', m); return; }
-    kgBusy = true; $('kgSimpan').disabled = true; setSt($('kgSt'), 'ok', f ? 'Mengunggah bukti...' : 'Menyimpan...');
+    if (kgWajib(kgJenis) && !kgFoto.length) { setSt($('kgSt'), 'err', 'Bukti wajib untuk jenis ' + kgJenis + '.'); return; }
+    var pend = kgFoto.filter(function (x) { return x.file; });
+    kgBusy = true; $('kgSimpan').disabled = true; setSt($('kgSt'), 'ok', pend.length ? 'Mengunggah foto...' : 'Menyimpan...');
     function simpan() {
       google.script.run
         .withSuccessHandler(function (r) {
@@ -497,18 +542,55 @@ textarea.kg-in{resize:vertical;min-height:84px}
           kgMuatData(r.bulan);
         })
         .withFailureHandler(function () { kgSelesai(false, 'err', 'Tidak bisa terhubung ke server. Coba lagi.'); })
-        .simpanKegiatanGuru(kode, dev, { id: kgEdit, tanggal: tgl, jenis: kgJenis, keterangan: ket, durasi: dur, buktiLink: kgLink, buktiNama: kgNama });
+        .simpanKegiatanGuru(kode, dev, { id: kgEdit, tanggal: tgl, jenis: kgJenis, keterangan: ket, durasi: dur,
+          buktiLink: kgFoto.map(function (x) { return x.link; }).join(' '), buktiNama: kgFoto.map(function (x) { return x.nama; }).join(' | ') });
     }
-    if (!f) { simpan(); return; }
-    bacaFile(f, function (dataUrl, nmF, tpF) {
-      google.script.run
-        .withSuccessHandler(function (r) {
-          if (!r || !r.ok) { kgSelesai(false, 'err', (r && r.message) || 'Gagal mengunggah bukti.'); return; }
-          kgLink = r.link; kgNama = r.nama; $('kgFile').value = ''; kgNamaFile(); setSt($('kgSt'), 'ok', 'Menyimpan...'); simpan();
-        })
-        .withFailureHandler(function () { kgSelesai(false, 'err', 'Tidak bisa terhubung ke server. Coba lagi.'); })
-        .unggahBuktiKegiatan(kode, dev, nmF, tpF, dataUrl);
-    }, function (m) { kgSelesai(false, 'err', (typeof m === 'string' && m) || 'File tidak terbaca. Coba pilih ulang.'); });
+    function unggah(i) {
+      if (i >= pend.length) { setSt($('kgSt'), 'ok', 'Menyimpan...'); simpan(); return; }
+      setSt($('kgSt'), 'ok', 'Mengunggah foto ' + (i + 1) + ' dari ' + pend.length + '...');
+      bacaFile(pend[i].file, function (dataUrl, nmF, tpF) {
+        google.script.run
+          .withSuccessHandler(function (r) {
+            if (!r || !r.ok) { kgSelesai(false, 'err', (r && r.message) || 'Gagal mengunggah bukti.'); return; }
+            pend[i].link = r.link; pend[i].nama = r.nama; pend[i].file = null; kgFotoGambar(); unggah(i + 1);
+          })
+          .withFailureHandler(function () { kgSelesai(false, 'err', 'Tidak bisa terhubung ke server. Coba lagi.'); })
+          .unggahBuktiKegiatan(kode, dev, nmF, tpF, dataUrl);
+      }, function (m) { kgSelesai(false, 'err', (typeof m === 'string' && m) || 'File tidak terbaca. Coba pilih ulang.'); });
+    }
+    unggah(0);
+  }
+  function kgCetak(periode, btn) {
+    var st = $('kgCetakSt'), teks = btn.textContent; btn.disabled = true; btn.textContent = 'Menyiapkan...'; setSt(st, 'ok', '');
+    google.script.run
+      .withSuccessHandler(function (r) {
+        btn.disabled = false; btn.textContent = teks;
+        if (!r || !r.ok) { setSt(st, 'err', (r && r.message) || 'Gagal menyiapkan rekap.'); return; }
+        if (!r.items.length) { setSt(st, 'err', 'Belum ada catatan kegiatan pada periode ini.'); return; }
+        kgCetakHalaman(r);
+      })
+      .withFailureHandler(function () { btn.disabled = false; btn.textContent = teks; setSt(st, 'err', 'Tidak bisa terhubung ke server. Coba lagi.'); })
+      .getRekapKegiatanSaya(kode, dev, periode);
+  }
+  function kgCetakHalaman(r) {
+    var judul = r.periode === 'semester' ? r.label : bulanLabel(r.label);
+    var rows = r.items.map(function (it, n) {
+      var b = (it.bukti || []).map(function (u, i) { var h = hrefAman(u); return h ? '<a href="' + escA(h) + '">Bukti ' + (i + 1) + '</a>' : ''; }).filter(function (x) { return x; }).join(', ') || '-';
+      return '<tr><td class="c">' + (n + 1) + '</td><td>' + esc(tglLabel(it.tanggal)) + '</td><td>' + esc(it.jenis) + '</td><td>' + esc(it.keterangan) + '</td><td class="c">' + (it.durasi == null ? '-' : esc(fmtJam(it.durasi)) + ' jam') + '</td><td>' + b + '</td></tr>';
+    }).join('');
+    var h = '<!doctype html><html lang="id"><head><meta charset="utf-8"><title>Rekap Kegiatan ' + esc(r.nama) + ' ' + esc(judul) + '</title><style>' +
+      'body{font-family:Arial,sans-serif;color:#111;margin:24px;font-size:12px}h1{font-size:17px;margin:0}.s{color:#555;margin:2px 0 14px}' +
+      'table{border-collapse:collapse;width:100%}th,td{border:1px solid #999;padding:5px 7px;text-align:left;vertical-align:top}th{background:#e8eefc}td.c{text-align:center}' +
+      '.k{margin:12px 0;font-weight:bold}.ttd{margin-top:36px;display:flex;justify-content:space-between}.ttd div{text-align:center;width:220px}@media print{body{margin:12mm}a{color:#111}}' +
+      '</style></head><body><h1>Rekap Kegiatan Guru – ' + esc(judul) + '</h1><div class="s">' + esc(r.sekolah) + ' · dicetak ' + esc(r.dibuat) + '</div>' +
+      '<table style="margin-bottom:10px"><tr><th style="width:90px">Nama</th><td>' + esc(r.nama) + '</td></tr><tr><th>Jabatan</th><td>' + esc(r.jabatan || '-') + '</td></tr></table>' +
+      '<table><tr><th style="width:28px">No</th><th style="width:78px">Tanggal</th><th style="width:90px">Jenis</th><th>Keterangan</th><th style="width:52px">Durasi</th><th style="width:80px">Bukti</th></tr>' + rows + '</table>' +
+      '<div class="k">Total: ' + r.total + ' kegiatan · ' + esc(fmtJam(r.totalJam)) + ' jam</div>' +
+      '<div class="ttd"><div>Guru<br><br><br><br>(' + esc(r.nama) + ')</div><div>Kepala Sekolah<br><br><br><br>(................................)</div></div></body></html>';
+    var w = window.open('', '_blank');
+    if (w) { w.document.open(); w.document.write(h); w.document.close(); setTimeout(function () { try { w.focus(); w.print(); } catch (e) { } }, 400); return; }
+    var f = document.createElement('iframe'); f.style.cssText = 'position:fixed;width:0;height:0;border:0;'; document.body.appendChild(f);
+    f.srcdoc = h; f.onload = function () { try { f.contentWindow.print(); } catch (e) { } setTimeout(function () { f.remove(); }, 4000); };
   }
   function kgKlikList(e) {
     var b = e.target.closest('button[data-a]'); if (!b || !kg || kgBusy) return;
