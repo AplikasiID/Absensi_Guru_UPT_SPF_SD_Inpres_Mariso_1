@@ -329,7 +329,7 @@
     /* ===== Daftar perangkat semua guru (tab Admin > Perangkat) ===== */
     #btnDevMuat { flex-shrink: 0; width: 48px; border-radius: 14px; background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-2)); color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(10,132,255,0.3); }
     #btnDevMuat svg { width: 19px; height: 19px; }
-    #devBox { display: none; margin-top: 16px; }
+    #devBox { display: none; margin-top: 4px; }
     #devBox.open { display: block; }
     #devCari { margin-bottom: 8px; }
     .dev-sum { font-size: 12.5px; font-weight: 600; color: #5b6475; margin: 0 2px 6px; }
@@ -980,6 +980,27 @@
 #viewAdmin .pin-lock input{display:block;width:100%;margin-bottom:12px}
 #viewAdmin .pin-lock>button{width:100%!important;min-width:0!important;height:auto!important;min-height:0!important;padding:14px!important;font-size:15.5px;font-weight:800;display:block!important;border-radius:16px!important;background:linear-gradient(135deg,#1d4ed8,#1e3a8a)!important;color:#fff;box-shadow:0 6px 16px rgba(30,58,138,.28)}
 #viewAdmin .pin-lock>button:disabled{opacity:.6}
+
+.tl-dr{display:inline-block;margin-left:6px;padding:2px 9px;border-radius:999px;background:#FFF1D6;color:#7A4A00;font-size:11px;font-weight:800;vertical-align:middle}
+@media (prefers-color-scheme: dark){.tl-dr{background:rgba(245,158,11,.22);color:#FFB44D}}
+
+.inf-l{display:flex;justify-content:space-between;font-size:13px;font-weight:800;color:#5b6475;margin:12px 0 4px}.inf-l em{font-style:normal;font-weight:700;opacity:.7}
+#infBox input[type=text],#infBox input[type=date],#infBox textarea{width:100%;box-sizing:border-box;padding:12px;border-radius:12px;border:1px solid #cbd5e1;background:#fff;color:inherit;font:inherit;font-size:14.5px;margin:0}
+.inf-send{width:100%;margin-top:14px;padding:14px;border-radius:16px;font-weight:800;font-size:15px;background:linear-gradient(135deg,#1d4ed8,#1e3a8a);color:#fff}
+.inf-it{padding:12px 0;border-top:1px solid #e8edf5}.inf-it:first-child{border-top:0}.inf-t{display:flex;gap:8px;align-items:flex-start}.inf-t b{flex:1;font-size:14.5px}.inf-t button{min-height:36px;padding:0 12px;border-radius:10px;background:#fee2e2;color:#b91c1c;font-weight:800;font-size:12px}
+.inf-m{font-size:11.5px;color:#64748b;font-weight:600;margin:2px 0 6px}.inf-isi{font-size:13px;line-height:1.45;white-space:pre-wrap}
+.inf-bar{height:8px;border-radius:99px;background:#e2e8f0;margin:8px 0 4px;overflow:hidden}.inf-bar i{display:block;height:100%;background:#16a34a;border-radius:99px}
+.inf-bl{font-size:12px;font-weight:700;color:#475569}.inf-bl.w{color:#b45309}.inf-kosong{font-size:13px;color:#64748b;padding:6px 0}
+.ann-c{margin:0 0 12px;padding:14px 14px 14px 16px;border-radius:20px;border-left:6px solid #f59e0b;background:#fffbeb;box-shadow:0 6px 16px rgba(245,158,11,.14);color:#78350f}
+.ann-c .tg{display:inline-block;font-size:10.5px;font-weight:800;padding:2px 9px;border-radius:999px;background:#fde68a;color:#78350f;margin-bottom:6px}
+.ann-c b{display:block;font-size:15px}.ann-c p{margin:4px 0 0;font-size:13.5px;line-height:1.45;font-weight:600;white-space:pre-wrap}.ann-c .mt{font-size:11.5px;font-weight:700;color:#a16207;margin-top:6px}
+.ann-c button{width:100%;margin-top:10px;padding:12px;border-radius:14px;background:#f59e0b;color:#fff;font-weight:800;font-size:14px}
+.ann-c.baca{border-left-color:#cbd5e1;background:#f8fafc;color:#64748b;box-shadow:none}.ann-c.baca .tg,.ann-c.baca .mt{display:none}.ann-c.baca p{font-weight:500;font-size:12.5px}.ann-c.baca .ok{font-size:11.5px;font-weight:700;color:#94a3b8;margin-top:6px}
+@media (prefers-color-scheme: dark){
+ #infBox input[type=text],#infBox input[type=date],#infBox textarea{background:#242632;border-color:#3b3f52}
+ .inf-it{border-color:#2f3345}.inf-m,.inf-bl,.inf-kosong,.inf-l{color:#A8AFBF}.inf-bar{background:#34384a}.inf-t button{background:rgba(239,68,68,.2);color:#FFB4AE}
+ .ann-c{background:rgba(245,158,11,.14);color:#FDE68A;box-shadow:none}.ann-c .tg{background:rgba(245,158,11,.3);color:#FDE68A}.ann-c .mt{color:#FBBF4D}
+ .ann-c.baca{background:rgba(148,163,184,.1);color:#A8AFBF;border-left-color:#475569}}
 </style>
 
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -1253,6 +1274,8 @@ body.adm-terbatas [data-terbatas]{display:none!important}
     </div>
 
 
+    <div id="infoGuru" aria-live="polite"></div>
+
     <button type="button" class="rev-ntf" id="revNtf" style="display:none" aria-live="polite"><span class="rev-ic" aria-hidden="true">!</span><span class="rev-tx"><b id="revJudul"></b><small id="revIsi"></small></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
 
     <button type="button" class="lap-cta" id="lapCta"><span class="adm-ic biru"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></span><span class="adm-tx"><b>Perangkat ajar</b><small>Centang perangkat ajar yang sudah kamu siapkan</small></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
@@ -1277,6 +1300,7 @@ body.adm-terbatas [data-terbatas]{display:none!important}
       <div class="adm-grp">KELOLA</div>
       <div class="adm-list">
         <button type="button" class="adm-item" onclick="window.admSub('ket')"><span class="adm-ic biru"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></span><span class="adm-tx"><b>Ajukan Keterangan</b><small>Sakit, izin, dinas luar, cuti</small></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button type="button" class="adm-item" onclick="window.admSub('info')"><span class="adm-ic merah"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l16-6v14L3 13z"/><path d="M7 13v4a2 2 0 0 0 4 0v-2"/></svg></span><span class="adm-tx"><b>Pengumuman</b><small>Untuk guru dan layar TV</small></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
         <button type="button" class="adm-item" onclick="window.admSub('aj')"><span class="adm-ic kuning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h12l4 4v12H4z"/><path d="M8 12h8M8 16h5"/></svg></span><span class="adm-tx"><b>Perangkat Ajar</b><small>Pemeriksaan per semester</small></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
         <button type="button" class="adm-item" onclick="window.admSub('kg')"><span class="adm-ic hijau"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 10h16M8 15h4"/></svg></span><span class="adm-tx"><b>Daftar Kegiatan</b><small>Catatan kegiatan harian guru</small></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
         <button type="button" class="adm-item" onclick="window.admSub('kr')"><span class="adm-ic biru"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/></svg></span><span class="adm-tx"><b>Rekap Kegiatan</b><small>Rekap bulanan untuk dinas</small></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
@@ -1343,25 +1367,32 @@ body.adm-terbatas [data-terbatas]{display:none!important}
       <div class="adm-pane" id="admPaneDev">
         <div class="card2">
           <h2>Reset Perangkat</h2>
-          <p class="hint-small">Gunakan kalau ada masalah dengan HP ini (mis. guru ganti HP dan perlu didaftarkan ulang). Perlu PIN admin.</p>
           <button id="btnReset" onclick="resetDeviceManual()">Reset Device Saya Sekarang</button>
           <div id="statusReset" class="status" style="margin-top:10px;"></div>
         </div>
 
         <div class="card2" id="devCard">
-          <h2>Daftar Perangkat</h2>
-          <p class="hint-small">Lihat guru mana yang sudah punya HP terdaftar, lalu reset kalau ada guru yang ganti HP. Masukkan PIN admin untuk membuka daftar.</p>
-          <div class="pin-row">
-            <input type="password" id="devPin" inputmode="numeric" placeholder="Masukkan PIN admin" autocomplete="off">
-            <button type="button" id="btnDevMuat" aria-label="Muat daftar perangkat">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
-            </button>
-          </div>
+          <div class="pin-row pin-lock step1" id="devPinRow"><div class="lk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><h2>Masukkan PIN Admin</h2><p class="sub">PIN diperlukan untuk membuka halaman ini</p><input type="password" id="devPin" inputmode="numeric" placeholder="PIN admin" autocomplete="off"><button type="button" id="btnDevMuat" aria-label="Muat daftar perangkat">Buka</button></div>
           <div id="devStatus" class="status"></div>
           <div id="devBox">
             <input type="search" id="devCari" placeholder="Cari nama guru" autocomplete="off">
             <div class="dev-sum" id="devSum"></div>
             <div id="devList"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="adm-pane" id="admPaneInfo">
+        <div class="card2">
+          <div class="pin-row pin-lock step1" id="infPinRow"><div class="lk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><h2>Masukkan PIN Admin</h2><p class="sub">PIN diperlukan untuk membuka halaman ini</p><input type="password" id="infPin" inputmode="numeric" placeholder="PIN admin" autocomplete="off"><button type="button" id="btnInfMuat" aria-label="Muat pengumuman">Buka</button></div>
+          <div id="infStatus" class="status"></div>
+          <div id="infBox" style="display:none">
+            <label class="inf-l" for="infJudul">Judul</label><input type="text" id="infJudul" maxlength="80" placeholder="Contoh: Rapat guru Sabtu" autocomplete="off">
+            <label class="inf-l" for="infIsi">Isi pengumuman <em id="infCnt">0/500</em></label><textarea id="infIsi" maxlength="500" rows="4" placeholder="Tulis info yang perlu diketahui semua guru"></textarea>
+            <label class="inf-l" for="infSampai">Tampil sampai</label><input type="date" id="infSampai">
+            <button type="button" id="infKirim" class="inf-send">Kirim ke guru &amp; layar TV</button>
+            <h3 class="rek-h">Pengumuman aktif</h3><div id="infAktif"></div>
+            <h3 class="rek-h">Sebelumnya</h3><div id="infLama"></div>
           </div>
         </div>
       </div>
@@ -2883,7 +2914,8 @@ body.adm-terbatas [data-terbatas]{display:none!important}
   function renderGarisWaktu(st) {
     var box = $('tlCard');
     if (!st || !st.deviceCocok) { box.style.display = 'none'; return; }
-    var h = '<div class="tl-h">Hari ini' + (st.shiftLabel ? ' &middot; ' + esc(st.shiftLabel) : '') + '</div>';
+    var dar = (st.modeHariIni === 'DARING') || !!st.daring;
+    var h = '<div class="tl-h">Hari ini' + (st.shiftLabel ? ' &middot; ' + esc(st.shiftLabel) : '') + (dar ? ' <span class="tl-dr">Daring</span>' : '') + '</div>';
     if (st.hariKerja === false) {
       h += '<div class="tl-it"><div class="tl-nd">-</div><div><div class="tl-t">Hari libur</div><div class="tl-s">Tidak ada absen hari ini</div></div></div>';
     } else if (st.ket) {
@@ -2892,9 +2924,9 @@ body.adm-terbatas [data-terbatas]{display:none!important}
       var masuk = !!st.sudahMasuk, pulang = !!st.sudahKeluar;
       var pill = '';
       if (masuk && st.shiftLabel) pill = '<span class="tl-p ' + (st.terlambat ? 'late' : 'ok') + '">' + (st.terlambat ? 'Terlambat' : 'Tepat waktu') + '</span>';
-      var subM = masuk ? ((st.jamMasuk || '-') + (st.daring ? ' &middot; Daring' : '') + (st.terlambat && st.keterlambatan ? ' &middot; ' + esc(st.keterlambatan) : '')) : (st.batasMasuk ? 'Paling lambat ' + esc(st.batasMasuk) : 'Belum absen');
+      var subM = masuk ? ((st.jamMasuk || '-') + (dar ? ' &middot; Daring' : '') + (st.terlambat && st.keterlambatan ? ' &middot; ' + esc(st.keterlambatan) : '')) : (st.batasMasuk ? 'Paling lambat ' + esc(st.batasMasuk) : 'Belum absen');
       h += '<div class="tl-it' + (masuk ? ' done' : '') + '"><div class="tl-nd' + (masuk ? (st.terlambat ? ' late' : ' ok') : '') + '">' + (masuk ? '&#10003;' : '1') + '</div><div><div class="tl-t">Absen masuk' + pill + '</div><div class="tl-s">' + subM + '</div></div></div>';
-      var subP = pulang ? ((st.jamKeluar || '-')) : (st.jamPulang ? 'Aktif mulai ' + esc(st.jamPulang) : 'Belum absen');
+      var subP = pulang ? ((st.jamKeluar || '-') + (dar ? ' &middot; Daring' : '')) : (st.jamPulang ? 'Aktif mulai ' + esc(st.jamPulang) : 'Belum absen');
       h += '<div class="tl-it' + (pulang ? ' done' : '') + '"><div class="tl-nd' + (pulang ? ' ok' : '') + '">' + (pulang ? '&#10003;' : '2') + '</div><div><div class="tl-t">Absen pulang</div><div class="tl-s">' + subP + '</div></div></div>';
     }
     box.innerHTML = h;
@@ -2949,9 +2981,9 @@ body.adm-terbatas [data-terbatas]{display:none!important}
   }
   window.admSub = function (k) {
     if (window.__admTerbatas && k === 'dev') k = 'menu';
-    var peta = { menu: 'admPaneMenu', ket: 'admPaneKet', dev: 'admPaneDev', lap: 'admPaneLap', rek: 'admPaneRek', aj: 'admPaneAj', kg: 'admPaneKg', kr: 'admPaneKr', st: 'admPaneSt' };
+    var peta = { menu: 'admPaneMenu', ket: 'admPaneKet', dev: 'admPaneDev', lap: 'admPaneLap', rek: 'admPaneRek', aj: 'admPaneAj', info: 'admPaneInfo', kg: 'admPaneKg', kr: 'admPaneKr', st: 'admPaneSt' };
     for (var id in peta) $(peta[id]).classList.toggle('on', id === k);
-    var T = { menu: ['Menu Admin', 'Kelola absensi sekolah'], ket: ['Ajukan Keterangan', 'Sakit, izin, dinas luar, cuti'], dev: ['Perangkat Guru', 'Daftar HP dan reset'], lap: ['Verifikasi Laporan', 'Laporan mingguan guru'], rek: ['Ringkasan Sekolah', 'Skor guru dan rekap bulanan'], aj: ['Perangkat Ajar', 'Pemeriksaan per semester'], kg: ['Daftar Kegiatan', 'Catatan kegiatan harian guru'], kr: ['Rekap Kegiatan', 'Rekap bulanan untuk dinas'], st: ['8 Standar', 'Penanggung jawab dan bukti'] }[k] || ['Menu Admin', 'Kelola absensi sekolah'];
+    var T = { menu: ['Menu Admin', 'Kelola absensi sekolah'], ket: ['Ajukan Keterangan', 'Sakit, izin, dinas luar, cuti'], dev: ['Perangkat Guru', 'Daftar HP dan reset'], lap: ['Verifikasi Laporan', 'Laporan mingguan guru'], rek: ['Ringkasan Sekolah', 'Skor guru dan rekap bulanan'], aj: ['Perangkat Ajar', 'Pemeriksaan per semester'], info: ['Pengumuman', 'Tampil di aplikasi guru dan layar TV'], kg: ['Daftar Kegiatan', 'Catatan kegiatan harian guru'], kr: ['Rekap Kegiatan', 'Rekap bulanan untuk dinas'], st: ['8 Standar', 'Penanggung jawab dan bukti'] }[k] || ['Menu Admin', 'Kelola absensi sekolah'];
     $('admGt1').textContent = T[0]; $('admGt2').textContent = T[1];
     document.body.classList.toggle('adm-sub', k !== 'menu');
     try { window.scrollTo(0, 0); } catch (e) { }
@@ -3403,7 +3435,7 @@ body.adm-terbatas [data-terbatas]{display:none!important}
       .withSuccessHandler(function (res) {
         btn.disabled = false;
         if (!res || !res.ok) { setStatus('devStatus', 'err', (res && res.message) || 'Gagal memuat daftar.'); return; }
-        pinMem = pin; $('devPin').value = '';
+        pinMem = pin; $('devPin').value = ''; $('devPinRow').style.display = 'none';
         rows = res.rows || [];
         $('devStatus').className = 'status'; $('devStatus').textContent = '';
         $('devBox').classList.add('open');
@@ -3547,9 +3579,9 @@ body.adm-terbatas [data-terbatas]{display:none!important}
     $('kgaBln').textContent = bulanLabel(kg.bulan); $('kgaNext').disabled = kg.bulan >= kg.bulanIni;
     $('kgaJml').textContent = kg.total; $('kgaJam').textContent = fmtJam(kg.totalJam);
     $('kgaList').innerHTML = kg.rows.length ? kg.rows.map(function (r) {
-      var h = hrefAman(r.buktiLink), meta = tglLabel(r.tanggal) + (r.durasi != null ? ' \u00B7 ' + fmtJam(r.durasi) + ' jam' : '');
+      var hs = String(r.buktiLink || '').split(/\s+/).map(hrefAman).filter(function (x) { return x; }), nms = String(r.buktiNama || '').split(' | '), meta = tglLabel(r.tanggal) + (r.durasi != null ? ' \u00B7 ' + fmtJam(r.durasi) + ' jam' : '');
       var isi = '<div class="kgx-r1"><b>' + esc(r.nama) + '</b><span class="kgx-jn">' + esc(r.jenis) + '</span></div><div class="kgx-m">' + esc(meta) + '</div><div class="kgx-ket">' + esc(r.keterangan) + '</div>';
-      var ft = (h ? '<a href="' + esc(h) + '" target="_blank" rel="noopener">Lihat bukti' + (r.buktiNama ? ' (' + esc(r.buktiNama) + ')' : '') + '</a>' : '');
+      var ft = hs.map(function (u, i) { return '<a href="' + esc(u) + '" target="_blank" rel="noopener">' + (hs.length > 1 ? 'Bukti ' + (i + 1) : 'Lihat bukti' + (nms[0] ? ' (' + esc(nms[0]) + ')' : '')) + '</a>'; }).join(' ');
       if (r.dihapus) ft += '<div style="width:100%" class="kgx-alasan">Dihapus: ' + esc(r.alasanHapus || '-') + (r.dihapusPada ? ' \u00B7 ' + esc(r.dihapusPada.substring(0, 10)) : '') + '</div>';
       else ft += '<button type="button" class="kgx-btn red kgx-sp" data-a="minta" data-id="' + esc(r.id) + '">Hapus</button>';
       var form = r.dihapus ? '' : '<div class="kgx-hapus"><textarea maxlength="200" placeholder="Alasan penghapusan (wajib)" aria-label="Alasan penghapusan"></textarea><div class="kgx-row"><button type="button" class="kgx-btn red" data-a="ok" data-id="' + esc(r.id) + '">Hapus catatan</button><button type="button" class="kgx-btn ghost" data-a="batal">Batal</button></div></div>';
@@ -3825,6 +3857,127 @@ body.adm-terbatas [data-terbatas]{display:none!important}
   setInterval(function () { cek(false); }, 1500);
   document.addEventListener('visibilitychange', function () { if (!document.hidden) cek(true); });
   window.addEventListener('pageshow', function () { cek(true); });
+})();
+</script>
+<script>
+// ===== Pengumuman guru: kartu di halaman Absen =====
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  var terakhir = null, sibuk = false, kodeNow = '';
+  function tglIdn(d) { var m = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'], p = String(d).substring(0, 10).split('-'); return +p[2] + ' ' + m[+p[1] - 1] + ' ' + p[0] + (String(d).length > 10 ? ', ' + String(d).substring(11, 16) : ''); }
+  function gambar(items) {
+    var box = $('infoGuru'); if (!items || !items.length) { box.innerHTML = ''; return; }
+    box.innerHTML = items.map(function (x) {
+      if (x.sudahBaca) return '<div class="ann-c baca"><b>' + esc(x.judul) + '</b><p>' + esc(x.isi) + '</p><div class="ok">&#10003; Sudah dibaca</div></div>';
+      return '<div class="ann-c"><span class="tg">&#128204; PENGUMUMAN</span><b>' + esc(x.judul) + '</b><p>' + esc(x.isi) + '</p><div class="mt">Kepala sekolah &middot; ' + esc(tglIdn(x.dibuat)) + '</div><button type="button" data-id="' + esc(x.id) + '">Sudah saya baca</button></div>';
+    }).join('');
+  }
+  var data = [];
+  function cek(paksa) {
+    var kode = ''; try { kode = $('guruSelect').value || ''; } catch (e) { }
+    kodeNow = kode;
+    if (!kode) { gambar([]); terakhir = ''; return; }
+    if (sibuk || (!paksa && kode === terakhir)) return;
+    terakhir = kode; sibuk = true;
+    var id = ''; try { id = getDeviceId() || ''; } catch (e) { }
+    google.script.run
+      .withSuccessHandler(function (r) { sibuk = false; if (kodeNow === kode) { data = (r && r.items) || []; gambar(data); } })
+      .withFailureHandler(function () { sibuk = false; terakhir = null; })
+      .getInfoGuru(kode, id);
+  }
+  $('infoGuru').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-id]'); if (!b || b.disabled) return;
+    var idp = b.getAttribute('data-id'), kode = kodeNow, dev = ''; try { dev = getDeviceId() || ''; } catch (e2) { }
+    b.disabled = true; b.textContent = 'Menyimpan...';
+    google.script.run
+      .withSuccessHandler(function (r) {
+        if (r && r.ok) { data.forEach(function (x) { if (x.id === idp) x.sudahBaca = true; }); gambar(data); }
+        else { b.disabled = false; b.textContent = 'Sudah saya baca'; }
+      })
+      .withFailureHandler(function () { b.disabled = false; b.textContent = 'Sudah saya baca'; })
+      .tandaiInfoDibaca(kode, dev, idp);
+  });
+  setInterval(function () { cek(false); }, 1500);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) cek(true); });
+  window.addEventListener('pageshow', function () { cek(true); });
+})();
+
+// ===== Pengumuman guru: menu Admin =====
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  var MON = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  function tgl(d) { var p = String(d).substring(0, 10).split('-'); return +p[2] + ' ' + MON[+p[1] - 1] + ' ' + p[0]; }
+  function pad(n) { return ('0' + n).slice(-2); }
+  function ymd(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  var seq = 0, sudahInit = false;
+  function awal(hari) {
+    var t = $('infSampai'); t.min = hari;
+    if (!t.value || t.value < hari) { var d = new Date(); d.setDate(d.getDate() + 7); t.value = ymd(d); }
+  }
+  function kartu(x, aktif) {
+    var pct = x.total ? Math.round(x.dibaca * 100 / x.total) : 0, lengkap = x.dibaca >= x.total;
+    return '<div class="inf-it"><div class="inf-t"><b>' + esc(x.judul) + '</b>' + (aktif ? '<button type="button" data-a="hapus" data-id="' + esc(x.id) + '">Hapus</button>' : '') + '</div>' +
+      '<div class="inf-m">Dikirim ' + esc(tgl(x.dibuat)) + ' &middot; tampil sampai ' + esc(tgl(x.sampai)) + '</div><div class="inf-isi">' + esc(x.isi) + '</div>' +
+      '<div class="inf-bar"><i style="width:' + pct + '%"></i></div><div class="inf-bl">Dibaca ' + x.dibaca + ' dari ' + x.total + ' guru' + (lengkap ? ' &#10003;' : '') + '</div>' +
+      (!lengkap && x.belum.length ? '<div class="inf-bl w">Belum baca: ' + esc(x.belum.slice(0, 6).join(', ')) + (x.belum.length > 6 ? ' +' + (x.belum.length - 6) : '') + '</div>' : '') + '</div>';
+  }
+  function gambar(r) {
+    $('infAktif').innerHTML = r.aktif.length ? r.aktif.map(function (x) { return kartu(x, true); }).join('') : '<div class="inf-kosong">Belum ada pengumuman aktif.</div>';
+    $('infLama').innerHTML = r.lama.length ? r.lama.map(function (x) { return kartu(x, false); }).join('') : '<div class="inf-kosong">Belum ada.</div>';
+    awal(r.hariIni);
+  }
+  function muat(pin, diam) {
+    pin = pin || window.__admPin;
+    if (!pin) { if (!diam) setStatus('infStatus', 'err', 'Isi PIN admin dulu.'); return; }
+    var my = ++seq, btn = $('btnInfMuat'); btn.disabled = true;
+    if (!diam) setStatus('infStatus', 'info', 'Memuat pengumuman...');
+    google.script.run
+      .withSuccessHandler(function (r) {
+        btn.disabled = false; if (my !== seq) return;
+        if (!r || !r.ok) { setStatus('infStatus', 'err', (r && r.message) || 'Gagal memuat.'); $('infPinRow').style.display = ''; $('infBox').style.display = 'none'; return; }
+        window.__admPin = pin; $('infPin').value = ''; $('infPinRow').style.display = 'none'; $('infBox').style.display = '';
+        $('infStatus').className = 'status'; $('infStatus').textContent = '';
+        gambar(r);
+      })
+      .withFailureHandler(function (err) { btn.disabled = false; setStatus('infStatus', 'err', 'Error: ' + pesanError(err)); })
+      .getInfoAdmin(pin, getDeviceId());
+  }
+  $('btnInfMuat').addEventListener('click', function () { muat($('infPin').value.trim()); });
+  $('infPin').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('btnInfMuat').click(); });
+  $('infIsi').addEventListener('input', function () { $('infCnt').textContent = this.value.length + '/500'; });
+  $('infKirim').addEventListener('click', function () {
+    var j = $('infJudul').value.trim(), i = $('infIsi').value.trim(), t = $('infSampai').value, b = this;
+    if (!j) { setStatus('infStatus', 'err', 'Judul wajib diisi.'); return; }
+    if (!i) { setStatus('infStatus', 'err', 'Isi pengumuman wajib diisi.'); return; }
+    if (!t) { setStatus('infStatus', 'err', 'Pilih tanggal tampil sampai.'); return; }
+    b.disabled = true; setStatus('infStatus', 'info', 'Mengirim...');
+    google.script.run
+      .withSuccessHandler(function (r) {
+        b.disabled = false;
+        if (!r || !r.ok) { setStatus('infStatus', 'err', (r && r.message) || 'Gagal mengirim.'); return; }
+        $('infJudul').value = ''; $('infIsi').value = ''; $('infCnt').textContent = '0/500'; setStatus('infStatus', 'ok', r.message); muat(window.__admPin, true);
+        setTimeout(function () { var s = $('infStatus'); if (s.className.indexOf('ok') >= 0) { s.className = 'status'; s.textContent = ''; } }, 5000);
+      })
+      .withFailureHandler(function (err) { b.disabled = false; setStatus('infStatus', 'err', 'Error: ' + pesanError(err)); })
+      .kirimInfoGuru(window.__admPin, getDeviceId(), j, i, t);
+  });
+  $('infAktif').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-a="hapus"]'); if (!b || b.disabled) return;
+    if (!window.confirm('Hapus pengumuman ini? Guru tidak akan melihatnya lagi.')) return;
+    b.disabled = true;
+    google.script.run
+      .withSuccessHandler(function (r) { if (!r || !r.ok) { b.disabled = false; setStatus('infStatus', 'err', (r && r.message) || 'Gagal menghapus.'); return; } muat(window.__admPin, true); })
+      .withFailureHandler(function (err) { b.disabled = false; setStatus('infStatus', 'err', 'Error: ' + pesanError(err)); })
+      .hapusInfoGuru(window.__admPin, getDeviceId(), b.getAttribute('data-id'));
+  });
+  var asliSub = window.admSub;
+  window.admSub = function (k) {
+    asliSub(k);
+    if (k === 'info' && window.__admPin && !sudahInit) { sudahInit = true; $('infPinRow').style.display = 'none'; muat(window.__admPin, true); }
+    else if (k === 'info' && window.__admPin) { muat(window.__admPin, true); }
+  };
 })();
 </script>
 </body>
