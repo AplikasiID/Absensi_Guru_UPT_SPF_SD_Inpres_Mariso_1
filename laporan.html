@@ -22,7 +22,7 @@
 html { background: var(--bg); }
 body { margin: 0; background: var(--bg); color: var(--ink); min-height: 100vh; padding-bottom: 130px; -webkit-font-smoothing: antialiased; font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "SF Pro Display", Roboto, Arial, sans-serif; }
 button, input, textarea { font-family: inherit; }
-.ban { max-width: 440px; margin: 0 auto; background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 60%, #16a34a 140%); color: #fff; padding: calc(14px + env(safe-area-inset-top, 0px)) 18px 38px; position: relative; border-radius: 0 0 30px 30px; }
+.ban { max-width: 440px; margin: 0 auto; background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 60%, #16a34a 140%); color: #fff; padding: calc(10px + env(safe-area-inset-top, 0px)) 18px 22px; position: relative; border-radius: 0 0 30px 30px; }
 .ban::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 5px; background: linear-gradient(90deg, #f59e0b, #fde68a, #16a34a); border-radius: 0 0 30px 30px; }
 .bt { display: flex; align-items: center; gap: 11px; }
 .bt img { width: 40px; height: auto; filter: drop-shadow(0 3px 6px rgba(0,0,0,.35)); }
@@ -32,9 +32,9 @@ button, input, textarea { font-family: inherit; }
 .kls { font-size: 11.5px; font-weight: 700; opacity: .92; margin-top: 4px; padding-right: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .kls:empty { display: none; }
 .pill { max-width: 100%; display: inline-block; font-size: 12px; font-weight: 800; padding: 7px 12px; border-radius: 999px; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.34); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.g1 { font-size: 22px; font-weight: 800; margin-top: 16px; }
+.g1 { font-size: 20px; font-weight: 800; margin-top: 8px; }
 .g2 { font-size: 12.5px; opacity: .9; margin-top: 2px; }
-.wrap { max-width: 440px; margin: -16px auto 0; padding: 0 12px; position: relative; }
+.wrap { max-width: 440px; margin: 12px auto 0; padding: 0 12px; position: relative; }
 .mrow { display: flex; align-items: center; justify-content: space-between; background: var(--card); border-radius: 16px; padding: 6px; margin-bottom: 10px; box-shadow: 0 6px 16px rgba(30,58,138,.08); }
 .mrow button { width: 40px; height: 36px; border: 0; background: transparent; color: var(--ink); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
 .mrow button:disabled { opacity: .3; }
@@ -324,7 +324,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
         ajDraft = {}; (r.items || []).forEach(function (it) { ajDraft[it.key] = { ada: !!it.ada, link: it.link || '', edit: false, need: false, busy: false, up: false, msg: '', msgJ: '' }; });
         ajGambar();
       })
-      .withFailureHandler(function () { box.innerHTML = '<div class="empty">Tidak bisa terhubung ke server. Periksa internet, lalu buka lagi.</div>'; ajMuat = false; })
+      .withFailureHandler(function (e_) { box.innerHTML = '<div class="empty">Tidak bisa terhubung ke server. Periksa internet, lalu buka lagi.</div>'; ajMuat = false; })
       .getPerangkatGuru(kode, dev);
   }
   // ================= UTIL BERSAMA (Kegiatan & 8 Standar) =================
@@ -379,6 +379,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
       im.src = url;
     } catch (e) { asli(); }
   }
+  function pesanGagal(e, def) { var m = (e && e.message) || ''; if (/Fungsi tidak dikenal/.test(m)) return 'Server belum diperbarui (fungsi tidak dikenal). Minta admin memasang Code.gs terbaru di Apps Script.'; if (m && !/^Koneksi gagal|^Respons server/.test(m)) return m; return def; }
   function setSt(el, tipe, teks) { if (!el) return; el.className = (el.className.replace(/\b(ok|err)\b/g, '').replace(/\s+/g, ' ').trim()) + (teks ? ' ' + tipe : ''); el.textContent = teks || ''; }
   var IC_KIRI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
   var IC_KANAN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
@@ -541,7 +542,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
           kgReset(); setSt($('kgSt'), 'ok', pesan);
           kgMuatData(r.bulan);
         })
-        .withFailureHandler(function () { kgSelesai(false, 'err', 'Tidak bisa terhubung ke server. Coba lagi.'); })
+        .withFailureHandler(function (e_) { kgSelesai(false, 'err', pesanGagal(e_, 'Tidak bisa terhubung ke server. Coba lagi.')); })
         .simpanKegiatanGuru(kode, dev, { id: kgEdit, tanggal: tgl, jenis: kgJenis, keterangan: ket, durasi: dur,
           buktiLink: kgFoto.map(function (x) { return x.link; }).join(' '), buktiNama: kgFoto.map(function (x) { return x.nama; }).join(' | ') });
     }
@@ -554,7 +555,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
             if (!r || !r.ok) { kgSelesai(false, 'err', (r && r.message) || 'Gagal mengunggah bukti.'); return; }
             pend[i].link = r.link; pend[i].nama = r.nama; pend[i].file = null; kgFotoGambar(); unggah(i + 1);
           })
-          .withFailureHandler(function () { kgSelesai(false, 'err', 'Tidak bisa terhubung ke server. Coba lagi.'); })
+          .withFailureHandler(function (e_) { kgSelesai(false, 'err', pesanGagal(e_, 'Tidak bisa terhubung ke server. Coba lagi.')); })
           .unggahBuktiKegiatan(kode, dev, nmF, tpF, dataUrl);
       }, function (m) { kgSelesai(false, 'err', (typeof m === 'string' && m) || 'File tidak terbaca. Coba pilih ulang.'); });
     }
@@ -569,7 +570,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
         if (!r.items.length) { setSt(st, 'err', 'Belum ada catatan kegiatan pada periode ini.'); return; }
         kgCetakHalaman(r);
       })
-      .withFailureHandler(function () { btn.disabled = false; btn.textContent = teks; setSt(st, 'err', 'Tidak bisa terhubung ke server. Coba lagi.'); })
+      .withFailureHandler(function (e_) { btn.disabled = false; btn.textContent = teks; setSt(st, 'err', pesanGagal(e_, 'Tidak bisa terhubung ke server. Coba lagi.')); })
       .getRekapKegiatanSaya(kode, dev, periode);
   }
   function kgCetakHalaman(r) {
@@ -607,7 +608,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
         if (kgEdit === id) kgReset();
         setSt($('kgSt'), 'ok', r.message); kgMuatData(kgBulan);
       })
-      .withFailureHandler(function () { kgBusy = false; b.disabled = false; setSt($('kgSt'), 'err', 'Tidak bisa terhubung ke server. Coba lagi.'); })
+      .withFailureHandler(function (e_) { kgBusy = false; b.disabled = false; setSt($('kgSt'), 'err', pesanGagal(e_, 'Tidak bisa terhubung ke server. Coba lagi.')); })
       .hapusKegiatanGuru(kode, dev, id);
   }
 
@@ -665,7 +666,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
         if (!r || !r.ok) { box.innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; return; }
         st = r; isiPill(r); stGambar();
       })
-      .withFailureHandler(function () { if (my !== stSeq) return; stMuat = false; box.innerHTML = '<div class="empty">Tidak bisa terhubung ke server. Periksa internet, lalu buka lagi.</div>'; })
+      .withFailureHandler(function (e_) { if (my !== stSeq) return; stMuat = false; box.innerHTML = '<div class="empty">Tidak bisa terhubung ke server. Periksa internet, lalu buka lagi.</div>'; })
       .getStandarGuru(kode, dev);
   }
   function stTambah(btn) {
@@ -702,7 +703,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
       var no = +b.closest('.rw-m').getAttribute('data-n'); b.disabled = true;
       google.script.run
         .withSuccessHandler(function (r) { if (!r || !r.ok) { b.disabled = false; window.alert((r && r.message) || 'Gagal menghapus.'); return; } stBuka[no] = true; stMuatData(true); })
-        .withFailureHandler(function () { b.disabled = false; window.alert('Tidak bisa terhubung ke server. Coba lagi.'); })
+        .withFailureHandler(function (e_) { b.disabled = false; window.alert(pesanGagal(e_, 'Tidak bisa terhubung ke server. Coba lagi.')); })
         .hapusBuktiStandar(kode, dev, b.getAttribute('data-id'));
     }
   });
@@ -763,7 +764,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
         if (!r || !r.ok) { box.innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; return; }
         riw = r; $('guruPill').textContent = r.nama.split(',')[0]; $('guruKelas').textContent = r.jabatan || ''; riwGambar();
       })
-      .withFailureHandler(function () { riwMuat = false; box.innerHTML = '<div class="empty">Tidak bisa terhubung ke server. Periksa internet, lalu buka lagi.</div>'; })
+      .withFailureHandler(function (e_) { riwMuat = false; box.innerHTML = '<div class="empty">Tidak bisa terhubung ke server. Periksa internet, lalu buka lagi.</div>'; })
       .getRiwayatPerangkatGuru(kode, dev);
   }
   $('paneRiw').addEventListener('click', function (e) {
@@ -793,7 +794,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
             if (res && res.ok) { ajPesan(res.message || 'Terkirim.', 'ok'); ajMuat = false; aj = null; setTimeout(ajMuatData, 900); }
             else { kb.disabled = false; kb.textContent = 'Kirim ke kepala sekolah'; ajPesan((res && res.message) || 'Gagal mengirim.', 'err'); }
           })
-          .withFailureHandler(function () { kb.disabled = false; kb.textContent = 'Kirim ke kepala sekolah'; ajPesan('Tidak bisa terhubung ke server. Coba lagi.', 'err'); })
+          .withFailureHandler(function (e_) { kb.disabled = false; kb.textContent = 'Kirim ke kepala sekolah'; ajPesan(pesanGagal(e_, 'Tidak bisa terhubung ke server. Coba lagi.'), 'err'); })
           .kirimPerangkatGuru(kode, dev);
       }
       return;
@@ -819,7 +820,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
           } else { d2.msg = (res && res.message) || 'Gagal menyimpan.'; d2.msgJ = 'err'; }
           ajGambar();
         })
-        .withFailureHandler(function () { d2.busy = false; d2.msg = 'Tidak bisa terhubung ke server. Coba lagi.'; d2.msgJ = 'err'; ajGambar(); })
+        .withFailureHandler(function (e_) { d2.busy = false; d2.msg = pesanGagal(e_, 'Tidak bisa terhubung ke server. Coba lagi.'); d2.msgJ = 'err'; ajGambar(); })
         .simpanItemPerangkatGuru(kode, dev, k, !!d2.ada, link);
     }
   });
@@ -840,7 +841,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
           else { d.msg = (res && res.message) || 'Gagal mengunggah.'; d.msgJ = 'err'; }
           ajGambar();
         })
-        .withFailureHandler(function () { d.up = false; d.msg = 'Tidak bisa terhubung ke server. Coba lagi.'; d.msgJ = 'err'; ajGambar(); })
+        .withFailureHandler(function (e_) { d.up = false; d.msg = pesanGagal(e_, 'Tidak bisa terhubung ke server. Coba lagi.'); d.msgJ = 'err'; ajGambar(); })
         .unggahItemPerangkatGuru(kode, dev, k, f.name, f.type, rd.result);
     };
     rd.onerror = function () { d.up = false; d.msg = 'File tidak terbaca. Coba pilih ulang.'; d.msgJ = 'err'; ajGambar(); };
@@ -860,7 +861,7 @@ if ('serviceWorker' in navigator) { window.addEventListener('load', function () 
 </script>
 <script>
 (function(){var b=document.body,ban=document.querySelector('.ban'),mini=false,tk=false;
-function h(){document.documentElement.style.setProperty('--banh',(ban.offsetHeight-8)+'px');}
+function h(){document.documentElement.style.setProperty('--banh',(ban.offsetHeight+4)+'px');}
 function f(){tk=false;h();}
 window.addEventListener('scroll',function(){if(!tk){tk=true;requestAnimationFrame(f);}},{passive:true});
 window.addEventListener('resize',h);h();setTimeout(h,400);})();
