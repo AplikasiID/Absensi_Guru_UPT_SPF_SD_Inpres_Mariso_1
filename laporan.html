@@ -193,6 +193,8 @@ textarea.kg-in{resize:vertical;min-height:84px}
 .kg-r1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .kg-tgl{font-size:12px;font-weight:700;color:var(--muted)}
 .kg-jn{font-size:11px;font-weight:800;padding:3px 10px;border-radius:99px;background:var(--info);color:var(--infoink)}
+.kg-it{cursor:pointer}.kg-cv{margin-left:auto;font-size:15px;color:var(--muted);transition:transform .2s}.kg-it.buka .kg-cv{transform:rotate(180deg)}
+.kg-it:not(.buka) .kg-ket{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;white-space:normal}.kg-det{display:none}.kg-it.buka .kg-det{display:block}.kg-it .kg-ft{cursor:default}
 .kg-ket{margin:8px 0 6px;font-size:14px;font-weight:600;line-height:1.45;word-break:break-word;white-space:pre-wrap}
 .kg-ft{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .kg-ok{font-size:11.5px;font-weight:800;color:#15803d}.kg-kc{font-size:11.5px;font-weight:800;color:var(--muted)}
@@ -488,6 +490,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
     setSt($('kgSt'), 'ok', '');
     try { $('kgForm').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { }
   }
+  var kgBukaIt = {};
   function kgGambarList() {
     $('kgJml').textContent = kg.total; $('kgJam').textContent = fmtJam(kg.totalJam);
     $('kgBln').textContent = bulanLabel(kg.bulan); $('kgCetakBln').textContent = 'Bulan ' + bulanLabel(kg.bulan).split(' ')[0]; $('kgNext').disabled = kg.bulan >= kg.bulanIni;
@@ -499,8 +502,8 @@ textarea.kg-in{resize:vertical;min-height:84px}
       if (it.dihapus) status = '<div class="tolak" style="width:100%"><b>Dihapus kepala sekolah</b>' + esc(it.alasanHapus || '') + '</div>';
       else if (it.terkunci) status = '<span class="kg-kc">Terkunci</span>';
       else { status = '<span class="kg-ok">Tercatat</span>'; aksi = '<div class="kg-ac"><button type="button" class="pj-b ub" data-a="ubah" data-id="' + escA(it.id) + '">Ubah</button><button type="button" class="pj-b dl" data-a="hapus" data-id="' + escA(it.id) + '">Hapus</button></div>'; }
-      return '<div class="kg-it' + (it.dihapus ? ' del' : '') + '"><div class="kg-r1"><span class="kg-tgl">' + esc(tglLabel(it.tanggal)) + esc(meta) + '</span><span class="kg-jn">' + esc(it.jenis) + '</span></div>' +
-        '<div class="kg-ket">' + esc(it.keterangan) + '</div>' + (bukti ? '<div style="margin:2px 0 8px">' + bukti + '</div>' : '') + '<div class="kg-ft">' + status + aksi + '</div></div>';
+      return '<div class="kg-it' + (it.dihapus ? ' del' : '') + (kgBukaIt[it.id] ? ' buka' : '') + '" data-id="' + escA(it.id) + '"><div class="kg-r1"><span class="kg-tgl">' + esc(tglLabel(it.tanggal)) + esc(meta) + '</span><span class="kg-jn">' + esc(it.jenis) + '</span><span class="kg-cv" aria-hidden="true">\u25BE</span></div>' +
+        '<div class="kg-ket">' + esc(it.keterangan) + '</div><div class="kg-det">' + (bukti ? '<div style="margin:2px 0 8px">' + bukti + '</div>' : '') + '<div class="kg-ft">' + status + aksi + '</div></div></div>';
     }).join('') : '<div class="empty" style="margin-top:10px">Belum ada catatan di bulan ini.</div>';
   }
   function kgMuatData(bulan) {
@@ -594,6 +597,11 @@ textarea.kg-in{resize:vertical;min-height:84px}
     f.srcdoc = h; f.onload = function () { try { f.contentWindow.print(); } catch (e) { } setTimeout(function () { f.remove(); }, 4000); };
   }
   function kgKlikList(e) {
+    if (!e.target.closest('button, a, .ft-th')) {
+      var kt = e.target.closest('.kg-it');
+      if (kt) { var kid = kt.getAttribute('data-id'), o = !kt.classList.contains('buka'); kgBukaIt[kid] = o; kt.classList.toggle('buka', o); }
+      return;
+    }
     var b = e.target.closest('button[data-a]'); if (!b || !kg || kgBusy) return;
     var id = b.getAttribute('data-id'), it = null;
     kg.items.forEach(function (x) { if (x.id === id) it = x; });
