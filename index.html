@@ -3516,9 +3516,11 @@ body.adm-terbatas [data-terbatas]{display:none!important}
 #viewAdmin .kgx-av { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #1d4ed8, #16a34a); color: #fff; font-weight: 800; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 #viewAdmin .kgx-gt { flex: 1; min-width: 0; } #viewAdmin .kgx-gt b { display: block; font-size: 14px; font-weight: 800; word-break: break-word; } #viewAdmin .kgx-gt small { font-size: 12px; font-weight: 700; color: #475569; }
 #viewAdmin .kgx-pb { display: block; height: 6px; border-radius: 99px; background: rgba(100,116,139,.2); margin-top: 6px; overflow: hidden; } #viewAdmin .kgx-pb i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #1d4ed8, #16a34a); }
-#viewAdmin .kgx-cv { font-size: 16px; color: #64748b; transition: transform .2s; } #viewAdmin .kgx-g.buka .kgx-cv { transform: rotate(180deg); }
+#viewAdmin .kgx-cv { font-size: 16px; color: #64748b; transition: transform .2s; } #viewAdmin .kgx-g.buka > .kgx-gh .kgx-cv { transform: rotate(180deg); }
 #viewAdmin .kgx-gb { display: none; padding: 0 12px 12px; border-top: 1px solid #e6eaf2; } #viewAdmin .kgx-g.buka .kgx-gb { display: block; }
 #viewAdmin .kgx-it.kgx-b { border: 0; border-bottom: 1px solid #e6eaf2; border-radius: 0; padding: 12px 0; margin: 0; } #viewAdmin .kgx-it.kgx-b:last-child { border-bottom: 0; padding-bottom: 0; }
+#viewAdmin .kgx-it.kgx-b { cursor: pointer; } #viewAdmin .kgx-cv.kgx-cv, #viewAdmin .kgx-ih .kgx-cv { margin-left: auto; font-size: 14px; color: #64748b; transition: transform .2s; } #viewAdmin .kgx-b.bk .kgx-ih .kgx-cv { transform: rotate(180deg); }
+#viewAdmin .kgx-b:not(.bk) .kgx-ket { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; white-space: normal; } #viewAdmin .kgx-det { display: none; } #viewAdmin .kgx-b.bk .kgx-det { display: block; } #viewAdmin .kgx-det .kgx-ft, #viewAdmin .kgx-hapus textarea { cursor: auto; }
 #viewAdmin .kgx-btn.kgx-sm { min-height: 36px; padding: 0 14px; font-size: 12px; margin-left: auto; }
 #viewAdmin .kgx-it.kgx-b .kgx-ft { margin-top: 6px; } #viewAdmin .kgx-it.kgx-b .ft-row { margin-top: 6px; }
 @media (prefers-color-scheme: dark) { #viewAdmin .kgx-g, #viewAdmin .kgx-gb, #viewAdmin .kgx-it.kgx-b { border-color: rgba(255,255,255,.10); } #viewAdmin .kgx-gh { color: #F2F2F7; } #viewAdmin .kgx-gt small { color: #A8AFBF; } }
@@ -3593,7 +3595,7 @@ body.adm-terbatas [data-terbatas]{display:none!important}
 
   // ---------------- Daftar Kegiatan ----------------
   var kg = null, kgBulan = '', kgFilter = '', kgSeq = 0, kgMinta = '';
-  var kgBuka = {};
+  var kgBuka = {}, kgBukaIt = {};
   function inisial(n) { var p = String(n || '').split(',')[0].trim().split(/\s+/); return ((p[0] || '?').charAt(0) + (p.length > 1 ? p[1].charAt(0) : '')).toUpperCase(); }
   function kgItem(r) {
     var meta = tglLabel(r.tanggal) + (r.durasi != null ? ' \u00B7 ' + fmtJam(r.durasi) + ' jam' : '');
@@ -3602,11 +3604,11 @@ body.adm-terbatas [data-terbatas]{display:none!important}
     if (r.dihapus) ft = '<div class="kgx-alasan">Dihapus: ' + esc(r.alasanHapus || '-') + (r.dihapusPada ? ' \u00B7 ' + esc(r.dihapusPada.substring(0, 10)) : '') + '</div>';
     else ft = '<button type="button" class="kgx-btn red kgx-sm" data-a="minta" data-id="' + esc(r.id) + '">Hapus</button>';
     var form = r.dihapus ? '' : '<div class="kgx-hapus"><textarea maxlength="200" placeholder="Alasan penghapusan (wajib)" aria-label="Alasan penghapusan"></textarea><div class="kgx-row"><button type="button" class="kgx-btn red" data-a="ok" data-id="' + esc(r.id) + '">Hapus catatan</button><button type="button" class="kgx-btn ghost" data-a="batal">Batal</button></div></div>';
-    return '<div class="kgx-it kgx-b' + (r.dihapus ? ' del' : '') + (kgMinta === r.id ? ' minta' : '') + '" data-id="' + esc(r.id) + '">' +
-      '<div class="kgx-r1"><span class="kgx-m" style="margin:0">' + esc(meta) + '</span><span class="kgx-jn">' + esc(r.jenis) + '</span></div>' +
-      '<div class="kgx-ket">' + esc(r.keterangan) + '</div>' +
-      (hs.length && !r.dihapus ? window.Foto.strip(hs, 58) : (hs.length ? window.Foto.strip(hs, 44) : '')) +
-      '<div class="kgx-ft">' + ft + '</div>' + form + '</div>';
+    return '<div class="kgx-it kgx-b' + (r.dihapus ? ' del' : '') + (kgMinta === r.id || kgBukaIt[r.id] ? ' bk' : '') + (kgMinta === r.id ? ' minta' : '') + '" data-id="' + esc(r.id) + '">' +
+      '<div class="kgx-r1 kgx-ih"><span class="kgx-m" style="margin:0">' + esc(meta) + '</span><span class="kgx-jn">' + esc(r.jenis) + '</span><span class="kgx-cv" aria-hidden="true">\u25BE</span></div>' +
+      '<div class="kgx-ket">' + esc(r.keterangan) + '</div><div class="kgx-det">' +
+      (hs.length ? window.Foto.strip(hs, 58) : '') +
+      '<div class="kgx-ft">' + ft + '</div>' + form + '</div></div>';
   }
   function kgGambar() {
     $('kgaBln').textContent = bulanLabel(kg.bulan); $('kgaNext').disabled = kg.bulan >= kg.bulanIni;
@@ -3654,6 +3656,8 @@ body.adm-terbatas [data-terbatas]{display:none!important}
   $('kgaNext').addEventListener('click', function () { if (kg && kgBulan < kg.bulanIni) { kgMinta = ''; kgMuat(geser(kgBulan, 1)); } });
   $('kgaGuru').addEventListener('change', function () { kgFilter = this.value; kgMinta = ''; kgMuat(kgBulan); });
   $('kgaList').addEventListener('click', function (e) {
+    var ih = e.target.closest('.kgx-b');
+    if (ih && !e.target.closest('button, a, textarea, .ft-th')) { var iid = ih.getAttribute('data-id'), io = !ih.classList.contains('bk'); kgBukaIt[iid] = io; ih.classList.toggle('bk', io); return; }
     var gh = e.target.closest('.kgx-gh');
     if (gh) { var gd = gh.parentNode, k = gd.getAttribute('data-k'), o = !gd.classList.contains('buka'); kgBuka[k] = o; gd.classList.toggle('buka', o); gh.setAttribute('aria-expanded', o ? 'true' : 'false'); return; }
     var b = e.target.closest('button[data-a]'); if (!b || !kg) return;
