@@ -177,7 +177,7 @@
   function gbr(u, w) { var id = idDrive(u); return id ? 'https://drive.google.com/thumbnail?id=' + id + '&sz=w' + w : u; }
   function daftar(l) { return (Array.isArray(l) ? l : String(l || '').split(/\s+/)).map(aman).filter(function (x) { return x; }); }
   function strip(l, px) {
-    var ls = daftar(l); if (!ls.length) return '';
+    var ls = daftar(l); if (!ls.length) return ''; gaya();
     var w = px || 56, tampil = ls.slice(0, 4);
     return '<div class="ft-row">' + tampil.map(function (u, i) {
       return '<button type="button" class="ft-th" style="width:' + w + 'px;height:' + w + 'px" data-fl="' + esc(ls.join(' ')) + '" data-fi="' + i + '" aria-label="Lihat foto ' + (i + 1) + ' dari ' + ls.length + '"><img loading="lazy" alt="" src="' + esc(gbr(u, 300)) + '" onerror="this.parentNode.classList.add(\'err\')">' + (i === 3 && ls.length > 4 ? '<b>+' + (ls.length - 4) + '</b>' : '') + '</button>';
