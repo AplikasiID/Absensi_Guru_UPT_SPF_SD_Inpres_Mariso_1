@@ -880,5 +880,38 @@ function f(){tk=false;h();}
 window.addEventListener('scroll',function(){if(!tk){tk=true;requestAnimationFrame(f);}},{passive:true});
 window.addEventListener('resize',h);h();setTimeout(h,400);})();
 </script>
+<script>
+// Geser kiri/kanan di halaman untuk pindah tab (Ajar, Riwayat, Kegiatan, 8 Standar)
+(function () {
+  var ids = ['segAjar', 'segRiw', 'segKeg', 'segStd'], x0 = 0, y0 = 0, t0 = 0, aktif = false;
+  function boleh(el) {
+    if (!el || !el.closest) return false;
+    if (el.closest('input, textarea, select, .pp-bg, .fv, .ft-th, .ft-row, .seg, .ban')) return false;
+    for (var n = el; n && n !== document.body; n = n.parentElement) {
+      var cs = getComputedStyle(n);
+      if ((cs.overflowX === 'auto' || cs.overflowX === 'scroll') && n.scrollWidth > n.clientWidth + 2) return false;
+    }
+    return true;
+  }
+  document.addEventListener('touchstart', function (e) {
+    if (e.touches.length !== 1) { aktif = false; return; }
+    aktif = boleh(e.target); x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = Date.now();
+  }, { passive: true });
+  document.addEventListener('touchend', function (e) {
+    if (!aktif) return; aktif = false;
+    var t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0;
+    if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.8 || Date.now() - t0 > 700) return;
+    var sekarang = -1;
+    ids.forEach(function (id, i) { var b = document.getElementById(id); if (b && b.classList.contains('on')) sekarang = i; });
+    if (sekarang < 0) return;
+    var ke = sekarang + (dx < 0 ? 1 : -1); if (ke < 0 || ke >= ids.length) return;
+    var tb = document.getElementById(ids[ke]); if (!tb) return;
+    tb.click();
+    var w = document.querySelector('.wrap');
+    if (w && w.animate) w.animate([{ opacity: .35, transform: 'translateX(' + (dx < 0 ? 28 : -28) + 'px)' }, { opacity: 1, transform: 'none' }], { duration: 220, easing: 'ease-out' });
+    try { window.scrollTo({ top: 0 }); } catch (er) { }
+  }, { passive: true });
+})();
+</script>
 </body>
 </html>
