@@ -2519,32 +2519,43 @@ body.adm-terbatas [data-terbatas]{display:none!important}
       document.getElementById('gpsHelpOverlay').classList.add('show');
     }
 
-    // Cari lokasi TERBAIK: tunggu sampai akurasi bagus (<= 50 m) atau maksimal
-    // 15 detik, lalu pakai hasil terbaik. Satu pembacaan pertama sering masih
-    // kasar karena GPS baru "bangun".
+    // Cari lokasi TERBAIK, tapi jangan menunggu lebih lama dari perlu:
+    //  - akurasi <= 50 m  -> langsung dipakai
+    //  - >= 4 detik dan terbaik <= 100 m -> dipakai
+    //  - >= 7 detik dan terbaik <= 200 m -> dipakai
+    //  - >= 10 detik dan terbaik <= 300 m -> dipakai
+    //  - paling lama 15 detik, lalu pakai hasil terbaik yang ada.
+    // (Server tetap yang memutuskan diterima/ditolak dari akurasi dan jarak.)
     function ambilLokasiTerbaik(onDone, onError) {
-      var terbaik = null, selesai = false, watchId = null, timer = null;
-      function akhir() {
-        if (selesai) return; selesai = true;
+      var terbaik = null, selesai = false, watchId = null, timer = null, cekId = null, mulai = Date.now();
+      function bersih() {
+        selesai = true;
         if (watchId !== null) navigator.geolocation.clearWatch(watchId);
-        clearTimeout(timer);
+        clearTimeout(timer); clearInterval(cekId);
+      }
+      function akhir() {
+        if (selesai) return; bersih();
         if (terbaik) onDone(terbaik); else onError({ code: 3 });
+      }
+      function cukup() {
+        if (!terbaik) return false;
+        var a = terbaik.coords.accuracy, t = Date.now() - mulai;
+        return a <= 50 || (t >= 4000 && a <= 100) || (t >= 7000 && a <= 200) || (t >= 10000 && a <= 300);
       }
       watchId = navigator.geolocation.watchPosition(
         function (pos) {
           if (!terbaik || pos.coords.accuracy < terbaik.coords.accuracy) terbaik = pos;
-          if (pos.coords.accuracy <= 50) akhir();
+          if (cukup()) akhir();
         },
         function (err) {
           if (selesai) return;
           if (terbaik) { akhir(); return; }
-          selesai = true;
-          if (watchId !== null) navigator.geolocation.clearWatch(watchId);
-          clearTimeout(timer);
+          bersih();
           onError(err);
         },
         { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 }
       );
+      cekId = setInterval(function () { if (cukup()) akhir(); }, 500);
       timer = setTimeout(akhir, 15000);
     }
 
@@ -2590,6 +2601,11 @@ body.adm-terbatas [data-terbatas]{display:none!important}
                 if (tipe === 'masuk') localSudahMasuk = true;
                 else localSudahKeluar = true;
                 showAbsenResult(result, tipe, nama);
+              } else if (/sudah absen (masuk|pulang|keluar) hari ini/i.test(String(result.message))) {
+                // Absen sebelumnya SUDAH tercatat (mis. balasan server sempat terputus lalu guru menekan lagi).
+                // Jangan tampilkan "Ditolak" -- ini bukan penolakan.
+                if (tipe === 'masuk') localSudahMasuk = true; else localSudahKeluar = true;
+                showModal('ok', 'Sudah Tercatat', result.message);
               } else {
                 if (/akurat|presisi/i.test(String(result.message))) tampilkanBantuanGps(accuracy, tipe, kode, nama);
                 else if (/area|lokasi|jarak|radius|sekolah|gps/i.test(String(result.message))) showModal('err', 'Absen Ditolak', result.message, { pin: true, retry: function () { absen(tipe); } });
