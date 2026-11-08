@@ -84,9 +84,22 @@
     .bn-credit { text-align: center; font-size: 11px; color: var(--muted); margin-top: 3px; }
     @media (prefers-color-scheme: dark) { .bnav a.on { background: #1E3A8A; color: #fff; } }
     @media (min-width: 769px) { .ban, .wrap { max-width: 640px; } .bnav { max-width: 616px; } }
+      html.emb .ban, html.emb .bnav { display: none !important; }
+    html.emb body { padding-bottom: 12px; min-height: 0; background: transparent; }
+    html.emb .wrap { margin-top: 0; padding: 0; }
   </style>
 </head>
 <body>
+<script>
+(function () {
+  if (!/[?&]embed=1/.test(location.search)) return;
+  document.documentElement.classList.add('emb');
+  document.addEventListener('DOMContentLoaded', function () {
+    var pin = ''; try { pin = parent.__admPin || ''; } catch (e) { }
+    if (pin) { var r = document.querySelector('.pin-row'); if (r) { r.style.display = 'none'; var c = r.previousElementSibling; if (c) c.textContent = 'PIN admin sudah dimasukkan. Tekan Simpan untuk menyimpan perubahan.'; } }
+  });
+})();
+</script>
 
   <div class="ban">
     <a class="back-link" id="backLink" href="index.html#admin" target="_top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>Menu Admin</a>
@@ -289,6 +302,7 @@
 
   function simpanSemuaPerubahan() {
     var pin = document.getElementById('pinAdmin').value;
+    if (!pin && /[?&]embed=1/.test(location.search)) { try { pin = parent.__admPin || ''; } catch (e) { } }
     if (!pin) {
       tampilkanPesan('Masukkan PIN admin terlebih dahulu.', 'error');
       return;
