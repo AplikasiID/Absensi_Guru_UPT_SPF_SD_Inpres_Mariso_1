@@ -1234,6 +1234,63 @@ body.adm-terbatas [data-terbatas]{display:none!important}
 #viewAdmin .ajg i.o{background:#22c55e}#viewAdmin .ajg i.m{background:#f59e0b}#viewAdmin .ajg i.r{background:#ef4444}#viewAdmin .ajg i.b{background:#3b82f6}
 @media (prefers-color-scheme: dark){#viewAdmin .ajs{background:#262a36}#viewAdmin .ajr>div{background:#262a36}#viewAdmin .ajr b{color:#F2F2F7}#viewAdmin .ajr small,#viewAdmin .ajh{color:#A8AFBF}#viewAdmin .ajch{background:#262a36;color:#A8AFBF}#viewAdmin .ajch.on{background:#3b6cf0;color:#fff}#viewAdmin .ajq{background:#262a36;border-color:rgba(255,255,255,.1)}}
 </style>
+<style>
+#viewAdmin .kl-seg{gap:2px}
+#viewAdmin .kl-seg button{flex:1 1 auto;padding:10px 6px;font-size:12px;min-height:44px;white-space:nowrap}
+#viewAdmin .kd-info{background:#e8efff;color:#1e3a8a;border-radius:14px;padding:11px 13px;font-size:12.5px;font-weight:600;line-height:1.45;margin:6px 0 10px}
+#viewAdmin .kd-prog{background:#f1f5f9;border-radius:16px;padding:12px 14px;margin-bottom:10px}
+#viewAdmin .kd-pr{display:flex;justify-content:space-between;font-size:13px;font-weight:800}#viewAdmin .kd-pr b{color:#1e3a8a}
+#viewAdmin .kd-bar{height:8px;border-radius:99px;background:rgba(100,116,139,.22);overflow:hidden;margin-top:8px}
+#viewAdmin .kd-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#1d4ed8,#22c55e);transition:width .3s}
+#viewAdmin .kd-q{display:block;width:100%;box-sizing:border-box;min-height:44px;border:1px solid #e2e8f0;border-radius:13px;padding:0 12px;font-size:14px;font-family:inherit;background:#fff;color:inherit;margin-bottom:10px}
+#viewAdmin .kd-card{border:1px solid #e2e8f0;border-radius:18px;overflow:hidden;background:#fff}
+#viewAdmin .kd-g{display:flex;align-items:center;gap:10px;width:100%;min-height:56px;padding:12px 14px;border:0;border-top:1px solid #e2e8f0;background:transparent;text-align:left;color:inherit;font-family:inherit;cursor:pointer}
+#viewAdmin .kd-g:first-child{border-top:0}
+#viewAdmin .kd-av{width:38px;height:38px;border-radius:50%;background:#dbe6fb;color:#1e3a8a;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0}
+#viewAdmin .kd-tx{flex:1;min-width:0}#viewAdmin .kd-tx b{display:block;font-size:14px;font-weight:800}
+#viewAdmin .kd-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+#viewAdmin .kd-tg{font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:99px;background:#e8efff;color:#1e3a8a}
+#viewAdmin .kd-tg.w{background:#fef3c7;color:#b45309}#viewAdmin .kd-tg.no{background:#fee2e2;color:#b91c1c}
+#viewAdmin .kd-cv{color:#64748b;font-size:18px}
+.kd-sh{position:fixed;inset:0;background:rgba(8,10,20,.6);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);display:none;align-items:flex-end;justify-content:center;z-index:99998}
+.kd-sh.on{display:flex;animation:ajFade .2s ease-out}
+.kd-sp{width:100%;max-width:480px;max-height:92vh;overflow:auto;background:#fff;color:#0f172a;border-radius:24px 24px 0 0;padding:10px 16px calc(16px + env(safe-area-inset-bottom,0px));box-shadow:0 -12px 40px rgba(0,0,0,.28);animation:ajUp .28s cubic-bezier(.2,.9,.3,1)}
+.kd-grip{width:40px;height:4px;border-radius:99px;background:#cbd5e1;margin:0 auto 12px}
+.kd-sp h3{margin:0;font-size:16px;font-weight:800}.kd-sub{font-size:12px;color:#64748b;font-weight:700;margin:2px 0 12px}
+.kd-top{display:flex;gap:8px;margin-bottom:12px}
+.kd-top button{flex:1;min-height:46px;border-radius:12px;border:0;font-weight:800;font-size:13px;font-family:inherit;background:#e0e7ff;color:#1e3a8a}
+.kd-top button.on{background:#1e3a8a;color:#fff}.kd-top button.kos{background:transparent;border:1px solid #e2e8f0;color:#64748b}
+.kd-tr{display:flex;align-items:center;gap:6px;margin-bottom:8px}.kd-tr>span{width:62px;flex-shrink:0;font-size:12.5px;font-weight:800;color:#64748b}
+.kd-tr button{flex:1;min-width:0;min-height:44px;border-radius:12px;border:1px solid #e2e8f0;background:#fff;color:inherit;font-weight:800;font-size:13.5px;font-family:inherit}
+.kd-tr button.on{background:#1e3a8a;color:#fff;border-color:#1e3a8a}
+.kd-tr button.lock{background:#fef3c7;color:#b45309;border-color:#f59e0b}
+.kd-tr button.all{flex:0 0 64px;background:#e0e7ff;color:#1e3a8a;border:0;font-size:12px}
+.kd-cnt{font-size:12.5px;font-weight:800;color:#1e3a8a;margin:6px 2px 0}
+.kd-hint{font-size:12px;font-weight:600;color:#64748b;margin:8px 2px;line-height:1.45}
+.kd-st{margin-top:10px;padding:11px 13px;border-radius:12px;font-size:13px;font-weight:700;display:none}
+.kd-st.on{display:block}.kd-st.ok{background:#dcfce7;color:#15803d}.kd-st.err{background:#fee2e2;color:#b91c1c}
+.kd-btn{display:block;width:100%;min-height:48px;margin-top:10px;border:0;background:linear-gradient(135deg,#1d4ed8,#1e3a8a);color:#fff;font-weight:800;font-size:15px;font-family:inherit;border-radius:16px;box-shadow:0 6px 16px rgba(30,58,138,.28)}
+.kd-btn:disabled{opacity:.6}.kd-btn.alt{background:transparent;color:#64748b;box-shadow:none;border:1px solid #e2e8f0;margin-top:8px}
+@media (prefers-color-scheme: dark){
+#viewAdmin .kd-info{background:rgba(100,130,255,.16);color:#C9D6FF}
+#viewAdmin .kd-prog{background:#262a36}#viewAdmin .kd-pr b{color:#9DB7FF}
+#viewAdmin .kd-q{background:#262a36;border-color:rgba(255,255,255,.1)}
+#viewAdmin .kd-card{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1)}
+#viewAdmin .kd-g{border-top-color:rgba(255,255,255,.1)}
+#viewAdmin .kd-av{background:rgba(100,130,255,.2);color:#C9D6FF}
+#viewAdmin .kd-tg{background:rgba(100,130,255,.2);color:#C9D6FF}#viewAdmin .kd-tg.w{background:rgba(245,158,11,.2);color:#FBBF4D}#viewAdmin .kd-tg.no{background:rgba(239,68,68,.2);color:#FF8F86}
+#viewAdmin .kd-cv{color:#A8AFBF}
+.kd-sp{background:#1c1c24;color:#F2F2F7}.kd-grip{background:rgba(255,255,255,.25)}.kd-sub,.kd-hint,.kd-tr>span{color:#A8AFBF}
+.kd-top button{background:rgba(100,130,255,.2);color:#C9D6FF}.kd-top button.on{background:#3b6cf0;color:#fff}.kd-top button.kos{border-color:rgba(255,255,255,.14);color:#A8AFBF}
+.kd-tr button{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)}
+.kd-tr button.on{background:#3b6cf0;border-color:#3b6cf0;color:#fff}
+.kd-tr button.lock{background:rgba(245,158,11,.18);color:#FBBF4D;border-color:rgba(245,158,11,.5)}
+.kd-tr button.all{background:rgba(100,130,255,.2);color:#C9D6FF}
+.kd-cnt{color:#9DB7FF}
+.kd-st.ok{background:rgba(34,197,94,.18);color:#5EE08A}.kd-st.err{background:rgba(239,68,68,.18);color:#FF8F86}
+.kd-btn.alt{border-color:rgba(255,255,255,.14);color:#A8AFBF}
+}
+</style>
 </head>
 <body>
   <!-- Layar pembuka -->
@@ -1502,11 +1559,30 @@ body.adm-terbatas [data-terbatas]{display:none!important}
           <div class="pin-row pin-lock step1" id="klPinRow"><div class="lk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><h2>Masukkan PIN Admin</h2><p class="sub">PIN diperlukan untuk membuka halaman ini</p><input type="password" id="klPin" inputmode="numeric" placeholder="PIN admin" autocomplete="off"><button type="button" id="btnKlMuat" aria-label="Buka kelas">Buka</button></div>
           <div id="klStatus" class="status"></div>
           <div id="klBox" style="display:none">
-            <div class="kl-seg" id="klSeg"><button type="button" class="on" data-t="pan">Pantauan</button><button type="button" data-t="wali">Wali Kelas</button><button type="button" data-t="rek">Rekap</button></div>
+            <div class="kl-seg" id="klSeg"><button type="button" class="on" data-t="pan">Pantauan</button><button type="button" data-t="wali">Wali Kelas</button><button type="button" data-t="ajar">Kelas Diajar</button><button type="button" data-t="rek">Rekap</button></div>
             <div id="klPan"><div class="kgx-bar"><button type="button" id="klPPrev" aria-label="Sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><b id="klPLbl">-</b><button type="button" id="klPNext" aria-label="Berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div><div class="kgx-sum k3" id="klSum"></div><div id="klPanList"></div></div>
             <div id="klWali" style="display:none"><div class="kl-note">Pilih guru yang menjadi wali tiap kelas. Hanya wali kelas yang bisa mengisi absen dan daftar siswa kelasnya.</div><div id="klWaliList"></div>
               <div class="kl-add"><input type="text" id="klBaru" maxlength="20" placeholder="Tambah kelas (mis. Kelas 6B)"><button type="button" id="klTambah">Tambah</button></div></div>
+            <div id="klAjar" style="display:none">
+              <div class="kd-info" id="kdInfo"></div>
+              <div class="kd-prog"><div class="kd-pr"><span>Sudah diatur</span><b id="kdPt">-</b></div><div class="kd-bar"><i id="kdPb"></i></div></div>
+              <input type="search" class="kd-q" id="kdCari" placeholder="Cari nama guru..." aria-label="Cari nama guru" autocomplete="off">
+              <div class="kd-card" id="kdList"></div>
+            </div>
             <div id="klRek" style="display:none"><div class="kgx-bar"><button type="button" id="klRPrev" aria-label="Sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><b id="klRLbl">-</b><button type="button" id="klRNext" aria-label="Berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div><div id="klRekList"></div></div>
+            <div class="kd-sh" id="kdSh" role="dialog" aria-modal="true" aria-labelledby="kdHn">
+              <div class="kd-sp">
+                <div class="kd-grip"></div>
+                <h3 id="kdHn"></h3><div class="kd-sub" id="kdHs"></div>
+                <div class="kd-top"><button type="button" id="kdSemua"></button><button type="button" id="kdKosong" class="kos">Kosongkan</button></div>
+                <div id="kdGrid"></div>
+                <div class="kd-cnt" id="kdCnt"></div>
+                <div class="kd-hint">Guru PJOK dan Agama biasanya cukup ketuk &ldquo;Semua kelas&rdquo;. &ldquo;Semua&rdquo; di tiap baris memilih seluruh kelas tingkat itu. Kelas bertanda kunci adalah kelas wali, tidak bisa dilepas.</div>
+                <div class="kd-st" id="kdSt" role="status"></div>
+                <button type="button" class="kd-btn" id="kdSimpan">Simpan</button>
+                <button type="button" class="kd-btn alt" id="kdBatal">Batal</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -3915,6 +3991,7 @@ body.adm-terbatas [data-terbatas]{display:none!important}
     if (pinBaru) window.__admPin = pinBaru;
     if (klTab === 'pan') klCall('getPantauanKelas', [klTgl], function (r) { kl = r; klTgl = r.tanggal; klGambarPan(); });
     else if (klTab === 'wali') klCall('getKelasAdmin', [], function (r) { klWaliD = r; klGambarWali(); });
+    else if (klTab === 'ajar') klCall('getKelasDiajarAdmin', [], function (r) { kdD = r; kdGambar(); });
     else klCall('getRekapKelasBulan', [klBln], function (r) { klRekD = r; klBln = r.bulan; klGambarRek(); });
   }
   function klGambarPan() {
@@ -3949,9 +4026,115 @@ body.adm-terbatas [data-terbatas]{display:none!important}
   function klTampil(t) {
     klTab = t;
     var bs = $('klSeg').querySelectorAll('button'); for (var i = 0; i < bs.length; i++) bs[i].className = bs[i].getAttribute('data-t') === t ? 'on' : '';
-    $('klPan').style.display = t === 'pan' ? '' : 'none'; $('klWali').style.display = t === 'wali' ? '' : 'none'; $('klRek').style.display = t === 'rek' ? '' : 'none';
+    $('klPan').style.display = t === 'pan' ? '' : 'none'; $('klWali').style.display = t === 'wali' ? '' : 'none'; $('klAjar').style.display = t === 'ajar' ? '' : 'none'; $('klRek').style.display = t === 'rek' ? '' : 'none';
     klMuat();
   }
+  // ---------------- Kelas yang Diajar (admin) ----------------
+  // Admin menentukan kelas mana yang diajar tiap guru. Kelas wali otomatis terkunci (tidak disimpan ke sheet).
+  var kdD = null, kdCur = null, kdSel = [], kdBusy = false, kdTimer = 0;
+  function kdNama(k) { var m = /^kelas\s+(.+)$/i.exec(k); return m && /\D/.test(m[1]) ? m[1] : k; }
+  // Kelompokkan kelas per tingkat (angka pertama pada nama). Nama tanpa angka masuk "Lainnya".
+  function kdGrup() {
+    var peta = {}, urut = [];
+    kdD.kelas.forEach(function (k) {
+      var m = /\d+/.exec(k), key = m ? String(+m[0]) : '';
+      if (!peta[key]) { peta[key] = []; urut.push(key); }
+      peta[key].push(k);
+    });
+    urut.sort(function (a, b) { return a === '' ? 1 : b === '' ? -1 : +a - +b; });
+    return urut.map(function (key) { return { key: key, kelas: peta[key].sort(function (a, b) { return a < b ? -1 : a > b ? 1 : 0; }) }; });
+  }
+  function kdTag(c) { return '<span class="kd-tg">' + esc(kdNama(c)) + '</span>'; }
+  function kdTags(g) {
+    var h = g.wali.map(function (w) { return '<span class="kd-tg w">Wali ' + esc(kdNama(w)) + '</span>'; }).join('');
+    if (!g.diatur) return h + '<span class="kd-tg no">Belum diatur</span>';
+    var lain = g.k.filter(function (x) { return g.wali.indexOf(x) < 0; });
+    var semua = kdD.kelas.length > 0 && kdD.kelas.every(function (c) { return g.wali.indexOf(c) >= 0 || lain.indexOf(c) >= 0; });
+    if (semua) return h + '<span class="kd-tg">Semua kelas</span>';
+    if (!lain.length) return h + (g.wali.length ? '' : '<span class="kd-tg no">Tanpa kelas</span>');
+    return h + lain.slice(0, 4).map(kdTag).join('') + (lain.length > 4 ? '<span class="kd-tg">+' + (lain.length - 4) + '</span>' : '');
+  }
+  function kdGambar() {
+    var G = kdD.guru, n = 0;
+    G.forEach(function (g) { if (g.diatur) n++; });
+    $('kdPt').textContent = n + ' dari ' + G.length + ' guru';
+    $('kdPb').style.width = (G.length ? Math.round(n * 100 / G.length) : 0) + '%';
+    $('kdInfo').innerHTML = 'Tentukan kelas mana yang diajar tiap guru. Guru hanya melihat <b>daftar siswa dan absen</b> di kelas itu. Wali kelas otomatis memegang kelasnya sendiri.' +
+      (kdD.ketat ? '' : ' Guru yang <b>belum diatur</b> sementara masih melihat semua kelas.') +
+      (kdD.kelas.length ? '' : ' <b>Belum ada kelas.</b> Tambahkan kelas di tab Wali Kelas dulu.');
+    var q = $('kdCari').value.trim().toLowerCase(), h = '';
+    G.forEach(function (g, i) {
+      if (q && g.nama.toLowerCase().indexOf(q) < 0) return;
+      h += '<button type="button" class="kd-g" data-i="' + i + '"><span class="kd-av">' + esc(inisial(g.nama)) + '</span><div class="kd-tx"><b>' + esc(g.nama) + '</b><div class="kd-tags">' + kdTags(g) + '</div></div><span class="kd-cv" aria-hidden="true">\u203A</span></button>';
+    });
+    $('kdList').innerHTML = h || '<div class="dev-kosong">' + (G.length ? 'Guru tidak ditemukan.' : 'Belum ada data guru.') + '</div>';
+  }
+  function kdGridGambar() {
+    var kunci = kdCur.wali, h = '';
+    kdGrup().forEach(function (gr, gi) {
+      h += '<div class="kd-tr"><span>' + (gr.key ? 'Kelas ' + esc(gr.key) : 'Lainnya') + '</span>' + gr.kelas.map(function (c) {
+        var lk = kunci.indexOf(c) >= 0, on = kdSel.indexOf(c) >= 0;
+        return '<button type="button" data-c="' + esc(c) + '" class="' + (lk ? 'lock' : on ? 'on' : '') + '"' + (lk ? ' aria-disabled="true" title="Kelas wali, tidak bisa dilepas"' : ' aria-pressed="' + on + '"') + '>' + (lk ? '\uD83D\uDD12 ' : '') + esc(kdNama(c)) + '</button>';
+      }).join('') + (gr.kelas.length > 1 ? '<button type="button" class="all" data-g="' + gi + '">Semua</button>' : '') + '</div>';
+    });
+    $('kdGrid').innerHTML = h;
+    $('kdCnt').textContent = kdSel.length + ' kelas dipilih';
+    $('kdSemua').textContent = 'Semua kelas (' + kdD.kelas.length + ')';
+    $('kdSemua').className = kdD.kelas.length && kdSel.length >= kdD.kelas.length ? 'on' : '';
+  }
+  function kdPesan(tipe, teks) { var el = $('kdSt'); el.className = 'kd-st on ' + tipe; el.textContent = teks; }
+  function kdBuka(i) {
+    var g = kdD.guru[i]; if (!g) return;
+    if (!kdD.kelas.length) { toast('err', 'Belum ada kelas. Tambahkan kelas di tab Wali Kelas dulu.'); return; }
+    clearTimeout(kdTimer);
+    kdCur = g; kdSel = g.wali.slice();
+    g.k.forEach(function (c) { if (kdSel.indexOf(c) < 0) kdSel.push(c); });
+    $('kdHn').textContent = g.nama;
+    $('kdHs').textContent = g.wali.length ? 'Wali kelas ' + g.wali.map(kdNama).join(', ') + ' \u00B7 pilih kelas lain yang juga diajar' : 'Guru mapel \u00B7 pilih kelas yang diajar';
+    $('kdSt').className = 'kd-st'; $('kdSt').textContent = '';
+    kdGridGambar();
+    $('kdSh').className = 'kd-sh on';
+  }
+  function kdTutup() { clearTimeout(kdTimer); $('kdSh').className = 'kd-sh'; kdCur = null; }
+  function kdSimpan() {
+    var g = kdCur; if (!g || kdBusy) return;
+    var s = siap('', 'klStatus'); if (!s) { kdPesan('err', 'Isi PIN admin dulu.'); return; }
+    var btn = $('kdSimpan'); kdBusy = true; btn.disabled = true; btn.textContent = 'Menyimpan...';
+    function selesai() { kdBusy = false; btn.disabled = false; btn.textContent = 'Simpan'; }
+    api('simpanKelasDiajar', [s.pin, s.id, g.kode, kdSel.slice()], function (r) {
+      selesai();
+      if (!r || !r.ok) { kdPesan('err', (r && r.message) || 'Gagal menyimpan.'); return; }
+      g.k = Array.isArray(r.k) ? r.k : kdSel.filter(function (c) { return g.wali.indexOf(c) < 0; });
+      g.diatur = true; kdGambar();
+      kdPesan('ok', r.message || 'Tersimpan.');
+      clearTimeout(kdTimer); kdTimer = setTimeout(kdTutup, 900);
+    }, function (er) { selesai(); kdPesan('err', 'Error: ' + klErr(er)); });
+  }
+  $('kdList').addEventListener('click', function (e) { var b = e.target.closest('.kd-g'); if (b) kdBuka(+b.getAttribute('data-i')); });
+  $('kdCari').addEventListener('input', function () { if (kdD) kdGambar(); });
+  $('kdSh').addEventListener('click', function (e) {
+    if (e.target === $('kdSh')) { if (!kdBusy) kdTutup(); return; }
+    var b = e.target.closest('button'); if (!b || !kdCur || kdBusy) return;
+    var id = b.id;
+    if (b.hasAttribute('data-c')) {
+      var c = b.getAttribute('data-c'); if (kdCur.wali.indexOf(c) >= 0) return;
+      var x = kdSel.indexOf(c); if (x >= 0) kdSel.splice(x, 1); else kdSel.push(c);
+      kdGridGambar(); return;
+    }
+    if (b.hasAttribute('data-g')) {
+      var gr = kdGrup()[+b.getAttribute('data-g')]; if (!gr) return;
+      var bebas = gr.kelas.filter(function (k) { return kdCur.wali.indexOf(k) < 0; });
+      var penuh = bebas.every(function (k) { return kdSel.indexOf(k) >= 0; });
+      bebas.forEach(function (k) { var y = kdSel.indexOf(k); if (penuh && y >= 0) kdSel.splice(y, 1); else if (!penuh && y < 0) kdSel.push(k); });
+      kdGridGambar(); return;
+    }
+    if (id === 'kdSemua') { kdSel = kdD.kelas.slice(); kdGridGambar(); return; }
+    if (id === 'kdKosong') { kdSel = kdCur.wali.slice(); kdGridGambar(); return; }
+    if (id === 'kdBatal') { kdTutup(); return; }
+    if (id === 'kdSimpan') kdSimpan();
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && kdCur && !kdBusy) kdTutup(); });
+
   $('btnKlMuat').addEventListener('click', function () { klMuat($('klPin').value.trim()); });
   $('klPin').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('btnKlMuat').click(); });
   $('klSeg').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) klTampil(b.getAttribute('data-t')); });
