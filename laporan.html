@@ -500,6 +500,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
       var bukti = ls.length ? Foto.strip(ls, 54) : '';
       var status, aksi = '';
       if (it.dihapus) status = '<div class="tolak" style="width:100%"><b>Dihapus kepala sekolah</b>' + esc(it.alasanHapus || '') + '</div>';
+      else if (it.dariJurnal) status = '<span class="kg-ok">Dari Jurnal Mengajar</span><a href="kelas.html?kode=' + encodeURIComponent(kode) + '&dev=' + encodeURIComponent(dev) + '">Lihat di Kelas \u203A</a>';
       else if (it.terkunci) status = '<span class="kg-kc">Terkunci</span>';
       else { status = '<span class="kg-ok">Tercatat</span>'; aksi = '<div class="kg-ac"><button type="button" class="pj-b ub" data-a="ubah" data-id="' + escA(it.id) + '">Ubah</button><button type="button" class="pj-b dl" data-a="hapus" data-id="' + escA(it.id) + '">Hapus</button></div>'; }
       return '<div class="kg-it' + (it.dihapus ? ' del' : '') + (kgBukaIt[it.id] ? ' buka' : '') + '" data-id="' + escA(it.id) + '"><div class="kg-r1"><span class="kg-tgl">' + esc(tglLabel(it.tanggal)) + esc(meta) + '</span><span class="kg-jn">' + esc(it.jenis) + '</span><span class="kg-cv" aria-hidden="true">\u25BE</span></div>' +
