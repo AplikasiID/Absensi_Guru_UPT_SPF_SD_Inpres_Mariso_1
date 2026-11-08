@@ -229,6 +229,31 @@ textarea.kg-in{resize:vertical;min-height:84px}
 @media (prefers-color-scheme: dark){.k-sb button.on[data-s="S"]{background:rgba(245,158,11,.2);color:#FBBF4D}.k-sb button.on[data-s="I"]{background:rgba(59,130,246,.22);color:#BFD3FF}.k-sb button.on[data-s="A"]{background:rgba(239,68,68,.2);color:#FF8F86}.k-sb button.on[data-s="T"]{background:rgba(139,92,246,.22);color:#D4C4FF}.k-jam button.on{background:#3b6cf0;border-color:#3b6cf0}}
 .bnav .bn-row > :nth-child(4).on .ni svg{animation-name:ni-hop;animation-duration:.6s}
 </style>
+<style>
+/* ===== Siswa (data lengkap) + tombol H dan WA di Absen Siswa ===== */
+.k-sb{gap:4px}.k-sb button{width:34px}
+.k-sb button.on[data-s="H"]{background:#dcfce7;border-color:#22c55e;color:#15803d}
+.k-wa{width:42px;height:42px;border-radius:13px;border:0;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#25D366;color:#fff;box-shadow:0 4px 10px rgba(37,211,102,.35)}
+.k-wa svg{width:22px;height:22px}.k-wa:disabled{background:rgba(100,116,139,.18);color:rgba(100,116,139,.55);box-shadow:none}
+.k-sis{gap:6px;padding:9px 10px}.k-sis small.nh{display:block;font-size:11px;font-weight:700;color:#b45309;margin-top:1px}
+.k-nm{flex:1;min-width:0}.k-nm b{display:block;font-size:13.5px;font-weight:700;word-break:break-word}
+.wa-sh{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:90}.wa-sh.on{display:flex}
+.wa-sp{width:100%;max-width:440px;background:var(--card);border-radius:24px 24px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px))}
+.wa-sp h3{margin:0 0 2px;font-size:15px}.wa-to{font-size:12px;color:var(--muted);font-weight:700;margin-bottom:10px}
+.wa-msg{width:100%;min-height:170px;border:1px solid var(--line);border-radius:14px;padding:12px;font:13.5px/1.5 inherit;background:#dcf8c6;color:#111;resize:vertical}
+.btn.wab{background:#25D366;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 16px rgba(37,211,102,.35)}
+.btn.sw-add{margin:0 0 10px;border:2px dashed #22c55e;background:#ecfdf5;color:#166534;box-shadow:none}
+.btn.sw-alt{margin:0 0 10px;background:transparent;color:var(--muted);box-shadow:none;border:1px solid var(--line)}
+.sw-jk{display:flex;gap:8px}.sw-jk button{flex:1;min-height:46px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-weight:800;font-size:13px}
+.sw-jk button.on[data-j="L"]{background:#dbeafe;border-color:#3b82f6;color:#1d4ed8}.sw-jk button.on[data-j="P"]{background:#fce7f3;border-color:#ec4899;color:#be185d}
+.sw-r{display:flex;align-items:center;gap:10px;padding:11px 12px;border-top:1px solid var(--line)}.sw-r:first-child{border-top:0}
+.sw-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;background:rgba(100,116,139,.2);color:var(--muted)}
+.sw-av.L{background:#dbeafe;color:#1d4ed8}.sw-av.P{background:#fce7f3;color:#be185d}
+.sw-tx{flex:1;min-width:0}.sw-tx b{display:block;font-size:14px;font-weight:700;word-break:break-word}.sw-tx small{display:block;font-size:11.5px;color:var(--muted);font-weight:600;margin-top:2px;word-break:break-word}
+.sw-tg{display:inline-block;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:99px;margin-top:4px;background:#fef3c7;color:#b45309}
+.sw-r .pj-b{min-width:56px;min-height:40px}
+@media (prefers-color-scheme: dark){.k-sb button.on[data-s="H"]{background:rgba(34,197,94,.2);color:#5EE08A}.btn.sw-add{background:rgba(34,197,94,.14);color:#86EFAC}.wa-msg{background:#054640;color:#E9EDEF}.sw-av.L{background:rgba(59,130,246,.22);color:#BFD3FF}.sw-av.P{background:rgba(236,72,153,.22);color:#F9A8D4}.sw-tg,.k-sis small.nh{color:#FBBF4D}.sw-tg{background:rgba(245,158,11,.18)}.sw-jk button.on[data-j="L"]{background:rgba(59,130,246,.22);color:#BFD3FF}.sw-jk button.on[data-j="P"]{background:rgba(236,72,153,.22);color:#F9A8D4}}
+</style>
 </head>
 <body>
 <div class="ban">
@@ -344,7 +369,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
     document.addEventListener('touchend', function (e) {
       var t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0;
       if (Date.now() - t0 > 700 || Math.abs(dx) < 70 || Math.abs(dy) > Math.abs(dx) * 0.6) return;
-      if (e.target.closest && e.target.closest('input,textarea,select,.k-jam,.fv')) return;
+      if (e.target.closest && e.target.closest('input,textarea,select,.k-jam,.fv,.wa-sh')) return;
       var i = urut.indexOf(tab) + (dx < 0 ? 1 : -1); if (i >= 0 && i < urut.length) pilihTab(urut[i]);
     }, { passive: true });
   })();
@@ -490,6 +515,29 @@ textarea.kg-in{resize:vertical;min-height:84px}
     jurFotoGambar();
   });
 
+  // ================= KIRIM WA KE ORANG TUA =================
+  var IC_WA = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.5A10 10 0 1 0 12 2zm5.2 14c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.3.4c-.1.2-.3.4-.1.7.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.7-.1l.9-1.1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.5.4.1.1.1.7-.1 1.2z"/></svg>';
+  var waNo = '';
+  (function () {
+    var d = document.createElement('div'); d.className = 'wa-sh'; d.id = 'waSh';
+    d.innerHTML = '<div class="wa-sp"><h3>Kirim kabar ke orang tua</h3><div class="wa-to" id="waTo"></div><textarea class="wa-msg" id="waMsg"></textarea><div class="sd-hint">Pesan bisa diubah dulu sebelum dikirim.</div><button type="button" class="btn wab" id="waGo">' + IC_WA.replace('<svg', '<svg width="20" height="20"') + 'Buka WhatsApp</button><button type="button" class="btn" id="waBatal" style="background:transparent;color:var(--muted);box-shadow:none;border:1px solid var(--line);margin-top:8px">Batal</button></div>';
+    document.body.appendChild(d);
+    $('waBatal').onclick = function () { d.className = 'wa-sh'; };
+    d.addEventListener('click', function (e) { if (e.target === d) d.className = 'wa-sh'; });
+    $('waGo').onclick = function () {
+      var t = $('waMsg').value.trim(); if (!waNo || !t) return;
+      window.open('https://wa.me/' + waNo + '?text=' + encodeURIComponent(t), '_blank'); d.className = 'wa-sh';
+    };
+  })();
+  function waBuka(id) {
+    var sis = null; ab.siswa.forEach(function (x) { if (x.id === id) sis = x; });
+    var st = abStat[id]; if (!sis || !st || !sis.hp) return;
+    waNo = String(sis.hp).replace(/\D/g, '').replace(/^0/, '62');
+    $('waTo').textContent = 'Ke: ' + (sis.ortu || 'Orang tua') + ' \u00B7 ' + sis.hp;
+    $('waMsg').value = 'Assalamualaikum, ' + (sis.ortu || 'Bapak/Ibu') + '.\nKami dari SD Inpres Mariso I menginformasikan bahwa ananda ' + sis.nama + ' pada ' + tglHari(abTgl) + ', ' + tglLabel(abTgl) + ' tercatat tidak hadir dengan keterangan: ' + info.status[st] + '.\nMohon konfirmasi bila ada informasi tambahan. Terima kasih.\n\nWali Kelas, ' + String(info.nama || '').split(',')[0];
+    $('waSh').className = 'wa-sh on';
+  }
+
   // ================= ABSEN SISWA =================
   var ab = null, abKelas = '', abTgl = '', abStat = {}, abBusy = false, abSeq = 0;
   function absMuat(tgl, kelas) {
@@ -518,11 +566,11 @@ textarea.kg-in{resize:vertical;min-height:84px}
     h += '<div id="abSum">' + (ab.sudahIsi || ab.saya ? absRingkas() : '') + '</div><div class="card" id="abList">';
     ab.siswa.forEach(function (s, i) {
       var st = abStat[s.id] || '';
-      if (dapat) h += '<div class="k-sis" data-id="' + attr(s.id) + '"><span class="k-no">' + (i + 1) + '</span><b>' + esc(s.nama) + '</b><span class="k-sb">' + ['S', 'I', 'A', 'T'].map(function (c) { return '<button type="button" data-s="' + c + '" class="' + (st === c ? 'on' : '') + '" aria-label="' + attr(info.status[c]) + '">' + c + '</button>'; }).join('') + '</span></div>';
+      if (dapat) h += '<div class="k-sis" data-id="' + attr(s.id) + '"><span class="k-no">' + (i + 1) + '</span><div class="k-nm"><b>' + esc(s.nama) + '</b>' + (st && !s.hp ? '<small class="nh">No. HP belum diisi</small>' : '') + '</div><span class="k-sb">' + ['H', 'S', 'I', 'A', 'T'].map(function (c) { return '<button type="button" data-s="' + c + '" class="' + ((c === 'H' ? !st : st === c) ? 'on' : '') + '" aria-label="' + attr(c === 'H' ? 'Hadir' : info.status[c]) + '">' + c + '</button>'; }).join('') + '</span><button type="button" class="k-wa" aria-label="Kirim WhatsApp ke orang tua"' + (st && s.hp ? '' : ' disabled') + '>' + IC_WA + '</button></div>';
       else h += '<div class="k-sis"><span class="k-no">' + (i + 1) + '</span><b>' + esc(s.nama) + '</b>' + (ab.sudahIsi ? '<span class="k-st ' + (st || 'H') + '">' + (st ? esc(info.status[st]) : 'Hadir') + '</span>' : '') + '</div>';
     });
     h += '</div>';
-    if (dapat) h += '<div class="sd-hint">Semua dianggap <b>hadir</b>. Ketuk huruf hanya untuk yang tidak hadir: S = Sakit, I = Izin, A = Alpa, T = Tugas dari orang tua.</div><button type="button" class="btn" id="abSimpan">' + (ab.sudahIsi ? 'Perbarui Absen' : 'Simpan Absen') + '</button><div class="st" id="abSt"></div>';
+    if (dapat) h += '<div class="sd-hint">Semua dianggap <b>hadir</b> (H). Ketuk huruf hanya untuk yang tidak hadir: S = Sakit, I = Izin, A = Alpa, T = Tugas dari orang tua. Tombol <b>WA</b> hijau aktif setelah siswa diberi keterangan dan No. HP orang tua sudah diisi di tab Siswa.</div><button type="button" class="btn" id="abSimpan">' + (ab.sudahIsi ? 'Perbarui Absen' : 'Simpan Absen') + '</button><div class="st" id="abSt"></div>';
     $('paneAbs').innerHTML = h;
   }
   $('paneAbs').addEventListener('click', function (e) {
@@ -530,10 +578,15 @@ textarea.kg-in{resize:vertical;min-height:84px}
     if ((b = t.closest('#abKelas button'))) return absMuat('', b.getAttribute('data-k'));
     if (t.closest('#abPrev')) return absMuat(geserTgl(abTgl, -1));
     if (t.closest('#abNext')) return absMuat(geserTgl(abTgl, 1));
+    if ((b = t.closest('.k-wa'))) { if (!b.disabled) waBuka(b.closest('.k-sis').getAttribute('data-id')); return; }
     if ((b = t.closest('.k-sb button'))) {
-      var id = b.closest('.k-sis').getAttribute('data-id'), s = b.getAttribute('data-s');
-      if (abStat[id] === s) delete abStat[id]; else abStat[id] = s;
-      var bs = b.parentNode.querySelectorAll('button'); for (var i = 0; i < bs.length; i++) bs[i].className = abStat[id] === bs[i].getAttribute('data-s') ? 'on' : '';
+      var row = b.closest('.k-sis'), id = row.getAttribute('data-id'), s = b.getAttribute('data-s');
+      if (s === 'H' || abStat[id] === s) delete abStat[id]; else abStat[id] = s;
+      var bs = b.parentNode.querySelectorAll('button'); for (var i = 0; i < bs.length; i++) { var c = bs[i].getAttribute('data-s'); bs[i].className = (c === 'H' ? !abStat[id] : abStat[id] === c) ? 'on' : ''; }
+      var sis = null; ab.siswa.forEach(function (x) { if (x.id === id) sis = x; });
+      var wa = row.querySelector('.k-wa'); if (wa) wa.disabled = !(abStat[id] && sis && sis.hp);
+      var nm = row.querySelector('.k-nm'), nh = nm.querySelector('.nh');
+      if (abStat[id] && sis && !sis.hp) { if (!nh) nm.insertAdjacentHTML('beforeend', '<small class="nh">No. HP belum diisi</small>'); } else if (nh) nh.remove();
       $('abSum').innerHTML = absRingkas(); return;
     }
     if (t.closest('#abSimpan')) {
@@ -548,9 +601,10 @@ textarea.kg-in{resize:vertical;min-height:84px}
   });
 
   // ================= SISWA =================
-  var sw = null, swKelas = '', swBusy = false, swSeq = 0;
+  var sw = null, swKelas = '', swBusy = false, swSeq = 0, swMode = 'daftar', swEdit = '', swJk = '', swCari = '', swInfo = '';
   function sisMuat(kelas) {
-    if (kelas) swKelas = kelas; if (!swKelas) swKelas = kelasAwal();
+    if (kelas) { swKelas = kelas; swMode = 'daftar'; swEdit = ''; swCari = ''; }
+    if (!swKelas) swKelas = kelasAwal();
     if (!swKelas) { $('paneSis').innerHTML = '<div class="empty">Belum ada kelas. Minta kepala sekolah mengatur wali kelas.</div>'; return; }
     var my = ++swSeq; $('paneSis').innerHTML = '<div class="sk"></div>';
     run('getSiswaKelas', [swKelas], function (r) {
@@ -559,31 +613,93 @@ textarea.kg-in{resize:vertical;min-height:84px}
       sw = r; sisGambar();
     }, function () { if (my === swSeq) $('paneSis').innerHTML = '<div class="empty">' + GAGAL + '</div>'; });
   }
-  function sisGambar() {
-    var h = chipKelas(swKelas, 'swKelas');
-    h += '<div class="k-sub">Wali kelas: ' + esc(sw.waliNama || 'belum diatur') + ' \u00B7 ' + sw.siswa.length + ' siswa</div>';
-    if (sw.bolehUbah) {
-      h += '<div class="kg-card"><div class="kg-h">Daftar siswa ' + esc(sw.kelas) + '</div><div class="sd-hint">Tulis <b>satu nama per baris</b>. Boleh tempel dari Word/WhatsApp. Siswa yang dihapus dari daftar tidak ikut absen lagi, riwayat lamanya tetap aman.</div>' +
-        '<textarea class="kg-in" id="swTeks" rows="12" placeholder="Ahmad Fauzi&#10;Siti Aisyah&#10;...">' + esc(sw.siswa.map(function (s) { return s.nama; }).join('\n')) + '</textarea>' +
-        '<div class="kg-tgl" id="swN" style="margin-top:6px"></div><button type="button" class="btn" id="swSimpan">Simpan Daftar Siswa</button><div class="st" id="swSt"></div></div>';
-    } else {
-      h += sw.siswa.length ? '<div class="card">' + sw.siswa.map(function (s, i) { return '<div class="k-sis"><span class="k-no">' + (i + 1) + '</span><b>' + esc(s.nama) + '</b></div>'; }).join('') + '</div>' : '<div class="empty">Daftar siswa belum diisi oleh wali kelas.</div>';
-      h += '<div class="sd-hint">Daftar ini hanya bisa diubah oleh wali kelas.</div>';
-    }
-    $('paneSis').innerHTML = h; if (sw.bolehUbah) swHitung();
+  function swLengkap(s) { return !!(s.nisn && s.jk && s.ortu && s.hp); }
+  function swKurang(s) { var a = []; if (!s.nisn) a.push('NISN'); if (!s.jk) a.push('L/P'); if (!s.ortu) a.push('orang tua'); if (!s.hp) a.push('No. HP'); return a; }
+  function swRing() {
+    var L = 0, P = 0, K = 0; sw.siswa.forEach(function (s) { if (s.jk === 'L') L++; else if (s.jk === 'P') P++; if (swLengkap(s)) K++; });
+    var pc = sw.siswa.length ? Math.round(K * 100 / sw.siswa.length) : 0;
+    return '<div class="k-ring"><div><b>' + sw.siswa.length + '</b><small>Siswa</small></div><div><b style="color:#1d4ed8">' + L + '</b><small>Laki-laki</small></div><div><b style="color:#be185d">' + P + '</b><small>Perempuan</small></div><div><b style="color:#15803d">' + pc + '%</b><small>Data lengkap</small></div></div><div class="pj-bar" style="margin:-2px 2px 12px"><i style="width:' + pc + '%"></i></div>';
   }
-  function swHitung() { var n = $('swTeks').value.split(/\r?\n/).filter(function (x) { return x.trim(); }).length; $('swN').textContent = n + ' nama' + (n > sw.maks ? ' (maksimal ' + sw.maks + ')' : ''); }
-  $('paneSis').addEventListener('input', function (e) { if (e.target.id === 'swTeks') swHitung(); });
+  function swList() {
+    var q = swCari.toLowerCase(), L = sw.siswa.filter(function (s) { return !q || s.nama.toLowerCase().indexOf(q) >= 0 || String(s.nisn || '').indexOf(q) >= 0; });
+    if (!sw.siswa.length) return '<div class="empty">Belum ada siswa. Ketuk <b>+ Tambah Siswa</b> atau tempel banyak nama sekaligus.</div>';
+    if (!L.length) return '<div class="empty">Tidak ada siswa yang cocok.</div>';
+    return '<div class="card">' + L.map(function (s, i) {
+      var k = swKurang(s), ini = s.nama.split(' ').slice(0, 2).map(function (x) { return x.charAt(0); }).join('').toUpperCase();
+      return '<div class="sw-r"><span class="k-no">' + (i + 1) + '</span><span class="sw-av ' + attr(s.jk || '') + '">' + esc(ini) + '</span><div class="sw-tx"><b>' + esc(s.nama) + '</b><small>' + (s.nisn ? 'NISN ' + esc(s.nisn) : 'NISN belum diisi') + (s.ortu ? ' \u00B7 ' + esc(s.ortu) : '') + '</small>' + (k.length ? '<span class="sw-tg">Belum: ' + k.join(', ') + '</span>' : '') + '</div><button type="button" class="pj-b ub" data-a="ubah" data-i="' + attr(s.id) + '">Ubah</button></div>';
+    }).join('') + '</div><div class="sd-hint">Ketuk <b>Ubah</b> untuk melengkapi data. Siswa yang dihapus tidak ikut absen lagi, riwayat lamanya tetap aman.</div>';
+  }
+  function swForm() {
+    var s = { nama: '', nisn: '', ortu: '', hp: '', jk: '' };
+    if (swEdit) sw.siswa.forEach(function (x) { if (x.id === swEdit) s = x; });
+    swJk = s.jk || '';
+    return '<div class="kg-card"><div class="kg-h">' + (swEdit ? 'Ubah Data Siswa' : 'Tambah Siswa') + '</div>' +
+      '<label class="kg-lbl kg-lbl2" for="swNama">Nama lengkap *<em id="swCn">0/60</em></label><input class="kg-in" id="swNama" maxlength="60" value="' + attr(s.nama) + '" placeholder="Contoh: Ahmad Fauzi">' +
+      '<span class="kg-lbl">Jenis kelamin *</span><div class="sw-jk" id="swJk"><button type="button" data-j="L" class="' + (swJk === 'L' ? 'on' : '') + '">Laki-laki</button><button type="button" data-j="P" class="' + (swJk === 'P' ? 'on' : '') + '">Perempuan</button></div>' +
+      '<label class="kg-lbl kg-lbl2" for="swNisn">NISN (10 angka)<em id="swCs">0/10</em></label><input class="kg-in" id="swNisn" inputmode="numeric" maxlength="10" value="' + attr(s.nisn) + '" placeholder="0123456789">' +
+      '<label class="kg-lbl" for="swOrtu">Nama orang tua / wali</label><input class="kg-in" id="swOrtu" maxlength="60" value="' + attr(s.ortu) + '" placeholder="Contoh: Bapak Saiful">' +
+      '<label class="kg-lbl" for="swHp">No. HP / WhatsApp orang tua</label><input class="kg-in" id="swHp" inputmode="tel" value="' + attr(s.hp) + '" placeholder="08xxxxxxxxxx">' +
+      '<div class="st" id="swSt"></div><button type="button" class="btn" data-a="simpan">' + (swEdit ? 'Simpan Perubahan' : 'Simpan Siswa') + '</button>' +
+      (swEdit ? '<button type="button" class="btn" data-a="hapus" style="background:transparent;color:#b91c1c;box-shadow:none;border:1px solid var(--line);margin-top:8px">Hapus dari daftar</button>' : '') +
+      '<button type="button" class="btn" data-a="batal" style="background:transparent;color:var(--muted);box-shadow:none;border:1px solid var(--line);margin-top:8px">Batal</button></div>';
+  }
+  function swTempel() {
+    return '<div class="kg-card"><div class="kg-h">Tempel daftar nama</div><div class="sd-hint">Satu nama per baris. Boleh tempel dari Word/WhatsApp. Nama yang sudah ada dilewati. NISN dan data lain dilengkapi setelahnya.</div>' +
+      '<textarea class="kg-in" id="swTeks" rows="10" placeholder="Ahmad Fauzi&#10;Siti Aisyah&#10;..."></textarea><div class="kg-tgl" id="swN" style="margin-top:6px">0 nama</div><div class="st" id="swSt"></div>' +
+      '<button type="button" class="btn" data-a="impor">Tambahkan ke Daftar</button><button type="button" class="btn" data-a="batal" style="background:transparent;color:var(--muted);box-shadow:none;border:1px solid var(--line);margin-top:8px">Batal</button></div>';
+  }
+  function sisGambar() {
+    var h = chipKelas(swKelas, 'swKelas') + '<div class="k-sub">Wali kelas: ' + esc(sw.waliNama || 'belum diatur') + ' \u00B7 ' + sw.siswa.length + ' siswa</div>';
+    if (!sw.bolehUbah) {
+      h += sw.siswa.length ? '<div class="card">' + sw.siswa.map(function (s, i) { return '<div class="k-sis"><span class="k-no">' + (i + 1) + '</span><b>' + esc(s.nama) + '</b></div>'; }).join('') + '</div>' : '<div class="empty">Daftar siswa belum diisi oleh wali kelas.</div>';
+      $('paneSis').innerHTML = h + '<div class="sd-hint">Daftar ini hanya bisa diubah oleh wali kelas.</div>'; return;
+    }
+    if (swInfo) { h += '<div class="st ok">' + esc(swInfo) + '</div>'; swInfo = ''; }
+    if (swMode === 'form') h += swForm();
+    else if (swMode === 'tempel') h += swTempel();
+    else h += swRing() + '<button type="button" class="btn sw-add" data-a="baru">+ Tambah Siswa</button><button type="button" class="btn sw-alt" data-a="tempel">Tempel banyak nama sekaligus</button><input class="kg-in" id="swCari" placeholder="Cari nama atau NISN..." value="' + attr(swCari) + '" style="margin-bottom:10px"><div id="swList">' + swList() + '</div>';
+    $('paneSis').innerHTML = h;
+    if (swMode === 'form') swHitung();
+  }
+  function swHitung() { if ($('swCn')) { $('swCn').textContent = $('swNama').value.length + '/60'; $('swCs').textContent = $('swNisn').value.length + '/10'; } }
+  $('paneSis').addEventListener('input', function (e) {
+    var id = e.target.id;
+    if (id === 'swCari') { swCari = e.target.value; $('swList').innerHTML = swList(); }
+    else if (id === 'swNisn') { e.target.value = e.target.value.replace(/\D/g, ''); swHitung(); }
+    else if (id === 'swNama') swHitung();
+    else if (id === 'swTeks') $('swN').textContent = e.target.value.split(/\r?\n/).filter(function (x) { return x.trim(); }).length + ' nama';
+  });
+  function swSelesai(r, pesanDef) {
+    swBusy = false;
+    if (!r || !r.ok) return setSt($('swSt'), 'err', (r && r.message) || pesanDef);
+    swInfo = r.message; swMode = 'daftar'; swEdit = ''; ab = null; sisMuat();
+  }
+  function swGagal(e2) { swBusy = false; setSt($('swSt'), 'err', pesanGagal(e2, GAGAL)); }
   $('paneSis').addEventListener('click', function (e) {
-    var b;
-    if ((b = e.target.closest('#swKelas button'))) return sisMuat(b.getAttribute('data-k'));
-    if (e.target.closest('#swSimpan')) {
-      if (swBusy) return; swBusy = true; $('swSimpan').disabled = true; setSt($('swSt'), 'ok', 'Menyimpan...');
-      run('simpanSiswaKelas', [swKelas, $('swTeks').value], function (r) {
-        swBusy = false; if ($('swSimpan')) $('swSimpan').disabled = false;
-        if (!r || !r.ok) return setSt($('swSt'), 'err', (r && r.message) || 'Gagal menyimpan.');
-        setSt($('swSt'), 'ok', r.message); ab = null;
-      }, function (e2) { swBusy = false; if ($('swSimpan')) $('swSimpan').disabled = false; setSt($('swSt'), 'err', pesanGagal(e2, GAGAL)); });
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.parentNode.id === 'swKelas') return sisMuat(b.getAttribute('data-k'));
+    if (b.parentNode.id === 'swJk') { swJk = b.getAttribute('data-j'); var bs = b.parentNode.children; for (var i = 0; i < bs.length; i++) bs[i].className = bs[i].getAttribute('data-j') === swJk ? 'on' : ''; return; }
+    var a = b.getAttribute('data-a'); if (!a || swBusy) return;
+    if (a === 'baru') { swEdit = ''; swMode = 'form'; sisGambar(); }
+    else if (a === 'ubah') { swEdit = b.getAttribute('data-i'); swMode = 'form'; sisGambar(); }
+    else if (a === 'tempel') { swMode = 'tempel'; sisGambar(); }
+    else if (a === 'batal') { swMode = 'daftar'; swEdit = ''; sisGambar(); }
+    else if (a === 'simpan') {
+      var nama = $('swNama').value.trim(), nisn = $('swNisn').value, hp = $('swHp').value.trim();
+      if (!nama) return setSt($('swSt'), 'err', 'Nama lengkap wajib diisi.');
+      if (!swJk) return setSt($('swSt'), 'err', 'Pilih jenis kelamin.');
+      if (nisn && nisn.length !== 10) return setSt($('swSt'), 'err', 'NISN harus 10 angka.');
+      if (hp && !/^(\+?62|0)\d{8,13}$/.test(hp.replace(/[\s-]/g, ''))) return setSt($('swSt'), 'err', 'No. HP tidak valid. Contoh: 081234567890');
+      swBusy = true; setSt($('swSt'), 'ok', 'Menyimpan...');
+      run('simpanSatuSiswa', [swKelas, swEdit, { nama: nama, jk: swJk, nisn: nisn, ortu: $('swOrtu').value.trim(), hp: hp }], function (r) { swSelesai(r, 'Gagal menyimpan.'); }, swGagal);
+    } else if (a === 'hapus') {
+      if (!confirm('Hapus siswa ini dari daftar? Riwayat absen lamanya tetap aman.')) return;
+      swBusy = true; setSt($('swSt'), 'ok', 'Menghapus...');
+      run('hapusSiswa', [swKelas, swEdit], function (r) { swSelesai(r, 'Gagal menghapus.'); }, swGagal);
+    } else if (a === 'impor') {
+      if (!$('swTeks').value.trim()) return setSt($('swSt'), 'err', 'Tempel nama siswa dulu.');
+      swBusy = true; setSt($('swSt'), 'ok', 'Menambahkan...');
+      run('tambahSiswaMassal', [swKelas, $('swTeks').value], function (r) { swSelesai(r, 'Gagal menambahkan.'); }, swGagal);
     }
   });
 
