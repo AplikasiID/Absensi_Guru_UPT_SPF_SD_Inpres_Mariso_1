@@ -1271,6 +1271,11 @@ body.adm-terbatas [data-terbatas]{display:none!important}
 .kd-st.on{display:block}.kd-st.ok{background:#dcfce7;color:#15803d}.kd-st.err{background:#fee2e2;color:#b91c1c}
 .kd-btn{display:block;width:100%;min-height:48px;margin-top:10px;border:0;background:linear-gradient(135deg,#1d4ed8,#1e3a8a);color:#fff;font-weight:800;font-size:15px;font-family:inherit;border-radius:16px;box-shadow:0 6px 16px rgba(30,58,138,.28)}
 .kd-btn:disabled{opacity:.6}.kd-btn.alt{background:transparent;color:#64748b;box-shadow:none;border:1px solid #e2e8f0;margin-top:8px}
+@keyframes kdML{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes kdMR{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+#viewAdmin .kd-ml{animation:kdML .22s ease-out}#viewAdmin .kd-mr{animation:kdMR .22s ease-out}
+#viewAdmin .kl-seg{overflow-x:auto;scrollbar-width:none}#viewAdmin .kl-seg::-webkit-scrollbar{display:none}
+@media (prefers-reduced-motion: reduce){#viewAdmin .kd-ml,#viewAdmin .kd-mr{animation:none}}
 @media (prefers-color-scheme: dark){
 #viewAdmin .kd-info{background:rgba(100,130,255,.16);color:#C9D6FF}
 #viewAdmin .kd-prog{background:#262a36}#viewAdmin .kd-pr b{color:#9DB7FF}
@@ -3980,19 +3985,27 @@ body.adm-terbatas [data-terbatas]{display:none!important}
   function klErr(e) { var m = e && e.message; return m ? String(m) : 'Koneksi gagal. Periksa internet.'; }
   var KL_S = { S: 'Sakit', I: 'Izin', A: 'Alpa', T: 'Tugas ortu' };
   function klGeserHari(t, d) { var p = t.split('-'), x = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2] + d)); return x.getUTCFullYear() + '-' + ('0' + (x.getUTCMonth() + 1)).slice(-2) + '-' + ('0' + x.getUTCDate()).slice(-2); }
-  function klCall(fn, extra, ok, diam) {
-    var s = siap('', 'klStatus'); if (!s) return;
+  // PIN cukup sekali: baru disimpan global (window.__admPin) setelah server menerimanya, lalu dipakai semua tab Kelas
+  // dan menu admin lain. Kotak PIN hanya muncul lagi kalau server menolak PIN-nya; gagal karena sinyal/server tidak memintanya.
+  function klGagal(diam, pesan, pakaiTersimpan) {
+    if (/PIN/i.test(pesan)) {
+      if (pakaiTersimpan) window.__admPin = '';
+      pesanGagal(diam, 'klStatus', pesan);
+    } else if (diam) toast('err', pesan);
+    else setStatus('klStatus', 'err', pesan);
+  }
+  function klCall(fn, extra, ok, diam, pinBaru) {
+    var s = siap(pinBaru || '', 'klStatus'); if (!s) return;
     api(fn, [s.pin, s.id].concat(extra || []), function (res) {
-      if (!res || !res.ok) { pesanGagal(diam, 'klStatus', (res && res.message) || 'Gagal memuat.'); return; }
+      if (!res || !res.ok) { klGagal(diam, (res && res.message) || 'Gagal memuat.', !pinBaru); return; }
       berhasilMasuk(s.pin, 'klPin', 'klPinRow', 'klStatus'); $('klBox').style.display = ''; ok(res);
-    }, function (err) { pesanGagal(diam, 'klStatus', 'Error: ' + klErr(err)); });
+    }, function (err) { klGagal(diam, 'Error: ' + klErr(err), false); });
   }
   function klMuat(pinBaru) {
-    if (pinBaru) window.__admPin = pinBaru;
-    if (klTab === 'pan') klCall('getPantauanKelas', [klTgl], function (r) { kl = r; klTgl = r.tanggal; klGambarPan(); });
-    else if (klTab === 'wali') klCall('getKelasAdmin', [], function (r) { klWaliD = r; klGambarWali(); });
-    else if (klTab === 'ajar') klCall('getKelasDiajarAdmin', [], function (r) { kdD = r; kdGambar(); });
-    else klCall('getRekapKelasBulan', [klBln], function (r) { klRekD = r; klBln = r.bulan; klGambarRek(); });
+    if (klTab === 'pan') klCall('getPantauanKelas', [klTgl], function (r) { kl = r; klTgl = r.tanggal; klGambarPan(); }, false, pinBaru);
+    else if (klTab === 'wali') klCall('getKelasAdmin', [], function (r) { klWaliD = r; klGambarWali(); }, false, pinBaru);
+    else if (klTab === 'ajar') klCall('getKelasDiajarAdmin', [], function (r) { kdD = r; kdGambar(); }, false, pinBaru);
+    else klCall('getRekapKelasBulan', [klBln], function (r) { klRekD = r; klBln = r.bulan; klGambarRek(); }, false, pinBaru);
   }
   function klGambarPan() {
     $('klPLbl').textContent = tglLabel(kl.tanggal); $('klPNext').disabled = kl.tanggal >= kl.hariIni;
@@ -4023,12 +4036,32 @@ body.adm-terbatas [data-terbatas]{display:none!important}
       return '<div class="kl-k' + (klBk['r' + r.kelas] ? ' bk' : '') + '" data-k="r' + esc(r.kelas) + '"><button type="button" class="kl-h"><span><b>' + esc(r.kelas) + '</b><small>Wali: ' + esc(r.waliNama || 'belum diatur') + '</small></span><span class="kl-c ' + (r.persenHadir == null ? 'b' : 'v') + '">' + (r.persenHadir == null ? 'Belum ada data' : fmtJam(r.persenHadir) + '% hadir') + '</span><span class="kgx-cv" aria-hidden="true">▾</span></button><div class="kl-d">' + d + '</div></div>';
     }).join('') : '<div class="dev-kosong">Belum ada kelas.</div>';
   }
-  function klTampil(t) {
-    klTab = t;
+  var KL_URUT = ['pan', 'wali', 'ajar', 'rek'], KL_PANE = { pan: 'klPan', wali: 'klWali', ajar: 'klAjar', rek: 'klRek' };
+  function klTampil(t, arah) {
+    var lama = klTab; klTab = t;
     var bs = $('klSeg').querySelectorAll('button'); for (var i = 0; i < bs.length; i++) bs[i].className = bs[i].getAttribute('data-t') === t ? 'on' : '';
-    $('klPan').style.display = t === 'pan' ? '' : 'none'; $('klWali').style.display = t === 'wali' ? '' : 'none'; $('klAjar').style.display = t === 'ajar' ? '' : 'none'; $('klRek').style.display = t === 'rek' ? '' : 'none';
+    for (var k in KL_PANE) $(KL_PANE[k]).style.display = k === t ? '' : 'none';
+    // Animasi masuk searah gesekan (arah otomatis dari urutan tab kalau tab diketuk).
+    var dir = arah || (KL_URUT.indexOf(t) > KL_URUT.indexOf(lama) ? 1 : -1), el = $(KL_PANE[t]);
+    if (lama !== t) { el.classList.remove('kd-ml', 'kd-mr'); void el.offsetWidth; el.classList.add(dir > 0 ? 'kd-ml' : 'kd-mr'); }
+    var on = $('klSeg').querySelector('button.on'); if (on && on.scrollIntoView) { try { on.scrollIntoView({ block: 'nearest', inline: 'center' }); } catch (e) { } }
     klMuat();
   }
+  // Geser kiri/kanan di area Kelas untuk pindah tab. Diabaikan saat menyentuh kolom isian, pilihan, lembar pilih kelas,
+  // atau saat gerakan lebih banyak ke atas/bawah (scroll biasa).
+  var kdTx = 0, kdTy = 0, kdTt = 0, kdTa = false;
+  $('klBox').addEventListener('touchstart', function (e) {
+    var t = e.touches[0]; kdTa = e.touches.length === 1 && !e.target.closest('input,select,textarea,.kd-sh,.kgx-bar');
+    kdTx = t.clientX; kdTy = t.clientY; kdTt = Date.now();
+  }, { passive: true });
+  $('klBox').addEventListener('touchend', function (e) {
+    if (!kdTa) return; kdTa = false;
+    var t = e.changedTouches[0], dx = t.clientX - kdTx, dy = t.clientY - kdTy;
+    if (Date.now() - kdTt > 700 || Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.6) return;
+    if ($('kdSh').classList.contains('on')) return;
+    var i = KL_URUT.indexOf(klTab) + (dx < 0 ? 1 : -1);
+    if (i >= 0 && i < KL_URUT.length) klTampil(KL_URUT[i], dx < 0 ? 1 : -1);
+  }, { passive: true });
   // ---------------- Kelas yang Diajar (admin) ----------------
   // Admin menentukan kelas mana yang diajar tiap guru. Kelas wali otomatis terkunci (tidak disimpan ke sheet).
   var kdD = null, kdCur = null, kdSel = [], kdBusy = false, kdTimer = 0;
