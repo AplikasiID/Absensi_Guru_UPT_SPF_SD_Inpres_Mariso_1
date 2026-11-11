@@ -419,6 +419,9 @@ textarea.kg-in{resize:vertical;min-height:84px}
   })();
 
   function chipKelas(pilih, id) {
+    if (info.kelas.length > 6) return '<select class="kg-in" id="' + id + '" aria-label="Pilih kelas" style="margin-bottom:10px">' + info.kelas.map(function (k) {
+      return '<option value="' + attr(k.kelas) + '"' + (k.kelas === pilih ? ' selected' : '') + '>' + esc(k.kelas) + (k.saya ? ' \u2605' : '') + '</option>';
+    }).join('') + '</select>';
     return '<div class="kg-chips" id="' + id + '" style="margin-bottom:10px">' + info.kelas.map(function (k) {
       return '<button type="button" class="kg-chip' + (k.kelas === pilih ? ' on' : '') + '" data-k="' + attr(k.kelas) + '">' + esc(k.kelas) + (k.saya ? ' \u2605' : '') + '</button>';
     }).join('') + '</div>';
@@ -603,6 +606,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
     var dapat = ab.bolehUbah, h = '';
     h += chipKelas(abKelas, 'abKelas');
     h += '<div class="k-dt"><button type="button" id="abPrev" aria-label="Hari sebelumnya"' + (abTgl <= ab.tanggalMin ? ' disabled' : '') + '>' + IC_KIRI + '</button><b>' + tglHari(abTgl) + ', ' + tglLabel(abTgl) + '</b><button type="button" id="abNext" aria-label="Hari berikutnya"' + (abTgl >= ab.hariIni ? ' disabled' : '') + '>' + IC_KANAN + '</button></div>';
+    if (ab.pengganti) h += '<div class="k-info">Kamu mengisi sebagai <b>admin</b>, menggantikan wali kelas' + (ab.waliNama ? ' (<b>' + esc(ab.waliNama) + '</b>)' : '') + '.</div>';
     if (!ab.saya) h += '<div class="k-info">Absen siswa diisi oleh wali kelas' + (ab.waliNama ? ' (<b>' + esc(ab.waliNama) + '</b>)' : '') + '. Kamu bisa melihat hasilnya di sini.</div>';
     else if (!ab.bolehUbah) h += '<div class="k-info">Tanggal ini sudah lewat batas pengisian.</div>';
     if (!ab.siswa.length) { h += '<div class="empty">Belum ada daftar siswa.' + (ab.saya ? '<br>Isi dulu di tab <b>Siswa</b>.' : '') + '</div>'; $('paneAbs').innerHTML = h; return; }
@@ -617,6 +621,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
     if (dapat) h += '<div class="sd-hint">Semua dianggap <b>hadir</b> (H). Ketuk huruf hanya untuk yang tidak hadir: S = Sakit, I = Izin, A = Alpa, T = Tugas dari orang tua. Tombol <b>WA</b> hijau aktif setelah siswa diberi keterangan dan No. HP orang tua sudah diisi di tab Siswa.</div><button type="button" class="btn" id="abSimpan">' + (ab.sudahIsi ? 'Perbarui Absen' : 'Simpan Absen') + '</button><div class="st" id="abSt"></div>';
     $('paneAbs').innerHTML = h;
   }
+  $('paneAbs').addEventListener('change', function (e) { if (e.target.id === 'abKelas') absMuat('', e.target.value); });
   $('paneAbs').addEventListener('click', function (e) {
     var t = e.target, b;
     if ((b = t.closest('#abKelas button'))) return absMuat('', b.getAttribute('data-k'));
@@ -851,6 +856,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
     swInfo = r.message; swMode = 'form'; swEdit = ''; sisGambar(); var f = $('swNama'); if (f) f.focus();
   }
   function swGagal(e2) { swBusy = false; setSt($('swSt'), 'err', pesanGagal(e2, GAGAL)); }
+  $('paneSis').addEventListener('change', function (e) { if (e.target.id === 'swKelas') sisMuat(e.target.value); });
   $('paneSis').addEventListener('click', function (e) {
     var b = e.target.closest('button'); if (!b) return;
     if (b.parentNode.id === 'swKelas') return sisMuat(b.getAttribute('data-k'));
