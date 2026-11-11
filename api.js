@@ -217,3 +217,26 @@
   });
   window.Foto = { strip: strip, buka: buka, aman: aman };
 })();
+
+/* Menu "Kelas" di bilah bawah (disisipkan otomatis di semua halaman yang punya menu bawah). */
+(function () {
+  function pasang() {
+    var row = document.querySelector('.bnav .bn-row');
+    if (!row || document.getElementById('navKelasLink') || document.getElementById('navKelas')) return;
+    var adm = document.getElementById('navAdminLink') || document.getElementById('navAdmin');
+    if (!adm) return;
+    var ref = adm.previousElementSibling || adm;
+    var el = document.createElement(ref.tagName === 'BUTTON' ? 'button' : 'a');
+    if (el.tagName === 'BUTTON') el.type = 'button'; else el.href = '#';
+    el.id = 'navKelas';
+    el.innerHTML = '<span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20h18"/><path d="M5 20V9l7-5 7 5v11"/><path d="M10 20v-5h4v5"/></svg></span>Kelas';
+    row.insertBefore(el, adm);
+    el.addEventListener('click', function (e) {
+      e.preventDefault();
+      var k = '', d = '';
+      try { var qs = new URLSearchParams(location.search); k = qs.get('kode') || localStorage.getItem('absensi_guru_terakhir') || ''; d = qs.get('dev') || localStorage.getItem('absensi_device_id') || ''; } catch (x) { }
+      location.href = 'kelas.html?kode=' + encodeURIComponent(k) + '&dev=' + encodeURIComponent(d);
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', pasang); else pasang();
+})();
