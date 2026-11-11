@@ -254,6 +254,39 @@ textarea.kg-in{resize:vertical;min-height:84px}
 .sw-r .pj-b{min-width:56px;min-height:40px}
 @media (prefers-color-scheme: dark){.k-sb button.on[data-s="H"]{background:rgba(34,197,94,.2);color:#5EE08A}.btn.sw-add{background:rgba(34,197,94,.14);color:#86EFAC}.wa-msg{background:#054640;color:#E9EDEF}.sw-av.L{background:rgba(59,130,246,.22);color:#BFD3FF}.sw-av.P{background:rgba(236,72,153,.22);color:#F9A8D4}.sw-tg,.k-sis small.nh{color:#FBBF4D}.sw-tg{background:rgba(245,158,11,.18)}.sw-jk button.on[data-j="L"]{background:rgba(59,130,246,.22);color:#BFD3FF}.sw-jk button.on[data-j="P"]{background:rgba(236,72,153,.22);color:#F9A8D4}}
 </style>
+<style>
+/* ===== Input data siswa (panduan, tempel lengkap, lengkapi cepat) ===== */
+.sx-step{display:flex;gap:12px;padding:14px 0;border-top:1px solid var(--line)}.sx-step:first-of-type{border-top:0}
+.sx-num{width:30px;height:30px;border-radius:50%;background:rgba(100,116,139,.18);color:var(--muted);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0}
+.sx-step.now .sx-num{background:#1e3a8a;color:#fff}.sx-step.lock{opacity:.6}
+.sx-tx{flex:1;min-width:0}.sx-tx b{display:block;font-size:14px;font-weight:800}.sx-tx small{display:block;font-size:12px;color:var(--muted);font-weight:600;line-height:1.45;margin-top:2px}
+.sx-tg{display:inline-block;font-style:normal;font-size:10px;font-weight:800;padding:2px 8px;border-radius:99px;background:rgba(100,116,139,.16);color:var(--muted);margin-left:6px;vertical-align:1px}.sx-tg.r{background:#fee2e2;color:#b91c1c}
+.sx-tip{background:var(--info);color:var(--infoink);border-radius:14px;padding:11px 13px;font-size:12.5px;font-weight:600;line-height:1.45;margin:2px 0 10px}
+.sx-tabs{display:flex;background:rgba(100,116,139,.14);border-radius:12px;padding:3px;margin:10px 0}.sx-tabs button{flex:1;min-height:40px;border:0;background:transparent;border-radius:10px;font-weight:800;font-size:12.5px;color:var(--muted)}.sx-tabs button.on{background:#1e3a8a;color:#fff}
+.sx-cols{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 10px;align-items:center}.sx-cols span{font-size:11.5px;font-weight:800;padding:5px 10px;border-radius:99px;background:var(--info);color:var(--infoink)}.sx-cols i{font-style:normal;color:var(--muted);font-weight:800;font-size:12px}
+.sx-cnt{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;font-weight:800;color:var(--muted);margin:8px 2px 0}.sx-cnt .g{color:#15803d}.sx-cnt .w{color:#b45309}.sx-cnt .e{color:#b91c1c}
+.sx-h{font-size:12px;font-weight:800;color:var(--muted);margin:14px 2px 6px}
+.sx-pr{padding:11px 12px;border-top:1px solid var(--line)}.sx-pr:first-child{border-top:0}.sx-pr.bad{background:rgba(239,68,68,.10)}
+.sx-t{display:flex;align-items:center;gap:8px}.sx-t b{flex:1;min-width:0;font-size:13.5px;font-weight:800;word-break:break-word}.sx-t em{font-style:normal;font-size:11px;font-weight:800;color:#b45309}.sx-t em.g{color:var(--muted)}
+.sx-ic{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;background:#dcfce7;color:#15803d}.sx-ic.w{background:#fef3c7;color:#b45309}.sx-ic.e{background:#ef4444;color:#fff}
+.sx-ed{min-width:56px;height:36px;border-radius:11px;border:1px solid var(--line);background:var(--card);color:var(--infoink);font-weight:800;font-size:12px}.sx-pr.bad .sx-ed{border-color:#ef4444;color:#b91c1c}
+.sx-tags{display:flex;flex-wrap:wrap;gap:4px;margin:7px 0 0 30px}.sx-tags span{font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:99px;background:rgba(100,116,139,.16);color:var(--muted)}.sx-tags .L{background:#dbeafe;color:#1d4ed8}.sx-tags .P{background:#fce7f3;color:#be185d}.sx-tags .x{background:#fef3c7;color:#b45309}
+.sx-msg{margin:7px 0 0 30px;font-size:11.5px;font-weight:700;color:#b91c1c;line-height:1.4}.sx-m{color:var(--muted);font-weight:600}
+.sx-f{display:flex;gap:6px;margin:0 0 10px;overflow-x:auto}.sx-f button{flex:0 0 auto;min-height:38px;padding:0 13px;border:1px solid var(--line);background:var(--card);border-radius:99px;font-size:12px;font-weight:800;color:var(--muted)}.sx-f button.on{background:#1e3a8a;border-color:#1e3a8a;color:#fff}
+.sx-lr{padding:11px 12px;border-top:1px solid var(--line)}.sx-lr:first-child{border-top:0}
+.sx-lt{display:flex;align-items:center;gap:8px}.sx-lt b{flex:1;min-width:0;font-size:13.5px;font-weight:800;word-break:break-word}
+.sx-jk{display:flex;gap:4px}.sx-jk button{min-width:44px;height:40px;border-radius:11px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-weight:800;font-size:13px}
+.sx-jk button.on[data-j="L"]{background:#dbeafe;border-color:#3b82f6;color:#1d4ed8}.sx-jk button.on[data-j="P"]{background:#fce7f3;border-color:#ec4899;color:#be185d}
+.sx-hp{margin:8px 0 0!important}.sx-hp.bad,.kg-in.bad{border-color:#ef4444}
+.sx-hint{font-size:11px;font-weight:700;color:#b91c1c;margin:4px 2px 0;display:none}.sx-hint.on{display:block}
+.sx-save{position:sticky;bottom:78px;padding-top:8px;background:linear-gradient(transparent,var(--bg) 30%)}
+.btn.sx-lk{margin:0 0 10px;background:linear-gradient(135deg,#7c3aed,#5b21b6);box-shadow:0 6px 16px rgba(91,33,182,.28)}
+.sw-tg.ok{background:#dcfce7;color:#15803d}
+.sx-sh{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-end;justify-content:center;z-index:99990}.sx-sh.on{display:flex}
+.sx-sp{width:100%;max-width:440px;max-height:92vh;overflow:auto;background:var(--card);border-radius:24px 24px 0 0;padding:10px 16px calc(16px + env(safe-area-inset-bottom,0px))}
+.sx-grip{width:40px;height:4px;border-radius:99px;background:var(--line);margin:0 auto 12px}
+@media (prefers-color-scheme: dark){.sx-tg.r{background:rgba(239,68,68,.2);color:#FF8F86}.sx-ic{background:rgba(34,197,94,.18);color:#5EE08A}.sx-ic.w{background:rgba(245,158,11,.2);color:#FBBF4D}.sx-tags .x{background:rgba(245,158,11,.2);color:#FBBF4D}.sx-tags .L{background:rgba(59,130,246,.2);color:#93C5FD}.sx-tags .P{background:rgba(236,72,153,.2);color:#F9A8D4}.sw-tg.ok{background:rgba(34,197,94,.18);color:#5EE08A}.sx-msg,.sx-hint{color:#FF8F86}.sx-t em{color:#FBBF4D}.sx-cnt .g{color:#5EE08A}.sx-cnt .w{color:#FBBF4D}.sx-cnt .e{color:#FF8F86}.sx-jk button.on[data-j="L"]{background:rgba(59,130,246,.2);color:#93C5FD}.sx-jk button.on[data-j="P"]{background:rgba(236,72,153,.2);color:#F9A8D4}}
+</style>
 </head>
 <body>
 <div class="ban">
@@ -266,7 +299,18 @@ textarea.kg-in{resize:vertical;min-height:84px}
   <div class="seg" id="seg" role="tablist"><button type="button" id="segJur" class="on">Jurnal</button><button type="button" id="segAbs">Absen Siswa</button><button type="button" id="segSis">Siswa</button></div>
   <div id="paneJur"><div class="sk"></div></div>
   <div id="paneAbs" style="display:none"><div class="sk"></div></div>
-  <div id="paneSis" style="display:none"><div class="sk"></div></div>
+  <div class="sx-sh" id="swSheet"><div class="sx-sp"><div class="sx-grip"></div>
+  <div class="kg-h">Perbaiki baris</div><div class="sd-hint" id="sheSub" style="margin:4px 0 0"></div>
+  <label class="kg-lbl" for="sheN">Nama lengkap</label><input class="kg-in" id="sheN" maxlength="60" autocomplete="off">
+  <span class="kg-lbl">Jenis kelamin</span><div class="sw-jk" id="sheJk"><button type="button" data-j="L">Laki-laki</button><button type="button" data-j="P">Perempuan</button></div>
+  <label class="kg-lbl" for="sheS">NISN (10 angka)</label><input class="kg-in" id="sheS" inputmode="numeric" maxlength="10">
+  <label class="kg-lbl" for="sheO">Nama orang tua / wali</label><input class="kg-in" id="sheO" maxlength="60" autocomplete="off">
+  <label class="kg-lbl" for="sheH">No. HP / WhatsApp orang tua</label><input class="kg-in" id="sheH" inputmode="tel"><div class="sx-hint" id="sheHh">No. HP tidak valid. Contoh: 081234567890</div>
+  <div class="st" id="sheSt"></div>
+  <button type="button" class="btn" id="sheSimpan">Simpan baris</button>
+  <button type="button" class="btn" id="sheBatal" style="background:transparent;color:var(--muted);box-shadow:none;border:1px solid var(--line);margin-top:8px">Batal</button>
+</div></div>
+<div id="paneSis" style="display:none"><div class="sk"></div></div>
 </div>
 
 <nav class="bnav" id="bnav">
@@ -542,7 +586,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
   var ab = null, abKelas = '', abTgl = '', abStat = {}, abBusy = false, abSeq = 0;
   function absMuat(tgl, kelas) {
     if (kelas) abKelas = kelas; if (!abKelas) abKelas = kelasAwal();
-    if (!abKelas) { $('paneAbs').innerHTML = '<div class="empty">Belum ada kelas. Minta kepala sekolah mengatur wali kelas.</div>'; return; }
+    if (!abKelas) { $('paneAbs').innerHTML = '<div class="empty">Belum ada kelas. Minta admin mengatur kelas yang kamu ajar.</div>'; return; }
     var my = ++abSeq; $('paneAbs').innerHTML = '<div class="sk"></div>';
     run('getAbsenKelas', [abKelas, tgl || abTgl || ''], function (r) {
       if (my !== abSeq) return;
@@ -602,10 +646,12 @@ textarea.kg-in{resize:vertical;min-height:84px}
 
   // ================= SISWA =================
   var sw = null, swKelas = '', swBusy = false, swSeq = 0, swMode = 'daftar', swEdit = '', swJk = '', swCari = '', swInfo = '';
+  var swTipe = 'nama', swTeks = { nama: '', lengkap: '' }, swBaru = [], swFilt = 'jk', swPer = {}, swRowIdx = -1, swRowJk = '';
+  var SW_CONTOH = 'Ahmad Fauzi, L, 0123456781, Bapak Saiful, 081234567891\nSiti Aisyah, P, 0123456782, Ibu Nur, 081234567892\nAndi Pratama, L, 0123456783, Bapak Anwar, 081234567893\nFadil Ramadhan, L, , , ';
   function sisMuat(kelas) {
-    if (kelas) { swKelas = kelas; swMode = 'daftar'; swEdit = ''; swCari = ''; }
+    if (kelas) { swKelas = kelas; swMode = 'daftar'; swEdit = ''; swCari = ''; swBaru = []; swPer = {}; swTeks = { nama: '', lengkap: '' }; }
     if (!swKelas) swKelas = kelasAwal();
-    if (!swKelas) { $('paneSis').innerHTML = '<div class="empty">Belum ada kelas. Minta kepala sekolah mengatur wali kelas.</div>'; return; }
+    if (!swKelas) { $('paneSis').innerHTML = '<div class="empty">Belum ada kelas. Minta admin mengatur kelas yang kamu ajar.</div>'; return; }
     var my = ++swSeq; $('paneSis').innerHTML = '<div class="sk"></div>';
     run('getSiswaKelas', [swKelas], function (r) {
       if (my !== swSeq) return;
@@ -613,41 +659,154 @@ textarea.kg-in{resize:vertical;min-height:84px}
       sw = r; sisGambar();
     }, function () { if (my === swSeq) $('paneSis').innerHTML = '<div class="empty">' + GAGAL + '</div>'; });
   }
+  // ---- aturan data (sama dengan server) ----
+  function swHpOk(h) { h = String(h || '').replace(/\D/g, ''); if (h.indexOf('62') === 0) h = '0' + h.substring(2); return !h || (h.charAt(0) === '0' && h.length >= 9 && h.length <= 14); }
+  function swJkNorm(x) { x = String(x || '').trim().toLowerCase(); return (x === 'l' || x === 'laki-laki' || x === 'laki' || x === 'lk') ? 'L' : (x === 'p' || x === 'perempuan' || x === 'pr') ? 'P' : ''; }
+  function swRapi(n) { return String(n || '').replace(/^\s*\d+\s*[\.\)\-]\s*/, '').replace(/\s+/g, ' ').trim().split(' ').map(function (w) { return w ? w.charAt(0).toUpperCase() + w.slice(1) : w; }).join(' ').substring(0, 60); }
+  function swBersih(t) { return String(t || '').replace(/[,;|\t\r\n]+/g, ' ').replace(/\s+/g, ' ').trim(); }
   function swLengkap(s) { return !!(s.nisn && s.jk && s.ortu && s.hp); }
   function swKurang(s) { var a = []; if (!s.nisn) a.push('NISN'); if (!s.jk) a.push('L/P'); if (!s.ortu) a.push('orang tua'); if (!s.hp) a.push('No. HP'); return a; }
+  function swBelumLengkap() { var n = 0; sw.siswa.forEach(function (s) { if (!s.jk || !s.hp) n++; }); return n; }
   function swRing() {
-    var L = 0, P = 0, K = 0; sw.siswa.forEach(function (s) { if (s.jk === 'L') L++; else if (s.jk === 'P') P++; if (swLengkap(s)) K++; });
-    var pc = sw.siswa.length ? Math.round(K * 100 / sw.siswa.length) : 0;
-    return '<div class="k-ring"><div><b>' + sw.siswa.length + '</b><small>Siswa</small></div><div><b style="color:#1d4ed8">' + L + '</b><small>Laki-laki</small></div><div><b style="color:#be185d">' + P + '</b><small>Perempuan</small></div><div><b style="color:#15803d">' + pc + '%</b><small>Data lengkap</small></div></div><div class="pj-bar" style="margin:-2px 2px 12px"><i style="width:' + pc + '%"></i></div>';
+    var n = sw.siswa.length, jk = 0, hp = 0, k = 0; sw.siswa.forEach(function (s) { if (s.jk) jk++; if (s.hp) hp++; if (swLengkap(s)) k++; });
+    var pc = n ? Math.round(k * 100 / n) : 0;
+    return '<div class="k-ring"><div><b>' + n + '</b><small>Siswa</small></div><div><b style="color:#1d4ed8">' + jk + '/' + n + '</b><small>L/P terisi</small></div><div><b style="color:#15803d">' + hp + '/' + n + '</b><small>No. HP terisi</small></div><div><b style="color:#7c3aed">' + k + '/' + n + '</b><small>Lengkap</small></div></div><div class="pj-bar" style="margin:-2px 2px 12px"><i style="width:' + pc + '%"></i></div>';
+  }
+  function swGuide() {
+    return '<div class="kg-card"><div class="kg-h">Mulai isi data siswa kelas ' + esc(swKelas) + '</div><div class="sd-hint" style="margin:4px 0 6px">Cukup 3 langkah. Yang wajib hanya nama, sisanya boleh dilengkapi pelan-pelan.</div>' +
+      '<div class="sx-step now"><span class="sx-num">1</span><div class="sx-tx"><b>Tempel daftar nama <i class="sx-tg r">wajib</i></b><small>Salin dari WhatsApp, Word, atau Excel. Satu nama per baris.</small><button type="button" class="btn" data-a="tempel" data-t="nama">Tempel daftar nama</button></div></div>' +
+      '<div class="sx-step lock"><span class="sx-num">2</span><div class="sx-tx"><b>Tandai laki-laki / perempuan <i class="sx-tg">disarankan</i></b><small>Cukup ketuk L atau P untuk tiap siswa.</small></div></div>' +
+      '<div class="sx-step lock"><span class="sx-num">3</span><div class="sx-tx"><b>Isi No. HP orang tua <i class="sx-tg">boleh nanti</i></b><small>Dipakai untuk kirim kabar absen lewat WhatsApp ke orang tua.</small></div></div></div>' +
+      '<button type="button" class="btn sw-alt" data-a="tempel" data-t="lengkap">Punya data lengkap di Excel? Tempel data lengkap</button>' +
+      '<button type="button" class="btn sw-alt" data-a="baru">Atau tambah satu siswa saja</button>' +
+      '<div class="sx-tip">NISN, nama orang tua, dan data lain <b>tidak harus diisi sekarang</b>. Siswa tetap bisa diabsen.</div>';
   }
   function swList() {
     var q = swCari.toLowerCase(), L = sw.siswa.filter(function (s) { return !q || s.nama.toLowerCase().indexOf(q) >= 0 || String(s.nisn || '').indexOf(q) >= 0; });
-    if (!sw.siswa.length) return '<div class="empty">Belum ada siswa. Ketuk <b>+ Tambah Siswa</b> atau tempel banyak nama sekaligus.</div>';
     if (!L.length) return '<div class="empty">Tidak ada siswa yang cocok.</div>';
     return '<div class="card">' + L.map(function (s, i) {
       var k = swKurang(s), ini = s.nama.split(' ').slice(0, 2).map(function (x) { return x.charAt(0); }).join('').toUpperCase();
-      return '<div class="sw-r"><span class="k-no">' + (i + 1) + '</span><span class="sw-av ' + attr(s.jk || '') + '">' + esc(ini) + '</span><div class="sw-tx"><b>' + esc(s.nama) + '</b><small>' + (s.nisn ? 'NISN ' + esc(s.nisn) : 'NISN belum diisi') + (s.ortu ? ' \u00B7 ' + esc(s.ortu) : '') + '</small>' + (k.length ? '<span class="sw-tg">Belum: ' + k.join(', ') + '</span>' : '') + '</div><button type="button" class="pj-b ub" data-a="ubah" data-i="' + attr(s.id) + '">Ubah</button></div>';
-    }).join('') + '</div><div class="sd-hint">Ketuk <b>Ubah</b> untuk melengkapi data. Siswa yang dihapus tidak ikut absen lagi, riwayat lamanya tetap aman.</div>';
+      return '<div class="sw-r"><span class="k-no">' + (i + 1) + '</span><span class="sw-av ' + attr(s.jk || '') + '">' + esc(ini) + '</span><div class="sw-tx"><b>' + esc(s.nama) + '</b><small>' + (s.nisn ? 'NISN ' + esc(s.nisn) : 'NISN belum diisi') + (s.ortu ? ' \u00B7 ' + esc(s.ortu) : '') + '</small>' + (k.length ? '<span class="sw-tg">Belum: ' + k.join(', ') + '</span>' : '<span class="sw-tg ok">\u2713 Lengkap</span>') + '</div><button type="button" class="pj-b ub" data-a="ubah" data-i="' + attr(s.id) + '">\u270E Edit</button></div>';
+    }).join('') + '</div><div class="sd-hint">Ketuk <b>\u270E Edit</b> untuk memperbaiki data. Siswa yang dihapus tidak ikut absen lagi, riwayat lamanya tetap aman.</div>';
   }
   function swForm() {
     var s = { nama: '', nisn: '', ortu: '', hp: '', jk: '' };
     if (swEdit) sw.siswa.forEach(function (x) { if (x.id === swEdit) s = x; });
     swJk = s.jk || '';
-    return '<div class="kg-card"><div class="kg-h">' + (swEdit ? 'Ubah Data Siswa' : 'Tambah Siswa') + '</div>' +
-      '<label class="kg-lbl kg-lbl2" for="swNama">Nama lengkap *<em id="swCn">0/60</em></label><input class="kg-in" id="swNama" maxlength="60" value="' + attr(s.nama) + '" placeholder="Contoh: Ahmad Fauzi">' +
+    var tambah = !swEdit;
+    var h = '<div class="kg-card"><div class="kg-h">' + (swEdit ? 'Edit Data Siswa' : 'Ketik satu per satu') + '</div>' + (tambah ? '<div class="sd-hint" style="margin:4px 0 0">Isi lengkap, lalu <b>Simpan &amp; tambah berikutnya</b>. Formulir tetap terbuka untuk siswa berikutnya.</div>' : '') +
+      '<label class="kg-lbl kg-lbl2" for="swNama">Nama lengkap *<em id="swCn">0/60</em></label><input class="kg-in" id="swNama" maxlength="60" value="' + attr(s.nama) + '" placeholder="Contoh: Ahmad Fauzi" autocomplete="off">' +
       '<span class="kg-lbl">Jenis kelamin *</span><div class="sw-jk" id="swJk"><button type="button" data-j="L" class="' + (swJk === 'L' ? 'on' : '') + '">Laki-laki</button><button type="button" data-j="P" class="' + (swJk === 'P' ? 'on' : '') + '">Perempuan</button></div>' +
       '<label class="kg-lbl kg-lbl2" for="swNisn">NISN (10 angka)<em id="swCs">0/10</em></label><input class="kg-in" id="swNisn" inputmode="numeric" maxlength="10" value="' + attr(s.nisn) + '" placeholder="0123456789">' +
-      '<label class="kg-lbl" for="swOrtu">Nama orang tua / wali</label><input class="kg-in" id="swOrtu" maxlength="60" value="' + attr(s.ortu) + '" placeholder="Contoh: Bapak Saiful">' +
+      '<label class="kg-lbl" for="swOrtu">Nama orang tua / wali</label><input class="kg-in" id="swOrtu" maxlength="60" value="' + attr(s.ortu) + '" placeholder="Contoh: Bapak Saiful" autocomplete="off">' +
       '<label class="kg-lbl" for="swHp">No. HP / WhatsApp orang tua</label><input class="kg-in" id="swHp" inputmode="tel" value="' + attr(s.hp) + '" placeholder="08xxxxxxxxxx">' +
-      '<div class="st" id="swSt"></div><button type="button" class="btn" data-a="simpan">' + (swEdit ? 'Simpan Perubahan' : 'Simpan Siswa') + '</button>' +
+      '<div class="st" id="swSt"></div><button type="button" class="btn" data-a="simpan">' + (swEdit ? 'Simpan Perubahan' : 'Simpan &amp; tambah berikutnya') + '</button>' +
       (swEdit ? '<button type="button" class="btn" data-a="hapus" style="background:transparent;color:#b91c1c;box-shadow:none;border:1px solid var(--line);margin-top:8px">Hapus dari daftar</button>' : '') +
-      '<button type="button" class="btn" data-a="batal" style="background:transparent;color:var(--muted);box-shadow:none;border:1px solid var(--line);margin-top:8px">Batal</button></div>';
+      '<button type="button" class="btn" data-a="batal" style="background:transparent;color:var(--muted);box-shadow:none;border:1px solid var(--line);margin-top:8px">' + (swEdit ? 'Batal' : 'Selesai, lihat daftar') + '</button></div>';
+    if (tambah && swBaru.length) h += '<div class="sx-h">Baru ditambahkan</div><div class="card">' + swBaru.slice().reverse().map(function (b) { var k = swKurang(b); return '<div class="sw-r"><span class="sx-ic' + (k.length ? ' w' : '') + '">' + (k.length ? '!' : '\u2713') + '</span><div class="sw-tx"><b>' + esc(b.nama) + '</b></div><span class="sw-tg' + (k.length ? '' : ' ok') + '" style="margin:0">' + (k.length ? 'Belum: ' + k.join(', ') : '\u2713 Lengkap') + '</span></div>'; }).join('') + '</div>';
+    return h;
   }
+  // ---- Tempel: nama saja / data lengkap ----
   function swTempel() {
-    return '<div class="kg-card"><div class="kg-h">Tempel daftar nama</div><div class="sd-hint">Satu nama per baris. Boleh tempel dari Word/WhatsApp. Nama yang sudah ada dilewati. NISN dan data lain dilengkapi setelahnya.</div>' +
-      '<textarea class="kg-in" id="swTeks" rows="10" placeholder="Ahmad Fauzi&#10;Siti Aisyah&#10;..."></textarea><div class="kg-tgl" id="swN" style="margin-top:6px">0 nama</div><div class="st" id="swSt"></div>' +
-      '<button type="button" class="btn" data-a="impor">Tambahkan ke Daftar</button><button type="button" class="btn" data-a="batal" style="background:transparent;color:var(--muted);box-shadow:none;border:1px solid var(--line);margin-top:8px">Batal</button></div>';
+    var t = swTipe, area = swTeks[t];
+    var h = '<div class="kg-card"><div class="kg-h">Tempel banyak siswa</div><div class="sx-tabs" id="swTabs"><button type="button" data-t="nama" class="' + (t === 'nama' ? 'on' : '') + '">Nama saja</button><button type="button" data-t="lengkap" class="' + (t === 'lengkap' ? 'on' : '') + '">Data lengkap</button></div>';
+    if (t === 'nama') h += '<div class="sd-hint" style="margin:0 0 8px">Satu nama per baris. Nomor di depan nama dibuang otomatis. Nama yang sudah ada dilewati. Data lain bisa dilengkapi setelahnya.</div><textarea class="kg-in" id="swTeks" rows="9" placeholder="Ahmad Fauzi&#10;Siti Aisyah&#10;..." spellcheck="false">' + esc(area) + '</textarea>';
+    else h += '<div class="sd-hint" style="margin:0 0 8px">Satu siswa satu baris dengan urutan kolom ini. Boleh tempel dari Excel atau diketik dipisah koma.</div><div class="sx-cols"><span>Nama</span><i>\u203A</i><span>L/P</span><i>\u203A</i><span>NISN</span><i>\u203A</i><span>Orang tua</span><i>\u203A</i><span>No. HP</span></div><textarea class="kg-in" id="swTeks" rows="8" spellcheck="false" style="white-space:pre;overflow-x:auto;font-size:12.5px">' + esc(area) + '</textarea><button type="button" class="btn sw-alt" data-a="contoh" style="margin:8px 0 0;min-height:42px">Isi contoh format</button>';
+    return h + '<div class="sx-cnt" id="swCnt"></div><div class="sx-h">Pratinjau, periksa sebelum disimpan</div><div class="card" id="swPv"></div><div class="st" id="swSt"></div><button type="button" class="btn" data-a="impor" id="swImpor">Tambahkan</button><button type="button" class="btn" data-a="batal" style="background:transparent;color:var(--muted);box-shadow:none;border:1px solid var(--line);margin-top:8px">Batal</button></div>';
   }
+  function swParseNama(teks) {
+    var ada = {}, seen = {}, out = []; sw.siswa.forEach(function (s) { ada[s.nama.toLowerCase()] = 1; });
+    String(teks).split(/\r?\n/).forEach(function (l, i) {
+      if (!l.trim()) return;
+      var n = swRapi(l), k = n.toLowerCase();
+      out.push({ i: i, n: n, dup: !!(n && (ada[k] || seen[k])), fix: n !== l.trim() }); if (n) seen[k] = 1;
+    });
+    return out;
+  }
+  function swParseLengkap(teks) {
+    var ada = {}, seen = {}, out = []; sw.siswa.forEach(function (s) { ada[s.nama.toLowerCase()] = 1; });
+    String(teks).split(/\r?\n/).forEach(function (l, i) {
+      if (!l.trim()) return;
+      var c = l.indexOf('\t') >= 0 ? l.split('\t') : l.split(/[;,|]/);
+      var r = { i: i, n: swRapi(c[0]), jkRaw: (c[1] || '').trim(), nisn: (c[2] || '').replace(/\D/g, ''), nisnRaw: (c[2] || '').trim(), ortu: swBersih(c[3]), hp: (c[4] || '').trim(), e: [], w: [] };
+      r.jk = swJkNorm(r.jkRaw);
+      if (!r.n) r.e.push('Nama kosong.');
+      if (r.jkRaw && !r.jk) r.e.push('L/P harus L atau P.');
+      if (r.nisn && r.nisn.length !== 10) r.e.push('NISN harus 10 angka (sekarang ' + r.nisn.length + ').');
+      if (r.hp && !swHpOk(r.hp)) r.e.push('No. HP tidak valid. Contoh: 081234567890');
+      var k = r.n.toLowerCase(); if (r.n && (ada[k] || seen[k])) { r.e.push('Sudah ada di daftar, dilewati.'); r.dup = true; } if (r.n) seen[k] = 1;
+      if (!r.jkRaw) r.w.push('L/P'); if (!r.nisn) r.w.push('NISN'); if (!r.ortu) r.w.push('orang tua'); if (!r.hp) r.w.push('No. HP');
+      out.push(r);
+    });
+    return out;
+  }
+  function swPv() {
+    if (!$('swPv')) return;
+    var area = $('swTeks').value, btn = $('swImpor'), cnt = $('swCnt');
+    if (swTipe === 'nama') {
+      var L = swParseNama(area), baru = L.filter(function (x) { return !x.dup && x.n; }).length, lewat = L.length - baru;
+      cnt.innerHTML = L.length + ' baris dibaca';
+      $('swPv').innerHTML = L.map(function (x) { return '<div class="sx-pr' + (x.dup ? ' warn' : '') + '"><div class="sx-t"><span class="sx-ic' + (x.dup ? ' w' : '') + '">' + (x.dup ? '!' : '\u2713') + '</span><b>' + esc(x.n) + '</b>' + (x.dup ? '<em>sudah ada, dilewati</em>' : (x.fix ? '<em class="g">dirapikan</em>' : '')) + '</div></div>'; }).join('') || '<div class="sx-pr"><small class="sx-m">Tempel daftar nama di atas, pratinjau muncul di sini.</small></div>';
+      btn.textContent = baru ? 'Tambahkan ' + baru + ' siswa' + (lewat ? ' (' + lewat + ' dilewati)' : '') : 'Belum ada nama baru'; btn.disabled = !baru;
+    } else {
+      var P = swParseLengkap(area), ok = 0, wr = 0, er = 0;
+      P.forEach(function (r) { if (r.e.length) er++; else { ok++; if (r.w.length) wr++; } });
+      cnt.innerHTML = P.length ? '<span class="g">\u2713 ' + (ok - wr) + ' lengkap</span><span class="w">\u26A0 ' + wr + ' belum lengkap</span><span class="e">\u2717 ' + er + ' perlu diperbaiki</span>' : 'Belum ada baris.';
+      $('swPv').innerHTML = P.map(function (r) {
+        var cls = r.e.length ? 'bad' : r.w.length ? 'warn' : '';
+        return '<div class="sx-pr ' + cls + '"><div class="sx-t"><span class="sx-ic' + (r.e.length ? ' e' : r.w.length ? ' w' : '') + '">' + (r.e.length ? '!' : r.w.length ? '\u26A0' : '\u2713') + '</span><b>' + esc(r.n || '(tanpa nama)') + '</b><button type="button" class="sx-ed" data-a="erow" data-i="' + r.i + '">\u270E Edit</button></div>' +
+          (r.e.length ? '<div class="sx-msg">' + esc(r.e.join(' ')) + '</div>' : '<div class="sx-tags">' + (r.jk ? '<span class="' + r.jk + '">' + (r.jk === 'L' ? 'Laki-laki' : 'Perempuan') + '</span>' : '') + (r.nisn ? '<span>NISN ' + esc(r.nisn) + '</span>' : '') + (r.ortu ? '<span>' + esc(r.ortu) + '</span>' : '') + (r.hp ? '<span>' + esc(r.hp) + '</span>' : '') + (r.w.length ? '<span class="x">Belum: ' + r.w.join(', ') + '</span>' : '') + '</div>') + '</div>';
+      }).join('') || '<div class="sx-pr"><small class="sx-m">Tempel data di atas, pratinjau muncul di sini.</small></div>';
+      btn.textContent = ok ? 'Tambahkan ' + ok + ' siswa' + (er ? ' (' + er + ' diperbaiki dulu)' : '') : 'Belum ada baris yang benar'; btn.disabled = !ok;
+    }
+  }
+  // ---- Lengkapi cepat ----
+  function swRowLk(s) {
+    var p = swPer[s.id] || {}, jk = p.jk || s.jk, hp = p.hp != null ? p.hp : (s.hp || ''), bad = hp && !swHpOk(hp);
+    return '<div class="sx-lr" data-id="' + attr(s.id) + '"><div class="sx-lt"><b>' + esc(s.nama) + '</b><div class="sx-jk"><button type="button" data-j="L" class="' + (jk === 'L' ? 'on' : '') + '">L</button><button type="button" data-j="P" class="' + (jk === 'P' ? 'on' : '') + '">P</button></div></div>' +
+      '<input class="kg-in sx-hp' + (bad ? ' bad' : '') + '" inputmode="tel" placeholder="No. HP / WA orang tua (boleh nanti)" value="' + attr(hp) + '"><div class="sx-hint' + (bad ? ' on' : '') + '">Contoh: 081234567890</div></div>';
+  }
+  function swJmlUbah() { var n = 0; for (var id in swPer) { var p = swPer[id]; if (p.jk || (p.hp && String(p.hp).trim())) n++; } return n; }
+  function swLengkapi() {
+    var nJk = 0, nHp = 0; sw.siswa.forEach(function (s) { if (!s.jk) nJk++; if (!s.hp) nHp++; });
+    var L = sw.siswa.filter(function (s) { return swFilt === 'all' || (swFilt === 'jk' ? !s.jk : !s.hp) || swPer[s.id]; });
+    var n = swJmlUbah();
+    return '<div class="kg-card" style="padding:12px"><div class="kg-h">Lengkapi data cepat</div><div class="sd-hint" style="margin:2px 0 0">Ketuk <b>L</b> atau <b>P</b>, isi No. HP langsung di baris. No. HP dipakai untuk kirim kabar absen lewat WhatsApp ke orang tua. Boleh dikosongkan dulu.</div></div>' +
+      '<div class="sx-f" id="swF"><button type="button" data-f="jk" class="' + (swFilt === 'jk' ? 'on' : '') + '">Belum L/P (' + nJk + ')</button><button type="button" data-f="hp" class="' + (swFilt === 'hp' ? 'on' : '') + '">Belum No. HP (' + nHp + ')</button><button type="button" data-f="all" class="' + (swFilt === 'all' ? 'on' : '') + '">Semua (' + sw.siswa.length + ')</button></div>' +
+      (L.length ? '<div class="card" id="swLk">' + L.map(swRowLk).join('') + '</div>' : '<div class="empty">\u2713 Semua sudah terisi untuk pilihan ini.</div>') +
+      '<div class="st" id="swSt"></div><div class="sx-save"><button type="button" class="btn" data-a="simpanLk" id="swSimpanLk"' + (n ? '' : ' disabled') + '>' + (n ? 'Simpan ' + n + ' perubahan' : 'Simpan perubahan') + '</button><button type="button" class="btn sw-alt" data-a="batal" style="margin:8px 0 0">Selesai, lihat daftar</button></div>';
+  }
+  function swUpdTombolLk() { var b = $('swSimpanLk'); if (!b) return; var n = swJmlUbah(); b.disabled = !n; b.textContent = n ? 'Simpan ' + n + ' perubahan' : 'Simpan perubahan'; }
+  // ---- Lembar edit baris (pratinjau data lengkap) ----
+  function swBukaRow(idx) {
+    var r = swParseLengkap(swTeks.lengkap).filter(function (x) { return x.i === idx; })[0]; if (!r) return;
+    swRowIdx = idx; swRowJk = r.jk;
+    $('sheN').value = r.n; $('sheS').value = r.nisn; $('sheO').value = r.ortu; $('sheH').value = r.hp;
+    var bs = $('sheJk').children; for (var i = 0; i < bs.length; i++) bs[i].className = bs[i].getAttribute('data-j') === swRowJk ? 'on' : '';
+    $('sheSub').textContent = r.e.length ? r.e.join(' ') : 'Perbaiki baris ini. Perubahan langsung masuk ke pratinjau.';
+    setSt($('sheSt'), 'err', ''); $('sheHh').className = 'sx-hint'; $('sheH').className = 'kg-in';
+    $('swSheet').className = 'sx-sh on';
+  }
+  function swTutupRow() { $('swSheet').className = 'sx-sh'; swRowIdx = -1; }
+  $('swSheet').addEventListener('click', function (e) {
+    if (e.target === $('swSheet')) return swTutupRow();
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.parentNode.id === 'sheJk') { var j = b.getAttribute('data-j'); swRowJk = swRowJk === j ? '' : j; var bs = b.parentNode.children; for (var i = 0; i < bs.length; i++) bs[i].className = bs[i].getAttribute('data-j') === swRowJk ? 'on' : ''; return; }
+    if (b.id === 'sheBatal') return swTutupRow();
+    if (b.id === 'sheSimpan') {
+      var n = swRapi($('sheN').value), nisn = $('sheS').value.replace(/\D/g, ''), hp = $('sheH').value.trim();
+      if (!n) return setSt($('sheSt'), 'err', 'Nama wajib diisi.');
+      if (nisn && nisn.length !== 10) return setSt($('sheSt'), 'err', 'NISN harus 10 angka.');
+      if (hp && !swHpOk(hp)) { $('sheH').className = 'kg-in bad'; $('sheHh').className = 'sx-hint on'; $('sheH').focus(); return; }
+      var lines = swTeks.lengkap.split(/\r?\n/); lines[swRowIdx] = [n, swRowJk, nisn, swBersih($('sheO').value), hp].join(', ');
+      swTeks.lengkap = lines.join('\n'); if ($('swTeks')) $('swTeks').value = swTeks.lengkap;
+      swTutupRow(); swPv();
+    }
+  });
+  $('swSheet').addEventListener('input', function (e) {
+    if (e.target.id === 'sheS') e.target.value = e.target.value.replace(/\D/g, '');
+    if (e.target.id === 'sheH') { var ok = swHpOk(e.target.value); e.target.className = 'kg-in' + (ok ? '' : ' bad'); $('sheHh').className = 'sx-hint' + (ok ? '' : ' on'); }
+  });
   function sisGambar() {
     var h = chipKelas(swKelas, 'swKelas') + '<div class="k-sub">Wali kelas: ' + esc(sw.waliNama || 'belum diatur') + ' \u00B7 ' + sw.siswa.length + ' siswa</div>';
     if (!sw.bolehUbah) {
@@ -657,9 +816,16 @@ textarea.kg-in{resize:vertical;min-height:84px}
     if (swInfo) { h += '<div class="st ok">' + esc(swInfo) + '</div>'; swInfo = ''; }
     if (swMode === 'form') h += swForm();
     else if (swMode === 'tempel') h += swTempel();
-    else h += swRing() + '<button type="button" class="btn sw-add" data-a="baru">+ Tambah Siswa</button><button type="button" class="btn sw-alt" data-a="tempel">Tempel banyak nama sekaligus</button><input class="kg-in" id="swCari" placeholder="Cari nama atau NISN..." value="' + attr(swCari) + '" style="margin-bottom:10px"><div id="swList">' + swList() + '</div>';
+    else if (swMode === 'lengkapi') h += swLengkapi();
+    else if (!sw.siswa.length) h += swGuide();
+    else {
+      var m = swBelumLengkap();
+      h += swRing() + (m ? '<button type="button" class="btn sx-lk" data-a="lengkapi">Lengkapi data cepat (' + m + ' siswa belum lengkap)</button>' : '') +
+        '<button type="button" class="btn sw-add" data-a="baru">+ Tambah Siswa</button><button type="button" class="btn sw-alt" data-a="tempel" data-t="nama">Tempel banyak siswa sekaligus</button><input class="kg-in" id="swCari" placeholder="Cari nama atau NISN..." value="' + attr(swCari) + '" style="margin-bottom:10px"><div id="swList">' + swList() + '</div>';
+    }
     $('paneSis').innerHTML = h;
     if (swMode === 'form') swHitung();
+    if (swMode === 'tempel') swPv();
   }
   function swHitung() { if ($('swCn')) { $('swCn').textContent = $('swNama').value.length + '/60'; $('swCs').textContent = $('swNisn').value.length + '/10'; } }
   $('paneSis').addEventListener('input', function (e) {
@@ -667,39 +833,94 @@ textarea.kg-in{resize:vertical;min-height:84px}
     if (id === 'swCari') { swCari = e.target.value; $('swList').innerHTML = swList(); }
     else if (id === 'swNisn') { e.target.value = e.target.value.replace(/\D/g, ''); swHitung(); }
     else if (id === 'swNama') swHitung();
-    else if (id === 'swTeks') $('swN').textContent = e.target.value.split(/\r?\n/).filter(function (x) { return x.trim(); }).length + ' nama';
+    else if (id === 'swTeks') { swTeks[swTipe] = e.target.value; swPv(); }
+    else if (e.target.classList.contains('sx-hp')) {
+      var row = e.target.closest('.sx-lr'), sid = row.getAttribute('data-id'), ok = swHpOk(e.target.value);
+      (swPer[sid] = swPer[sid] || {}).hp = e.target.value; e.target.className = 'kg-in sx-hp' + (ok ? '' : ' bad'); row.querySelector('.sx-hint').className = 'sx-hint' + (ok ? '' : ' on'); swUpdTombolLk();
+    }
   });
   function swSelesai(r, pesanDef) {
     swBusy = false;
     if (!r || !r.ok) return setSt($('swSt'), 'err', (r && r.message) || pesanDef);
     swInfo = r.message; swMode = 'daftar'; swEdit = ''; ab = null; sisMuat();
   }
+  function swLagi(r) {
+    swBusy = false;
+    if (!r || !r.ok) return setSt($('swSt'), 'err', (r && r.message) || 'Gagal menyimpan.');
+    ab = null; if (r.siswa) { sw.siswa.push(r.siswa); swBaru.push(r.siswa); }
+    swInfo = r.message; swMode = 'form'; swEdit = ''; sisGambar(); var f = $('swNama'); if (f) f.focus();
+  }
   function swGagal(e2) { swBusy = false; setSt($('swSt'), 'err', pesanGagal(e2, GAGAL)); }
   $('paneSis').addEventListener('click', function (e) {
     var b = e.target.closest('button'); if (!b) return;
     if (b.parentNode.id === 'swKelas') return sisMuat(b.getAttribute('data-k'));
     if (b.parentNode.id === 'swJk') { swJk = b.getAttribute('data-j'); var bs = b.parentNode.children; for (var i = 0; i < bs.length; i++) bs[i].className = bs[i].getAttribute('data-j') === swJk ? 'on' : ''; return; }
+    if (b.parentNode.id === 'swTabs') { swTeks[swTipe] = $('swTeks').value; swTipe = b.getAttribute('data-t'); return sisGambar(); }
+    if (b.parentNode.id === 'swF') { swFilt = b.getAttribute('data-f'); return sisGambar(); }
+    if (b.parentNode.classList.contains('sx-jk')) {
+      var sid = b.closest('.sx-lr').getAttribute('data-id'), j = b.getAttribute('data-j'), p = (swPer[sid] = swPer[sid] || {});
+      p.jk = p.jk === j ? '' : j; var asli = ''; sw.siswa.forEach(function (s) { if (s.id === sid) asli = s.jk; });
+      if (!p.jk && asli) p.jk = ''; var shown = p.jk || asli, bs2 = b.parentNode.children;
+      for (var k = 0; k < bs2.length; k++) bs2[k].className = bs2[k].getAttribute('data-j') === shown ? 'on' : '';
+      swUpdTombolLk(); return;
+    }
     var a = b.getAttribute('data-a'); if (!a || swBusy) return;
     if (a === 'baru') { swEdit = ''; swMode = 'form'; sisGambar(); }
     else if (a === 'ubah') { swEdit = b.getAttribute('data-i'); swMode = 'form'; sisGambar(); }
-    else if (a === 'tempel') { swMode = 'tempel'; sisGambar(); }
-    else if (a === 'batal') { swMode = 'daftar'; swEdit = ''; sisGambar(); }
+    else if (a === 'tempel') { swTipe = b.getAttribute('data-t') || swTipe; swMode = 'tempel'; sisGambar(); }
+    else if (a === 'lengkapi') { swMode = 'lengkapi'; swFilt = 'jk'; swPer = {}; var nj = 0; sw.siswa.forEach(function (s) { if (!s.jk) nj++; }); if (!nj) swFilt = 'hp'; sisGambar(); }
+    else if (a === 'batal') { swMode = 'daftar'; swEdit = ''; swBaru = []; swPer = {}; sisGambar(); }
+    else if (a === 'contoh') { swTeks.lengkap = SW_CONTOH; $('swTeks').value = SW_CONTOH; swPv(); }
+    else if (a === 'erow') swBukaRow(+b.getAttribute('data-i'));
     else if (a === 'simpan') {
-      var nama = $('swNama').value.trim(), nisn = $('swNisn').value, hp = $('swHp').value.trim();
+      var nama = swRapi($('swNama').value), nisn = $('swNisn').value, hp = $('swHp').value.trim();
       if (!nama) return setSt($('swSt'), 'err', 'Nama lengkap wajib diisi.');
       if (!swJk) return setSt($('swSt'), 'err', 'Pilih jenis kelamin.');
       if (nisn && nisn.length !== 10) return setSt($('swSt'), 'err', 'NISN harus 10 angka.');
-      if (hp && !/^(\+?62|0)\d{8,13}$/.test(hp.replace(/[\s-]/g, ''))) return setSt($('swSt'), 'err', 'No. HP tidak valid. Contoh: 081234567890');
+      if (hp && !swHpOk(hp)) return setSt($('swSt'), 'err', 'No. HP tidak valid. Contoh: 081234567890');
       swBusy = true; setSt($('swSt'), 'ok', 'Menyimpan...');
-      run('simpanSatuSiswa', [swKelas, swEdit, { nama: nama, jk: swJk, nisn: nisn, ortu: $('swOrtu').value.trim(), hp: hp }], function (r) { swSelesai(r, 'Gagal menyimpan.'); }, swGagal);
+      var tambah = !swEdit;
+      run('simpanSatuSiswa', [swKelas, swEdit, { nama: nama, jk: swJk, nisn: nisn, ortu: $('swOrtu').value.trim(), hp: hp }], function (r) { if (tambah) swLagi(r); else swSelesai(r, 'Gagal menyimpan.'); }, swGagal);
     } else if (a === 'hapus') {
       if (!confirm('Hapus siswa ini dari daftar? Riwayat absen lamanya tetap aman.')) return;
       swBusy = true; setSt($('swSt'), 'ok', 'Menghapus...');
       run('hapusSiswa', [swKelas, swEdit], function (r) { swSelesai(r, 'Gagal menghapus.'); }, swGagal);
     } else if (a === 'impor') {
-      if (!$('swTeks').value.trim()) return setSt($('swSt'), 'err', 'Tempel nama siswa dulu.');
-      swBusy = true; setSt($('swSt'), 'ok', 'Menambahkan...');
-      run('tambahSiswaMassal', [swKelas, $('swTeks').value], function (r) { swSelesai(r, 'Gagal menambahkan.'); }, swGagal);
+      swTeks[swTipe] = $('swTeks').value;
+      if (swTipe === 'nama') {
+        var nm = swParseNama(swTeks.nama).filter(function (x) { return !x.dup && x.n; }).map(function (x) { return x.n; });
+        if (!nm.length) return setSt($('swSt'), 'err', 'Tempel nama siswa dulu.');
+        swBusy = true; setSt($('swSt'), 'ok', 'Menambahkan...');
+        run('tambahSiswaMassal', [swKelas, nm.join('\n')], function (r) {
+          swBusy = false; if (!r || !r.ok) return setSt($('swSt'), 'err', (r && r.message) || 'Gagal menambahkan.');
+          ab = null; swTeks.nama = ''; swInfo = r.message + ' Lanjut lengkapi L/P dan No. HP.'; swMode = 'lengkapi'; swFilt = 'jk'; swPer = {}; sisMuat();
+        }, swGagal);
+      } else {
+        var P = swParseLengkap(swTeks.lengkap), kirim = [], peta = [];
+        P.forEach(function (r) { if (!r.e.length) { kirim.push({ nama: r.n, jk: r.jk, nisn: r.nisn, ortu: r.ortu, hp: r.hp }); peta.push(r.i); } });
+        if (!kirim.length) return setSt($('swSt'), 'err', 'Belum ada baris yang benar.');
+        swBusy = true; setSt($('swSt'), 'ok', 'Menambahkan...');
+        run('tambahSiswaLengkap', [swKelas, kirim], function (r) {
+          swBusy = false; if (!r || !r.ok) return setSt($('swSt'), 'err', (r && r.message) || 'Gagal menambahkan.');
+          ab = null;
+          var simpanLagi = {}; (r.ditolak || []).forEach(function (d) { if (peta[d.i] != null) simpanLagi[peta[d.i]] = 1; });
+          var lines = swTeks.lengkap.split(/\r?\n/), sisa = [];
+          P.forEach(function (x) { if ((x.e.length && !x.dup) || simpanLagi[x.i]) sisa.push(lines[x.i]); });
+          swTeks.lengkap = sisa.join('\n');
+          swInfo = r.message + (sisa.length ? ' ' + sisa.length + ' baris yang salah masih di kotak, perbaiki lalu tambahkan lagi.' : '');
+          swMode = sisa.length ? 'tempel' : 'daftar'; sisMuat();
+        }, swGagal);
+      }
+    } else if (a === 'simpanLk') {
+      var daftar = [], salah = false;
+      for (var id in swPer) { var q = swPer[id], h2 = String(q.hp || '').trim(); if (h2 && !swHpOk(h2)) salah = true; if (q.jk || h2) daftar.push({ id: id, jk: q.jk || '', hp: h2 }); }
+      if (salah) return setSt($('swSt'), 'err', 'Perbaiki No. HP yang bertanda merah dulu.');
+      if (!daftar.length) return setSt($('swSt'), 'err', 'Belum ada yang diisi.');
+      swBusy = true; setSt($('swSt'), 'ok', 'Menyimpan...');
+      run('ubahBanyakSiswa', [swKelas, daftar], function (r) {
+        swBusy = false; if (!r || !r.ok) return setSt($('swSt'), 'err', (r && r.message) || 'Gagal menyimpan.');
+        ab = null; swPer = {}; swInfo = r.message; sisMuat();
+      }, swGagal);
     }
   });
 
@@ -710,7 +931,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
       if (!r || !r.ok) { $('paneJur').innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; return; }
       info = r; try { $('guruPill').textContent = String(r.nama || '').split(',')[0]; $('guruKelas').textContent = r.jabatan || ''; } catch (e) { }
       var sy = kelasSaya(); $('sub').textContent = sy.length ? 'Wali kelas: ' + sy.join(', ') : 'Jurnal mengajar & lihat daftar siswa';
-      if (!info.kelas.length) { $('paneJur').innerHTML = '<div class="empty">Belum ada kelas yang diatur.</div>'; return; }
+      if (!info.kelas.length) { $('paneJur').innerHTML = '<div class="empty">Belum ada kelas yang diatur.' + (info.alasan ? '<br><br><span style="font-weight:600">' + esc(info.alasan) + '</span>' : '') + '</div>'; return; }
       var t = (location.hash || '').replace('#', ''); pilihTab(t === 'abs' || t === 'sis' ? t : 'jur');
     }, function (e) { $('paneJur').innerHTML = '<div class="empty">' + esc(pesanGagal(e, GAGAL)) + '</div>'; });
   }
