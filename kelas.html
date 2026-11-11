@@ -221,6 +221,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
 .k-sb button.on[data-s="S"]{background:#fef3c7;border-color:#f59e0b;color:#b45309}.k-sb button.on[data-s="I"]{background:#dbeafe;border-color:#3b82f6;color:#1d4ed8}
 .k-sb button.on[data-s="A"]{background:#fee2e2;border-color:#ef4444;color:#b91c1c}.k-sb button.on[data-s="T"]{background:#ede9fe;border-color:#8b5cf6;color:#6d28d9}
 .k-st{font-size:11px;font-weight:800;padding:3px 10px;border-radius:99px}.k-st.S{background:#fef3c7;color:#b45309}.k-st.I{background:#dbeafe;color:#1d4ed8}.k-st.A{background:#fee2e2;color:#b91c1c}.k-st.T{background:#ede9fe;color:#6d28d9}.k-st.H{background:#dcfce7;color:#15803d}
+.k-stick{position:sticky;top:calc(var(--banh,0px) + var(--segh,56px) + 8px);z-index:25;background:var(--bg);padding:6px 0 2px;margin:0 0 6px;box-shadow:0 -6px 0 0 var(--bg)}.k-stick .k-ring{margin:0 0 8px}
 .k-ring{display:flex;gap:6px;margin:0 0 10px}.k-ring div{flex:1;background:var(--card);border-radius:14px;padding:8px 2px;text-align:center;box-shadow:0 4px 12px rgba(30,58,138,.08)}.k-ring b{display:block;font-size:18px;font-weight:800}.k-ring small{font-size:10.5px;font-weight:700;color:var(--muted)}
 .k-jam{display:flex;flex-wrap:wrap;gap:6px}.k-jam button{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-weight:800;font-family:inherit}.k-jam button.on{background:#1e3a8a;color:#fff;border-color:#1e3a8a}
 .k-info{background:var(--info);color:var(--infoink);border-radius:14px;padding:11px 13px;font-size:12.5px;font-weight:600;line-height:1.45;margin-bottom:10px}
@@ -343,6 +344,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
   $('navLaporanLink').href = 'laporan.html?kode=' + enc;
   $('navKelasLink').addEventListener('click', function (e) { e.preventDefault(); });
   (function () { var nav = $('bnav'); function pad() { document.body.style.paddingBottom = (nav.offsetHeight + 36) + 'px'; } pad(); window.addEventListener('resize', pad); if (window.ResizeObserver) new ResizeObserver(pad).observe(nav); })();
+  (function () { var sg = document.getElementById('seg'); function hs() { if (sg) document.documentElement.style.setProperty('--segh', sg.offsetHeight + 'px'); } hs(); window.addEventListener('resize', hs); if (sg && window.ResizeObserver) new ResizeObserver(hs).observe(sg); })();
   (function () { var b = document.querySelector('.ban'); function h() { document.documentElement.style.setProperty('--banh', b.offsetHeight + 'px'); } h(); window.addEventListener('resize', h); if (window.ResizeObserver) new ResizeObserver(h).observe(b); })();
 
   var FOTO_MAKS_AWAL = 25 * 1024 * 1024, SISI_MAKS = 1600, KUALITAS = 0.72;
@@ -675,7 +677,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
   function swRing() {
     var n = sw.siswa.length, jk = 0, hp = 0, k = 0; sw.siswa.forEach(function (s) { if (s.jk) jk++; if (s.hp) hp++; if (swLengkap(s)) k++; });
     var pc = n ? Math.round(k * 100 / n) : 0;
-    return '<div class="k-ring"><div><b>' + n + '</b><small>Siswa</small></div><div><b style="color:#1d4ed8">' + jk + '/' + n + '</b><small>L/P terisi</small></div><div><b style="color:#15803d">' + hp + '/' + n + '</b><small>No. HP terisi</small></div><div><b style="color:#7c3aed">' + k + '/' + n + '</b><small>Lengkap</small></div></div><div class="pj-bar" style="margin:-2px 2px 12px"><i style="width:' + pc + '%"></i></div>';
+    return '<div class="k-stick"><div class="k-ring"><div><b>' + n + '</b><small>Siswa</small></div><div><b style="color:#1d4ed8">' + jk + '/' + n + '</b><small>L/P terisi</small></div><div><b style="color:#15803d">' + hp + '/' + n + '</b><small>No. HP terisi</small></div><div><b style="color:#7c3aed">' + k + '/' + n + '</b><small>Lengkap</small></div></div><div class="pj-bar" style="margin:-2px 2px 8px"><i style="width:' + pc + '%"></i></div></div>';
   }
   function swGuide() {
     return '<div class="kg-card"><div class="kg-h">Mulai isi data siswa kelas ' + esc(swKelas) + '</div><div class="sd-hint" style="margin:4px 0 6px">Cukup 3 langkah. Yang wajib hanya nama, sisanya boleh dilengkapi pelan-pelan.</div>' +
