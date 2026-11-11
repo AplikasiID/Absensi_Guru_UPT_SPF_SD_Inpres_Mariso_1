@@ -218,7 +218,26 @@
   window.Foto = { strip: strip, buka: buka, aman: aman };
 })();
 
-/* Menu "Kelas" di bilah bawah (disisipkan otomatis di semua halaman yang punya menu bawah). */
+/* Menu "Kelas" di bilah bawah (disisipkan otomatis di semua halaman yang punya menu bawah).
+ * Hanya tampil untuk guru: tenaga kependidikan disembunyikan (server yang menentukan; hasilnya disimpan 6 jam di HP). */
+window.KelasAkses = {
+  cek: function (kode, dev, cb) {
+    var kunci = 'absensi_kelas_tampil_' + kode, lama = null;
+    try { lama = JSON.parse(localStorage.getItem(kunci) || 'null'); } catch (e) { }
+    if (lama && typeof lama.v === 'boolean') cb(lama.v);
+    if (lama && Date.now() - lama.t < 6 * 3600 * 1000) return;
+    if (!window.google || !google.script || !google.script.run) { if (!lama) cb(true); return; }
+    google.script.run
+      .withSuccessHandler(function (r) {
+        var v = !(r && r.ok && r.tampil === false);
+        if (!r || !r.ok) { if (!lama) cb(true); return; }
+        try { localStorage.setItem(kunci, JSON.stringify({ v: v, t: Date.now() })); } catch (e) { }
+        if (!lama || lama.v !== v) cb(v);
+      })
+      .withFailureHandler(function () { if (!lama) cb(true); })
+      .getKelasGuru(kode, dev);
+  }
+};
 (function () {
   function pasang() {
     var row = document.querySelector('.bnav .bn-row');
@@ -231,12 +250,13 @@
     el.id = 'navKelas';
     el.innerHTML = '<span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20h18"/><path d="M5 20V9l7-5 7 5v11"/><path d="M10 20v-5h4v5"/></svg></span>Kelas';
     row.insertBefore(el, adm);
+    var k = '', d = '';
+    try { var qs = new URLSearchParams(location.search); k = qs.get('kode') || localStorage.getItem('absensi_guru_terakhir') || ''; d = qs.get('dev') || localStorage.getItem('absensi_device_id') || ''; } catch (x) { }
     el.addEventListener('click', function (e) {
       e.preventDefault();
-      var k = '', d = '';
-      try { var qs = new URLSearchParams(location.search); k = qs.get('kode') || localStorage.getItem('absensi_guru_terakhir') || ''; d = qs.get('dev') || localStorage.getItem('absensi_device_id') || ''; } catch (x) { }
       location.href = 'kelas.html?kode=' + encodeURIComponent(k) + '&dev=' + encodeURIComponent(d);
     });
+    if (k) window.KelasAkses.cek(k, d, function (ok) { el.style.display = ok ? '' : 'none'; });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', pasang); else pasang();
 })();
