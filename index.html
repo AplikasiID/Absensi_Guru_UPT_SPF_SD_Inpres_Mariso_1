@@ -3111,6 +3111,16 @@ body.adm-terbatas [data-terbatas]{display:none!important}
   };
 
   $('navLaporan').onclick = function () { $('lapCta').onclick(); };
+  // Tab Kelas hanya untuk guru (tenaga kependidikan disembunyikan, kecuali admin yang dikecualikan di server).
+  (function () {
+    var terakhir = '';
+    function terapkan() {
+      var k = $('guruSelect').value; if (!k || k === terakhir || !window.KelasAkses) return; terakhir = k;
+      window.KelasAkses.cek(k, getDeviceId() || '', function (ok) { if ($('guruSelect').value === k) $('navKelas').style.display = ok ? '' : 'none'; });
+    }
+    $('guruSelect').addEventListener('change', terapkan);
+    setInterval(terapkan, 1200);
+  })();
   $('navKelas').onclick = function () {
     var kode = $('guruSelect').value;
     if (!kode) { showModal('err', 'Pilih Nama Dulu', 'Pilih namamu di bagian atas, lalu buka Kelas.'); return; }
