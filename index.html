@@ -1275,6 +1275,8 @@ body.adm-terbatas [data-terbatas]{display:none!important}
 #viewAdmin .hub-seg,#viewAdmin .kl-seg{position:sticky;top:calc(var(--ban-h,0px) + 8px);z-index:20}
 #viewAdmin .hub-seg{background:#f1f5f9;box-shadow:0 -8px 0 4px var(--rw-bg,#f3f6fb)}
 #viewAdmin .kl-seg{box-shadow:0 -8px 0 4px var(--rw-card,#fff)}
+/* Kartu admin sebelumnya overflow:hidden, sehingga "sticky" menempel ke kartu (bukan ke layar) dan baris tab terdorong ~200px ke bawah. */
+#viewAdmin .card2{overflow:visible}
 @media (prefers-color-scheme: dark){
 #viewAdmin .hub-seg{background:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08)),#0b0b0f}
 #viewAdmin .kl-seg{background:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08)),#1c1c24}
