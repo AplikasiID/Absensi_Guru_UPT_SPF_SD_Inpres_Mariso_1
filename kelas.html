@@ -256,6 +256,29 @@ textarea.kg-in{resize:vertical;min-height:84px}
 @media (prefers-color-scheme: dark){.k-sb button.on[data-s="H"]{background:rgba(34,197,94,.2);color:#5EE08A}.btn.sw-add{background:rgba(34,197,94,.14);color:#86EFAC}.wa-msg{background:#054640;color:#E9EDEF}.sw-av.L{background:rgba(59,130,246,.22);color:#BFD3FF}.sw-av.P{background:rgba(236,72,153,.22);color:#F9A8D4}.sw-tg,.k-sis small.nh{color:#FBBF4D}.sw-tg{background:rgba(245,158,11,.18)}.sw-jk button.on[data-j="L"]{background:rgba(59,130,246,.22);color:#BFD3FF}.sw-jk button.on[data-j="P"]{background:rgba(236,72,153,.22);color:#F9A8D4}}
 </style>
 <style>
+.sw-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 8px}
+.sw-ck{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;min-height:40px;min-width:32px}
+.sw-ck input{width:20px;height:20px;accent-color:#dc2626;flex-shrink:0;margin:0}
+.sw-del{border:0;border-radius:10px;padding:9px 16px;font-family:inherit;font-weight:800;font-size:12.5px;background:#dc2626;color:#fff;min-height:40px}.sw-del[disabled]{background:rgba(100,116,139,.2);color:var(--muted)}
+.sw-r.pl{background:rgba(220,38,38,.07)}
+.sw-ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:18px}
+.sw-md{background:var(--card);color:var(--ink);border-radius:20px;width:100%;max-width:420px;max-height:86vh;display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(0,0,0,.35);overflow:hidden}
+.sw-md h3{margin:0;padding:18px 18px 4px;font-size:17px;font-weight:800}
+.sw-md p{margin:0;padding:0 18px 10px;font-size:13px;color:var(--muted);line-height:1.45}
+.sw-ml{margin:0 18px;border:1px solid var(--line);border-radius:12px;overflow-y:auto;flex:1;min-height:60px}
+.sw-mi{display:flex;gap:8px;padding:9px 12px;border-top:1px solid var(--line);font-size:13px}.sw-mi:first-child{border-top:0}
+.sw-mi i{font-style:normal;color:var(--muted);font-weight:700;min-width:22px}.sw-mi b{display:block;font-weight:700;word-break:break-word}.sw-mi small{color:var(--muted);font-size:11.5px}
+.sw-ms{padding:8px 18px 0;font-size:12.5px;font-weight:700;color:#b91c1c;min-height:18px}
+.sw-mb{display:flex;gap:10px;padding:14px 18px 18px}.sw-mb button{flex:1;border:0;border-radius:12px;min-height:46px;font-family:inherit;font-weight:800;font-size:14px}
+.sw-mb .no{background:rgba(100,116,139,.18);color:var(--ink)}.sw-mb .ya{background:#dc2626;color:#fff}.sw-mb button[disabled]{opacity:.55}
+.sw-bar{flex-wrap:wrap}.sw-bt{display:flex;gap:8px}
+.sw-nk{border:0;border-radius:10px;padding:9px 14px;font-family:inherit;font-weight:800;font-size:12.5px;background:#1d4ed8;color:#fff;min-height:40px}.sw-nk[disabled]{opacity:.55}
+.sw-mb .ya.bl{background:#1d4ed8}
+.sw-sel{margin:0 18px 10px!important;width:calc(100% - 36px)!important;box-sizing:border-box}
+.rw-r{padding:11px 12px;border-top:1px solid var(--line);cursor:pointer}.rw-r:first-child{border-top:0}
+.rw-h{display:flex;align-items:center;gap:10px}.rw-h b{flex:1;min-width:0;font-size:13.5px;font-weight:700;word-break:break-word}
+.rw-c{display:flex;gap:4px;flex-wrap:wrap;margin:6px 0 0 32px}.rw-p{font-size:12px;font-weight:800;color:var(--muted);min-width:46px;text-align:right}
+.rw-d{display:none;margin:8px 0 0 32px;font-size:12.5px;color:var(--muted);line-height:1.7}
 /* ===== Input data siswa (panduan, tempel lengkap, lengkapi cepat) ===== */
 .sx-step{display:flex;gap:12px;padding:14px 0;border-top:1px solid var(--line)}.sx-step:first-of-type{border-top:0}
 .sx-num{width:30px;height:30px;border-radius:50%;background:rgba(100,116,139,.18);color:var(--muted);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0}
@@ -297,7 +320,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
 </div>
 
 <div class="wrap">
-  <div class="seg" id="seg" role="tablist"><button type="button" id="segJur" class="on">Jurnal</button><button type="button" id="segAbs">Absen Siswa</button><button type="button" id="segSis">Siswa</button></div>
+  <div class="seg" id="seg" role="tablist"><button type="button" id="segJur" class="on">Jurnal</button><button type="button" id="segAbs">Absen Siswa</button><button type="button" id="segSis">Siswa</button><button type="button" id="segRiw">Riwayat</button></div>
   <div id="paneJur"><div class="sk"></div></div>
   <div id="paneAbs" style="display:none"><div class="sk"></div></div>
   <div class="sx-sh" id="swSheet"><div class="sx-sp"><div class="sx-grip"></div>
@@ -312,6 +335,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
   <button type="button" class="btn" id="sheBatal" style="background:transparent;color:var(--muted);box-shadow:none;border:1px solid var(--line);margin-top:8px">Batal</button>
 </div></div>
 <div id="paneSis" style="display:none"><div class="sk"></div></div>
+<div id="paneRiw" style="display:none"><div class="sk"></div></div>
 </div>
 
 <nav class="bnav" id="bnav">
@@ -399,18 +423,19 @@ textarea.kg-in{resize:vertical;min-height:84px}
   var info = null, tab = 'jur';
   function pilihTab(t) {
     tab = t;
-    [['jur', 'segJur', 'paneJur'], ['abs', 'segAbs', 'paneAbs'], ['sis', 'segSis', 'paneSis']].forEach(function (x) {
+    [['jur', 'segJur', 'paneJur'], ['abs', 'segAbs', 'paneAbs'], ['sis', 'segSis', 'paneSis'], ['riw', 'segRiw', 'paneRiw']].forEach(function (x) {
       $(x[1]).className = x[0] === t ? 'on' : ''; $(x[2]).style.display = x[0] === t ? '' : 'none';
     });
     if (!info) return;
-    if (t === 'jur') jurMuat(); else if (t === 'abs') absMuat(); else sisMuat();
+    if (t === 'jur') jurMuat(); else if (t === 'abs') absMuat(); else if (t === 'riw') rwMuat(); else sisMuat();
     try { window.scrollTo(0, 0); } catch (e) { }
   }
   $('segJur').onclick = function () { pilihTab('jur'); };
   $('segAbs').onclick = function () { pilihTab('abs'); };
   $('segSis').onclick = function () { pilihTab('sis'); };
+  $('segRiw').onclick = function () { pilihTab('riw'); };
   (function () {
-    var x0 = 0, y0 = 0, t0 = 0, urut = ['jur', 'abs', 'sis'];
+    var x0 = 0, y0 = 0, t0 = 0, urut = ['jur', 'abs', 'sis', 'riw'];
     document.addEventListener('touchstart', function (e) { var t = e.touches[0]; x0 = t.clientX; y0 = t.clientY; t0 = Date.now(); }, { passive: true });
     document.addEventListener('touchend', function (e) {
       var t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0;
@@ -652,11 +677,12 @@ textarea.kg-in{resize:vertical;min-height:84px}
   });
 
   // ================= SISWA =================
+  var swPilih = {};
   var sw = null, swKelas = '', swBusy = false, swSeq = 0, swMode = 'daftar', swEdit = '', swJk = '', swCari = '', swInfo = '';
   var swTipe = 'nama', swTeks = { nama: '', lengkap: '' }, swBaru = [], swFilt = 'jk', swPer = {}, swRowIdx = -1, swRowJk = '';
   var SW_CONTOH = 'Ahmad Fauzi, L, 0123456781, Bapak Saiful, 081234567891\nSiti Aisyah, P, 0123456782, Ibu Nur, 081234567892\nAndi Pratama, L, 0123456783, Bapak Anwar, 081234567893\nFadil Ramadhan, L, , , ';
   function sisMuat(kelas) {
-    if (kelas) { swKelas = kelas; swMode = 'daftar'; swEdit = ''; swCari = ''; swBaru = []; swPer = {}; swTeks = { nama: '', lengkap: '' }; }
+    if (kelas) { swKelas = kelas; swMode = 'daftar'; swEdit = ''; swCari = ''; swBaru = []; swPer = {}; swPilih = {}; swTeks = { nama: '', lengkap: '' }; }
     if (!swKelas) swKelas = kelasAwal();
     if (!swKelas) { $('paneSis').innerHTML = '<div class="empty">Belum ada kelas. Minta admin mengatur kelas yang kamu ajar.</div>'; return; }
     var my = ++swSeq; $('paneSis').innerHTML = '<div class="sk"></div>';
@@ -688,13 +714,22 @@ textarea.kg-in{resize:vertical;min-height:84px}
       '<button type="button" class="btn sw-alt" data-a="baru">Atau tambah satu siswa saja</button>' +
       '<div class="sx-tip">NISN, nama orang tua, dan data lain <b>tidak harus diisi sekarang</b>. Siswa tetap bisa diabsen.</div>';
   }
+  function swVisible() { var q = swCari.toLowerCase(); return sw.siswa.filter(function (s) { return !q || s.nama.toLowerCase().indexOf(q) >= 0 || String(s.nisn || '').indexOf(q) >= 0; }); }
+  function swJmlPilih() { var n = 0; sw.siswa.forEach(function (s) { if (swPilih[s.id]) n++; }); return n; }
+  function swSync() {
+    var all = $('swAll'), d = $('swDel'), nk = $('swNaik'); if (!all || !d) return;
+    var L = swVisible(), p = 0; L.forEach(function (s) { if (swPilih[s.id]) p++; });
+    all.checked = L.length > 0 && p === L.length; all.indeterminate = p > 0 && p < L.length;
+    var n = swJmlPilih(); d.disabled = !n; d.textContent = 'Hapus' + (n ? ' (' + n + ')' : ''); if (nk) nk.textContent = 'Naik kelas (' + (n ? n : 'semua') + ')';
+  }
   function swList() {
-    var q = swCari.toLowerCase(), L = sw.siswa.filter(function (s) { return !q || s.nama.toLowerCase().indexOf(q) >= 0 || String(s.nisn || '').indexOf(q) >= 0; });
+    var L = swVisible(), pil = swPilih;
     if (!L.length) return '<div class="empty">Tidak ada siswa yang cocok.</div>';
-    return '<div class="card">' + L.map(function (s, i) {
+    var bar = '<div class="sw-bar"><label class="sw-ck"><input type="checkbox" id="swAll"><span>Pilih semua</span></label><span class="sw-bt"><button type="button" class="sw-nk" id="swNaik" data-a="naikKelas">Naik kelas</button><button type="button" class="sw-del" id="swDel" data-a="hapusPilih" disabled>Hapus</button></span></div>';
+    return bar + '<div class="card">' + L.map(function (s, i) {
       var k = swKurang(s), ini = s.nama.split(' ').slice(0, 2).map(function (x) { return x.charAt(0); }).join('').toUpperCase();
-      return '<div class="sw-r"><span class="k-no">' + (i + 1) + '</span><span class="sw-av ' + attr(s.jk || '') + '">' + esc(ini) + '</span><div class="sw-tx"><b>' + esc(s.nama) + '</b><small>' + (s.nisn ? 'NISN ' + esc(s.nisn) : 'NISN belum diisi') + (s.ortu ? ' \u00B7 ' + esc(s.ortu) : '') + '</small>' + (k.length ? '<span class="sw-tg">Belum: ' + k.join(', ') + '</span>' : '<span class="sw-tg ok">\u2713 Lengkap</span>') + '</div><button type="button" class="pj-b ub" data-a="ubah" data-i="' + attr(s.id) + '">\u270E Edit</button></div>';
-    }).join('') + '</div><div class="sd-hint">Ketuk <b>\u270E Edit</b> untuk memperbaiki data. Siswa yang dihapus tidak ikut absen lagi, riwayat lamanya tetap aman.</div>';
+      return '<div class="sw-r' + (pil[s.id] ? ' pl' : '') + '"><label class="sw-ck"><input type="checkbox" class="swCk" data-i="' + attr(s.id) + '"' + (pil[s.id] ? ' checked' : '') + ' aria-label="Pilih ' + attr(s.nama) + '"></label><span class="k-no">' + (i + 1) + '</span><span class="sw-av ' + attr(s.jk || '') + '">' + esc(ini) + '</span><div class="sw-tx"><b>' + esc(s.nama) + '</b><small>' + (s.nisn ? 'NISN ' + esc(s.nisn) : 'NISN belum diisi') + (s.ortu ? ' \u00B7 ' + esc(s.ortu) : '') + '</small>' + (k.length ? '<span class="sw-tg">Belum: ' + k.join(', ') + '</span>' : '<span class="sw-tg ok">\u2713 Lengkap</span>') + '</div><button type="button" class="pj-b ub" data-a="ubah" data-i="' + attr(s.id) + '">\u270E Edit</button></div>';
+    }).join('') + '</div><div class="sd-hint">Ketuk <b>\u270E Edit</b> untuk memperbaiki data. Centang beberapa siswa lalu tekan <b>Hapus</b> untuk menghapus sekaligus, atau <b>Naik kelas</b> untuk memindahkannya ke kelas lain (tanpa centang = semua siswa). Siswa yang dihapus tidak ikut absen lagi, riwayat lamanya tetap aman.</div>';
   }
   function swForm() {
     var s = { nama: '', nisn: '', ortu: '', hp: '', jk: '' };
@@ -833,11 +868,12 @@ textarea.kg-in{resize:vertical;min-height:84px}
     $('paneSis').innerHTML = h;
     if (swMode === 'form') swHitung();
     if (swMode === 'tempel') swPv();
+    swSync();
   }
   function swHitung() { if ($('swCn')) { $('swCn').textContent = $('swNama').value.length + '/60'; $('swCs').textContent = $('swNisn').value.length + '/10'; } }
   $('paneSis').addEventListener('input', function (e) {
     var id = e.target.id;
-    if (id === 'swCari') { swCari = e.target.value; $('swList').innerHTML = swList(); }
+    if (id === 'swCari') { swCari = e.target.value; $('swList').innerHTML = swList(); swSync(); }
     else if (id === 'swNisn') { e.target.value = e.target.value.replace(/\D/g, ''); swHitung(); }
     else if (id === 'swNama') swHitung();
     else if (id === 'swTeks') { swTeks[swTipe] = e.target.value; swPv(); }
@@ -858,7 +894,70 @@ textarea.kg-in{resize:vertical;min-height:84px}
     swInfo = r.message; swMode = 'form'; swEdit = ''; sisGambar(); var f = $('swNama'); if (f) f.focus();
   }
   function swGagal(e2) { swBusy = false; setSt($('swSt'), 'err', pesanGagal(e2, GAGAL)); }
-  $('paneSis').addEventListener('change', function (e) { if (e.target.id === 'swKelas') sisMuat(e.target.value); });
+  $('paneSis').addEventListener('change', function (e) {
+    var t = e.target;
+    if (t.id === 'swKelas') return sisMuat(t.value);
+    if (t.id === 'swAll') { swVisible().forEach(function (s) { if (t.checked) swPilih[s.id] = 1; else delete swPilih[s.id]; }); $('swList').innerHTML = swList(); swSync(); }
+    else if (t.classList.contains('swCk')) { var id = t.getAttribute('data-i'); if (t.checked) swPilih[id] = 1; else delete swPilih[id]; t.closest('.sw-r').classList.toggle('pl', t.checked); swSync(); }
+  });
+  // ---- naik kelas (popup pilih kelas tujuan) ----
+  function swKonfirmNaik() {
+    var dipilih = swJmlPilih() ? sw.siswa.filter(function (s) { return swPilih[s.id]; }) : sw.siswa.slice();
+    if (!dipilih.length) return;
+    var semua = dipilih.length === sw.siswa.length && !swJmlPilih();
+    var opsi = '<option value="">Pilih kelas tujuan...</option>' + (sw.kelasLain || []).map(function (k) { return '<option value="' + attr(k) + '">' + esc(k) + '</option>'; }).join('') + '<option value="__LULUS__">Lulus (keluar dari daftar sekolah)</option>';
+    var ov = document.createElement('div'); ov.className = 'sw-ov';
+    ov.innerHTML = '<div class="sw-md" role="dialog" aria-modal="true"><h3>Naikkan ' + (semua ? 'semua ' : '') + dipilih.length + ' siswa?</h3>' +
+      '<p>Siswa kelas ' + esc(swKelas) + ' di bawah ini dipindahkan ke kelas tujuan dan tidak lagi ada di daftar kelas ini. Riwayat absennya tetap tersimpan. Kelas tujuan harus sudah dibuat admin.</p>' +
+      '<select class="kg-in sw-sel" id="swTuj" aria-label="Kelas tujuan">' + opsi + '</select>' +
+      '<div class="sw-ml">' + dipilih.map(function (s, i) {
+        var ket = [s.jk === 'L' ? 'Laki-laki' : s.jk === 'P' ? 'Perempuan' : '', s.nisn ? 'NISN ' + s.nisn : ''].filter(Boolean).join(' \u00B7 ');
+        return '<div class="sw-mi"><i>' + (i + 1) + '</i><div><b>' + esc(s.nama) + '</b>' + (ket ? '<small>' + esc(ket) + '</small>' : '') + '</div></div>';
+      }).join('') + '</div><div class="sw-ms" id="swMs"></div>' +
+      '<div class="sw-mb"><button type="button" class="no" id="swMNo">Batal</button><button type="button" class="ya bl" id="swMYa">Ya, pindahkan</button></div></div>';
+    document.body.appendChild(ov);
+    function tutup() { if (ov.parentNode) ov.parentNode.removeChild(ov); }
+    ov.addEventListener('click', function (e) { if (e.target === ov && !swBusy) tutup(); });
+    ov.querySelector('#swMNo').onclick = function () { if (!swBusy) tutup(); };
+    ov.querySelector('#swMYa').onclick = function () {
+      if (swBusy) return;
+      var ms = ov.querySelector('#swMs'), ya = ov.querySelector('#swMYa'), no = ov.querySelector('#swMNo'), tuj = ov.querySelector('#swTuj').value;
+      if (!tuj) { ms.style.color = '#b91c1c'; ms.textContent = 'Pilih kelas tujuan dulu.'; return; }
+      swBusy = true; ya.disabled = true; no.disabled = true; ms.style.color = 'var(--muted)'; ms.textContent = 'Memindahkan...';
+      function gagal(pesan) { swBusy = false; ya.disabled = false; no.disabled = false; ms.style.color = '#b91c1c'; ms.textContent = pesan; }
+      run('naikKelasSiswa', [swKelas, dipilih.map(function (s) { return s.id; }), tuj], function (r) {
+        if (!r || !r.ok) return gagal((r && r.message) || 'Gagal memindahkan.');
+        swBusy = false; tutup(); swPilih = {}; ab = null; rw = null; swInfo = r.message; swMode = 'daftar'; sisMuat();
+      }, function (e2) { gagal(pesanGagal(e2, GAGAL)); });
+    };
+  }
+  // ---- hapus banyak siswa (popup konfirmasi) ----
+  function swKonfirmHapus() {
+    var dipilih = sw.siswa.filter(function (s) { return swPilih[s.id]; });
+    if (!dipilih.length) return;
+    var ov = document.createElement('div'); ov.className = 'sw-ov';
+    ov.innerHTML = '<div class="sw-md" role="dialog" aria-modal="true"><h3>Hapus ' + dipilih.length + ' siswa?</h3>' +
+      '<p>Siswa di bawah ini akan dikeluarkan dari daftar kelas ' + esc(swKelas) + ' dan tidak ikut absen lagi. Riwayat absen lamanya tetap aman.</p>' +
+      '<div class="sw-ml">' + dipilih.map(function (s, i) {
+        var ket = [s.jk === 'L' ? 'Laki-laki' : s.jk === 'P' ? 'Perempuan' : '', s.nisn ? 'NISN ' + s.nisn : '', s.ortu || ''].filter(Boolean).join(' \u00B7 ');
+        return '<div class="sw-mi"><i>' + (i + 1) + '</i><div><b>' + esc(s.nama) + '</b>' + (ket ? '<small>' + esc(ket) + '</small>' : '') + '</div></div>';
+      }).join('') + '</div><div class="sw-ms" id="swMs"></div>' +
+      '<div class="sw-mb"><button type="button" class="no" id="swMNo">Batal</button><button type="button" class="ya" id="swMYa">Ya, hapus</button></div></div>';
+    document.body.appendChild(ov);
+    function tutup() { if (ov.parentNode) ov.parentNode.removeChild(ov); }
+    ov.addEventListener('click', function (e) { if (e.target === ov && !swBusy) tutup(); });
+    ov.querySelector('#swMNo').onclick = function () { if (!swBusy) tutup(); };
+    ov.querySelector('#swMYa').onclick = function () {
+      if (swBusy) return;
+      var ms = ov.querySelector('#swMs'), ya = ov.querySelector('#swMYa'), no = ov.querySelector('#swMNo');
+      swBusy = true; ya.disabled = true; no.disabled = true; ms.style.color = 'var(--muted)'; ms.textContent = 'Menghapus...';
+      function gagal(pesan) { swBusy = false; ya.disabled = false; no.disabled = false; ms.style.color = '#b91c1c'; ms.textContent = pesan; }
+      run('hapusBanyakSiswa', [swKelas, dipilih.map(function (s) { return s.id; })], function (r) {
+        if (!r || !r.ok) return gagal((r && r.message) || 'Gagal menghapus.');
+        swBusy = false; tutup(); swPilih = {}; ab = null; swInfo = r.message; swMode = 'daftar'; sisMuat();
+      }, function (e2) { gagal(pesanGagal(e2, GAGAL)); });
+    };
+  }
   $('paneSis').addEventListener('click', function (e) {
     var b = e.target.closest('button'); if (!b) return;
     if (b.parentNode.id === 'swKelas') return sisMuat(b.getAttribute('data-k'));
@@ -880,6 +979,8 @@ textarea.kg-in{resize:vertical;min-height:84px}
     else if (a === 'batal') { swMode = 'daftar'; swEdit = ''; swBaru = []; swPer = {}; sisGambar(); }
     else if (a === 'contoh') { swTeks.lengkap = SW_CONTOH; $('swTeks').value = SW_CONTOH; swPv(); }
     else if (a === 'erow') swBukaRow(+b.getAttribute('data-i'));
+    else if (a === 'hapusPilih') swKonfirmHapus();
+    else if (a === 'naikKelas') swKonfirmNaik();
     else if (a === 'simpan') {
       var nama = swRapi($('swNama').value), nisn = $('swNisn').value, hp = $('swHp').value.trim();
       if (!nama) return setSt($('swSt'), 'err', 'Nama lengkap wajib diisi.');
@@ -932,6 +1033,68 @@ textarea.kg-in{resize:vertical;min-height:84px}
     }
   });
 
+  // ================= RIWAYAT ABSEN SISWA =================
+  var rw = null, rwKelas = '', rwBulan = '', rwSeq = 0;
+  function rwNama(b) { var p = b.split('-'); return BULAN[+p[1] - 1] + ' ' + p[0]; }
+  function rwGeser(b, d) { var p = b.split('-'), m = +p[1] - 1 + d, y = +p[0]; y += Math.floor(m / 12); m = ((m % 12) + 12) % 12; return y + '-' + ('0' + (m + 1)).slice(-2); }
+  function rwMuat(bulan, kelas) {
+    if (kelas) rwKelas = kelas; if (!rwKelas) rwKelas = kelasAwal();
+    if (!rwKelas) { $('paneRiw').innerHTML = '<div class="empty">Belum ada kelas. Minta admin mengatur kelas yang kamu ajar.</div>'; return; }
+    var my = ++rwSeq; $('paneRiw').innerHTML = '<div class="sk"></div>';
+    run('getRiwayatAbsenKelas', [rwKelas, bulan || rwBulan || ''], function (r) {
+      if (my !== rwSeq) return;
+      if (!r || !r.ok) { $('paneRiw').innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; return; }
+      rw = r; rwBulan = r.bulan; rwGambar();
+    }, function () { if (my === rwSeq) $('paneRiw').innerHTML = '<div class="empty">' + GAGAL + '</div>'; });
+  }
+  function rwGambar() {
+    var h = chipKelas(rwKelas, 'rwKelas') + '<div class="k-dt"><button type="button" id="rwPrev" aria-label="Bulan sebelumnya">' + IC_KIRI + '</button><b>' + esc(rwNama(rw.bulan)) + '</b><button type="button" id="rwNext" aria-label="Bulan berikutnya"' + (rw.bulan >= rw.bulanIni ? ' disabled' : '') + '>' + IC_KANAN + '</button></div>';
+    if (!rw.hari.length) { $('paneRiw').innerHTML = h + '<div class="empty">Belum ada absen siswa kelas ' + esc(rwKelas) + ' di bulan ini.</div>'; return; }
+    if (!rw.siswa.length) { $('paneRiw').innerHTML = h + '<div class="empty">Belum ada daftar siswa di kelas ini.</div>'; return; }
+    var T = { h: 0, s: 0, i: 0, a: 0, t: 0 }; rw.siswa.forEach(function (s) { T.h += s.h; T.s += s.s; T.i += s.i; T.a += s.a; T.t += s.t; });
+    var tot = T.h + T.s + T.i + T.a + T.t, pc = tot ? Math.round(T.h / tot * 1000) / 10 : 0;
+    h += '<div class="k-ring"><div><b>' + rw.hari.length + '</b><small>Hari absen</small></div><div><b style="color:#15803d">' + pc + '%</b><small>Hadir</small></div><div><b style="color:#b45309">' + T.s + '</b><small>Sakit</small></div><div><b style="color:#1d4ed8">' + T.i + '</b><small>Izin</small></div><div><b style="color:#b91c1c">' + T.a + '</b><small>Alpa</small></div><div><b style="color:#6d28d9">' + T.t + '</b><small>Tugas</small></div></div>';
+    h += '<button type="button" class="btn sw-add" id="rwXls" style="margin:0 0 10px">Unduh Excel (.xls)</button><div class="card">';
+    rw.siswa.forEach(function (s, i) {
+      var chip = ''; [['s', 'S'], ['i', 'I'], ['a', 'A'], ['t', 'T']].forEach(function (c) { if (s[c[0]]) chip += '<span class="k-st ' + c[1] + '">' + info.status[c[1]] + ' ' + s[c[0]] + '</span>'; });
+      var det = ''; rw.hari.forEach(function (t, k) { var x = s.st.charAt(k); if (x !== 'H') det += '<div>' + esc(tglHari(t) + ', ' + tglLabel(t)) + ' \u2014 <b>' + esc(info.status[x]) + '</b></div>'; });
+      h += '<div class="rw-r"><div class="rw-h"><span class="k-no">' + (i + 1) + '</span><b>' + esc(s.nama) + '</b><span class="rw-p">' + s.persen + '%</span></div>' +
+        '<div class="rw-c"><span class="k-st H">Hadir ' + s.h + '</span>' + chip + '</div><div class="rw-d">' + (det || 'Hadir terus bulan ini.') + '</div></div>';
+    });
+    $('paneRiw').innerHTML = h + '</div><div class="sd-hint">Ketuk nama siswa untuk melihat tanggal tidak hadirnya. Siswa dianggap hadir kecuali tercatat S, I, A, atau T.</div>';
+  }
+  function rwUnduh() {
+    var hr = rw.hari, ket = { S: 'S', I: 'I', A: 'A', T: 'T', H: 'H' };
+    var th = 'border:1px solid #999;padding:4px 6px;', head = 'background:#1e3a8a;color:#fff;font-weight:bold;text-align:center;';
+    var x = '<html xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="utf-8"></head><body><table style="border-collapse:collapse">' +
+      '<tr><td colspan="' + (4 + hr.length + 6) + '" style="font-size:14pt;font-weight:bold">Rekap Absen Siswa Kelas ' + esc(rwKelas) + ' \u2014 ' + esc(rwNama(rw.bulan)) + '</td></tr>' +
+      '<tr><td colspan="' + (4 + hr.length + 6) + '">H = Hadir, S = Sakit, I = Izin, A = Alpa, T = Tugas orang tua</td></tr><tr>' +
+      ['No', 'Nama', 'L/P', 'NISN'].map(function (c) { return '<td style="' + th + head + '">' + c + '</td>'; }).join('') +
+      hr.map(function (t) { return '<td style="' + th + head + '">' + (+t.substring(8, 10)) + '</td>'; }).join('') +
+      ['H', 'S', 'I', 'A', 'T', '% Hadir'].map(function (c) { return '<td style="' + th + head + '">' + c + '</td>'; }).join('') + '</tr>';
+    rw.siswa.forEach(function (s, i) {
+      x += '<tr><td style="' + th + 'text-align:center">' + (i + 1) + '</td><td style="' + th + '">' + esc(s.nama) + '</td><td style="' + th + 'text-align:center">' + esc(s.jk || '') + '</td><td style="' + th + 'mso-number-format:\'\\@\'">' + esc(s.nisn || '') + '</td>';
+      for (var k = 0; k < hr.length; k++) { var c = s.st.charAt(k); x += '<td style="' + th + 'text-align:center' + (c === 'H' ? '' : ';background:#fde2e2;font-weight:bold') + '">' + ket[c] + '</td>'; }
+      x += [s.h, s.s, s.i, s.a, s.t].map(function (v) { return '<td style="' + th + 'text-align:center">' + v + '</td>'; }).join('') + '<td style="' + th + 'text-align:center">' + s.persen + '</td></tr>';
+    });
+    x += '</table></body></html>';
+    var nama = 'Absen-Siswa-' + rwKelas.replace(/[^A-Za-z0-9]+/g, '-') + '-' + rw.bulan + '.xls';
+    try {
+      var blob = new Blob(['\ufeff' + x], { type: 'application/vnd.ms-excel;charset=utf-8' }), u = (window.URL || window.webkitURL).createObjectURL(blob), a = document.createElement('a');
+      a.href = u; a.download = nama; document.body.appendChild(a); a.click();
+      setTimeout(function () { document.body.removeChild(a); (window.URL || window.webkitURL).revokeObjectURL(u); }, 1500);
+    } catch (e) { alert('Browser ini tidak mengizinkan unduh file.'); }
+  }
+  $('paneRiw').addEventListener('change', function (e) { if (e.target.id === 'rwKelas') rwMuat('', e.target.value); });
+  $('paneRiw').addEventListener('click', function (e) {
+    var t = e.target, b;
+    if ((b = t.closest('#rwKelas button'))) return rwMuat('', b.getAttribute('data-k'));
+    if (t.closest('#rwPrev')) return rwMuat(rwGeser(rwBulan, -1));
+    if (t.closest('#rwNext')) return rwMuat(rwGeser(rwBulan, 1));
+    if (t.closest('#rwXls')) return rwUnduh();
+    if ((b = t.closest('.rw-r'))) { var d = b.querySelector('.rw-d'); d.style.display = d.style.display === 'block' ? 'none' : 'block'; }
+  });
+
   // ================= MULAI =================
   function mulai() {
     if (!kode) { $('paneJur').innerHTML = '<div class="empty">Buka lewat menu Absen dulu, lalu pilih namamu.</div>'; return; }
@@ -941,7 +1104,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
       info = r; try { $('guruPill').textContent = String(r.nama || '').split(',')[0]; $('guruKelas').textContent = r.jabatan || ''; } catch (e) { }
       var sy = kelasSaya(); $('sub').textContent = sy.length ? 'Wali kelas: ' + sy.join(', ') : 'Jurnal mengajar & lihat daftar siswa';
       if (!info.kelas.length) { $('paneJur').innerHTML = '<div class="empty">Belum ada kelas yang diatur.' + (info.alasan ? '<br><br><span style="font-weight:600">' + esc(info.alasan) + '</span>' : '') + '</div>'; return; }
-      var t = (location.hash || '').replace('#', ''); pilihTab(t === 'abs' || t === 'sis' ? t : 'jur');
+      var t = (location.hash || '').replace('#', ''); pilihTab(t === 'abs' || t === 'sis' || t === 'riw' ? t : 'jur');
     }, function (e) { $('paneJur').innerHTML = '<div class="empty">' + esc(pesanGagal(e, GAGAL)) + '</div>'; });
   }
   mulai();
