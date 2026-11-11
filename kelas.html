@@ -929,6 +929,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
     if (!kode) { $('paneJur').innerHTML = '<div class="empty">Buka lewat menu Absen dulu, lalu pilih namamu.</div>'; return; }
     run('getKelasGuru', [], function (r) {
       if (!r || !r.ok) { $('paneJur').innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; return; }
+      if (r.tampil === false) { try { $('guruPill').textContent = String(r.nama || '').split(',')[0]; $('guruKelas').textContent = r.jabatan || ''; $('sub').textContent = ''; } catch (e) { } $('paneJur').innerHTML = '<div class="empty">Menu Kelas khusus untuk guru.</div>'; return; }
       info = r; try { $('guruPill').textContent = String(r.nama || '').split(',')[0]; $('guruKelas').textContent = r.jabatan || ''; } catch (e) { }
       var sy = kelasSaya(); $('sub').textContent = sy.length ? 'Wali kelas: ' + sy.join(', ') : 'Jurnal mengajar & lihat daftar siswa';
       if (!info.kelas.length) { $('paneJur').innerHTML = '<div class="empty">Belum ada kelas yang diatur.' + (info.alasan ? '<br><br><span style="font-weight:600">' + esc(info.alasan) + '</span>' : '') + '</div>'; return; }
