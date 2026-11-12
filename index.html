@@ -1346,7 +1346,7 @@ body.adm-terbatas [data-terbatas]{display:none!important}
       </select>
       <a href="#" id="riwayatLink" class="riwayat-link" onclick="return false;" style="display:none;">Riwayat</a>
     </div>
-    <div id="lnkLaptopRow" style="display:none;text-align:center;margin:10px 0 12px"><a href="#" id="lnkLaptop" style="display:inline-block;min-height:44px;line-height:44px;padding:0 18px;border-radius:14px;background:rgba(30,58,138,.10);color:#1e3a8a;font-size:13px;font-weight:800;text-decoration:none">Pakai di laptop</a></div>
+    <div id="lnkLaptopRow" style="display:none;text-align:center;margin:10px 0 12px"><a href="#" id="lnkLaptop" style="display:inline-block;min-height:44px;line-height:44px;padding:0 18px;border-radius:14px;background:rgba(30,58,138,.10);color:#1e3a8a;font-size:13px;font-weight:800;text-decoration:none">Sambungkan perangkat laptop</a></div>
 
     <div id="viewAbsen">
       <div class="week" id="weekStrip"></div>
@@ -3150,7 +3150,7 @@ body.adm-terbatas [data-terbatas]{display:none!important}
       if (!window.KelasAkses) return;
       window.KelasAkses.cek(k, getDeviceId() || '', function (ok) { if ($('guruSelect').value === k) $('navKelas').style.display = ok ? '' : 'none'; });
     }
-    // Tautan "Pakai di laptop" hanya muncul kalau saklar Login di Laptop untuk guru ini ON (Admin > Pengaturan).
+    // Tautan "Sambungkan perangkat laptop" hanya muncul kalau saklar Login di Laptop untuk guru ini ON (Admin > Pengaturan).
     function laptopIzin(k) {
       var kunci = 'absensi_laptop_izin_' + k, c = null, row = $('lnkLaptopRow');
       try { c = JSON.parse(localStorage.getItem(kunci) || 'null'); } catch (e) { }
