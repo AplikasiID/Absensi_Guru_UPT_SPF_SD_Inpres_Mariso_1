@@ -23,11 +23,11 @@
       var va = $('viewAbsen');  // hanya ada di halaman utama
       if (va && !$('dskNote')) { var d = document.createElement('div'); d.id = 'dskNote'; d.className = 'dsk-note'; d.textContent = 'Absen Masuk, Absen Pulang, dan absen siswa dilakukan dari HP. Di laptop kamu bisa melihat data, mengisi jurnal, dan mencetak laporan.'; va.parentNode.insertBefore(d, va); }
     }
-    // "Sambungkan ke laptop": baris di halaman utama dipindah jadi menu di sidebar (muncul hanya kalau izin laptop ON).
+    // "Sambungkan HP": baris di halaman utama dipindah jadi menu di sidebar (muncul hanya kalau izin laptop ON).
     var rowL = $('lnkLaptopRow'), lnkL = $('lnkLaptop'), rowNav = document.querySelector('.bnav .bn-row');
     if (rowL && lnkL && rowNav && !$('dskLaptop')) {
       var bl = document.createElement('button'); bl.type = 'button'; bl.id = 'dskLaptop'; bl.style.display = 'none';
-      bl.innerHTML = '<span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="2"/><path d="M2 20h20"/></svg></span>Sambungkan ke laptop';
+      bl.innerHTML = '<span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="2"/><path d="M2 20h20"/></svg></span>Sambungkan HP';
       rowNav.appendChild(bl);
       bl.addEventListener('click', function () { lnkL.click(); });
       var selaras = function () { bl.style.display = (rowL.style.display === 'none') ? 'none' : ''; };
