@@ -5,7 +5,9 @@
   var done = false;
   function $(id) { return document.getElementById(id); }
   function jalan() {
-    if (done || !mq.matches) return; done = true;
+    if (done || !mq.matches) return;
+    if (document.documentElement.classList.contains('emb')) return;  // Pengaturan di dalam iframe: tanpa sidebar
+    done = true;
     // Halaman utama: tab pertama disebut "Beranda" + catatan bahwa absen dilakukan dari HP.
     var nav = $('navAbsen') || document.querySelector('.bn-row a[href="index.html"]');
     if (nav) {
