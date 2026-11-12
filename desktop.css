@@ -37,10 +37,10 @@
   html:not(.emb) body:has(.bnav) .bt > img, html:not(.emb) body:has(.bnav) .bt > img + div,
   html:not(.emb) body:has(.bnav) .brand-row { display: none !important; }
   html:not(.emb) body:has(.bnav) > .ban > .ban-top:not(:has(#clock)) { display: none !important; }  /* Pengaturan */
-  /* tombol "Sambungkan ke laptop": di laptop pindah ke sidebar (dibuat oleh desktop.js), baris di halaman disembunyikan */
+  /* tombol "Pakai di laptop" (HP) / "Sambungkan HP" (laptop): di laptop pindah ke sidebar (dibuat oleh desktop.js), baris di halaman disembunyikan */
   #lnkLaptopRow { display: none !important; }
 
-  /* --- Halaman Sambungkan ke Laptop (laptop.html): tanpa sidebar, kolom di tengah --- */
+  /* --- Halaman laptop.html (HP: Pakai di Laptop, laptop: Sambungkan HP): tanpa sidebar, kolom di tengah --- */
   body.pg-laptop { --col: 560px; padding-left: 0 !important; padding-bottom: 40px !important; }
   body.pg-laptop .ban { padding-bottom: 28px !important; }
   body.pg-laptop .hd h1 { font-size: 26px; }
