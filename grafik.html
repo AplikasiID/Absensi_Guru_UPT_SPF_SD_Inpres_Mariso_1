@@ -756,6 +756,7 @@
 @keyframes ni-pill { from { opacity: .35; transform: scale(.9); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .bnav .bn-row > *, .bnav .bn-row > * .ni svg, .bnav .bn-row > * .ni svg path { animation: none !important; transition: none !important; } }
 </style>
+<link rel="stylesheet" href="desktop.css">
 </head>
 <body>
   <div class="page-shell">
@@ -1229,5 +1230,6 @@ var e='?kode='+encodeURIComponent(k)+'&dev='+encodeURIComponent(d);
 var set=function(id,h){var a=document.getElementById(id);if(a){if(a.classList.contains('on')){a.onclick=function(){return false;};}else a.href=h;}};
 set('segRiwayat','riwayat.html'+e);set('segGrafik','grafik.html'+e);set('navLaporanLink','laporan.html'+e);set('navRiwayatLink','riwayat.html'+e);})();
 </script>
+<script src="desktop.js"></script>
 </body>
 </html>
