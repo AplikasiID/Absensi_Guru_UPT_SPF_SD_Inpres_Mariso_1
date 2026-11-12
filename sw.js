@@ -2,8 +2,8 @@
  * belakang layar untuk pembukaan berikutnya (stale-while-revalidate). Kalau belum
  * ada di cache (pertama kali), diambil dari jaringan. Panggilan ke Apps Script
  * TIDAK pernah di-cache. */
-var CACHE = "absensi-v53";
-var SHELL = ["./", "./index.html", "./dashboard.html", "./pengaturan.html", "./riwayat.html", "./grafik.html", "./laporan.html", "./kelas.html", "./laptop.html", "./ortu.html", "./desktop.css", "./desktop.js",
+var CACHE = "absensi-v52";
+var SHELL = ["./", "./index.html", "./dashboard.html", "./pengaturan.html", "./riwayat.html", "./grafik.html", "./laporan.html", "./kelas.html", "./laptop.html", "./desktop.css", "./desktop.js",
              "./config.js", "./api.js", "./ikon-192.png"];
 
 self.addEventListener("install", function (e) {
@@ -21,8 +21,6 @@ self.addEventListener("fetch", function (e) {
   if (req.method !== "GET") return;
   var url = new URL(req.url);
   if (url.origin !== location.origin) return; // Apps Script / CDN: biarkan langsung
-  // Halaman orang tua membawa token pribadi di alamat (?t=...): token itu tidak boleh ikut disimpan di cache. Cache memakai alamat tanpa token.
-  if (/\/ortu\.html$/.test(url.pathname) && url.search) req = new Request(url.origin + url.pathname);
   e.respondWith(
     caches.match(req).then(function (cached) {
       // no-cache: validasi ke server (304 kalau tidak berubah), hasilnya disimpan untuk pembukaan berikutnya.
