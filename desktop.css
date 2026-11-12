@@ -28,6 +28,33 @@
   .dsk-adm button:hover { background: rgba(255,255,255,.10); }
   .dsk-adm button.on { background: rgba(255,255,255,.18); color: #fff; }
 
+
+  /* --- Logo pindah ke sidebar (mode laptop) --- */
+  .dsk-logo { position: absolute; top: 22px; left: 18px; width: 46px; height: auto; filter: drop-shadow(0 3px 6px rgba(0,0,0,.35)); pointer-events: none; }
+  html:not(.emb) .bnav:has(.dsk-logo)::before { left: 74px; top: 26px; }
+  /* logo + judul di banner disembunyikan (sudah ada di sidebar) */
+  html:not(.emb) body:has(.bnav) .ban-top > img, html:not(.emb) body:has(.bnav) #appTitle,
+  html:not(.emb) body:has(.bnav) .bt > img, html:not(.emb) body:has(.bnav) .bt > img + div,
+  html:not(.emb) body:has(.bnav) .brand-row { display: none !important; }
+  html:not(.emb) body:has(.bnav) > .ban > .ban-top:not(:has(#clock)) { display: none !important; }  /* Pengaturan */
+  /* tombol "Sambungkan ke laptop": di laptop pindah ke sidebar (dibuat oleh desktop.js), baris di halaman disembunyikan */
+  #lnkLaptopRow { display: none !important; }
+
+  /* --- Halaman Sambungkan ke Laptop (laptop.html): tanpa sidebar, kolom di tengah --- */
+  body.pg-laptop { --col: 560px; padding-left: 0 !important; padding-bottom: 40px !important; }
+  body.pg-laptop .ban { padding-bottom: 28px !important; }
+  body.pg-laptop .hd h1 { font-size: 26px; }
+  body.pg-laptop .wrap { padding-top: 24px !important; }
+  body.pg-laptop .card { padding: 28px; border-radius: 24px; }
+  body.pg-laptop .card h2 { font-size: 20px; }
+  body.pg-laptop .card p { font-size: 14.5px; }
+  body.pg-laptop input.kin { min-height: 68px; font-size: 32px; letter-spacing: 14px; text-indent: 14px; margin: 18px 0 16px; border-radius: 18px; }
+  body.pg-laptop input.kin:focus { outline: 0; border-color: #1d4ed8; box-shadow: 0 0 0 4px rgba(29,78,216,.15); }
+  body.pg-laptop .btn { min-height: 56px; font-size: 16px; }
+  body.pg-laptop .btn:not(:disabled):hover { filter: brightness(1.08); }
+  body.pg-laptop .kode { font-size: 52px; letter-spacing: 12px; }
+  body.pg-laptop .back { margin-top: 6px; }
+
   /* --- banner jadi bilah atas selebar layar --- */
   .ban { max-width: none !important; margin: 0 !important; border-radius: 0 !important; padding-left: 32px !important; padding-right: 32px !important; }
   .ban::after { border-radius: 0 !important; }
