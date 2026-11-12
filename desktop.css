@@ -1,0 +1,90 @@
+/* SMART Mariso 1 - tampilan laptop (layar lebar). Di bawah 1100px (HP/tablet) TIDAK ada yang berubah. */
+.dsk-only { display: none; }
+@media (min-width: 1100px) {
+  :root { --sb: 260px; }
+  html, body { background: #EEF2FB; }
+  body { padding-left: var(--sb) !important; padding-bottom: 32px !important; }
+
+  /* --- sidebar: menu bawah HP berubah jadi menu kiri --- */
+  .bnav { position: fixed !important; left: 0 !important; top: 0 !important; bottom: 0 !important; right: auto !important; transform: none !important; width: var(--sb) !important; max-width: none !important; margin: 0 !important;
+    border-radius: 0 !important; background: linear-gradient(180deg, #1e3a8a 0%, #172a63 100%) !important; box-shadow: none !important; padding: 92px 14px 16px !important; display: flex !important; flex-direction: column !important; z-index: 70; overflow-y: auto; }
+  .bnav::before { content: "UPTD SPF\A SMART Mariso 1"; white-space: pre; position: absolute; top: 28px; left: 22px; color: #fff; font-weight: 800; font-size: 17px; line-height: 1.25; }
+  .bnav::first-line { font-size: 11px; letter-spacing: .12em; }
+  .bnav .bn-row { display: flex !important; flex-direction: column !important; gap: 6px !important; justify-content: flex-start !important; }
+  .bnav .bn-row > *:not(.dsk-adm) { display: flex !important; flex-direction: row !important; align-items: center; gap: 12px; flex: none !important; width: 100%; text-align: left !important; padding: 11px 14px !important; border-radius: 14px !important;
+    font-size: 15px !important; font-weight: 700 !important; color: #dbe6ff !important; background: transparent !important; min-height: 46px; box-shadow: none; text-decoration: none; cursor: pointer; border: 0; }
+  .bnav .bn-row > *:not(.dsk-adm) .ni { margin: 0 !important; display: flex !important; font-size: 0; }
+  .bnav .bn-row > *:not(.dsk-adm) svg { width: 22px !important; height: 22px !important; }
+  .bnav .bn-row > *:not(.dsk-adm):hover { background: rgba(255,255,255,.10) !important; }
+  .bnav .bn-row > .on:not(.dsk-adm), .bnav .bn-row > [aria-current] { background: #fff !important; color: #1e3a8a !important; }
+  .bnav .bn-credit { margin-top: auto !important; padding-top: 14px; text-align: center; color: #9db4ee !important; font-size: 12px !important; }
+  .dsk-adm { display: none; margin: 4px 0 8px 10px; padding-left: 12px; border-left: 2px solid rgba(255,255,255,.18); }
+  .dsk-adm.on { display: block !important; width: auto !important; }
+  body.mode-admin .dsk-note { display: none; }
+  .dsk-adm button { display: block; width: 100%; text-align: left; background: transparent; border: 0; color: #cfdcff; font-family: inherit; font-weight: 700; font-size: 14px; padding: 9px 10px; border-radius: 10px; min-height: 40px; cursor: pointer; }
+  .dsk-adm button:hover { background: rgba(255,255,255,.10); }
+  .dsk-adm button.on { background: rgba(255,255,255,.18); color: #fff; }
+
+  /* --- banner jadi bilah atas selebar layar --- */
+  .ban { max-width: none !important; margin: 0 !important; border-radius: 0 !important; padding-left: 32px !important; padding-right: 32px !important; }
+  .ban::after { border-radius: 0 !important; }
+  .ban-in { max-width: 1280px; margin: 0 auto; }
+  .wrap { max-width: 1280px !important; padding: 0 32px !important; margin-left: auto !important; margin-right: auto !important; }
+  .seg { max-width: 640px; }
+
+  /* --- Beranda guru (index.html): kolom nyaman, bukan melar --- */
+  #viewAbsen { max-width: 760px; margin: 0 auto; }
+  .name-float { max-width: 760px; margin-left: auto; margin-right: auto; }
+  .dsk-note { max-width: 760px; margin: 0 auto 14px; background: #e8efff; border: 1px solid #c9d6ff; color: #1e3a8a; border-radius: 16px; padding: 13px 16px; font-weight: 700; font-size: 14px; line-height: 1.45; }
+
+  /* --- menu admin lebih lebar --- */
+  .adm-tiles { grid-template-columns: repeat(4, 1fr) !important; }
+  .adm-list { display: grid !important; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .adm-item.dsk-only { display: flex; }
+
+  /* --- Pantauan admin --- */
+  #admPanePan .card2 { padding: 22px; }
+  .pan-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+  .pan-top b { font-size: 20px; font-weight: 800; color: #14213D; } .pan-top small { font-size: 13px; font-weight: 700; color: #b45309; }
+  .pan-dt { font-weight: 800; font-size: 13px; color: #1e3a8a; display: flex; align-items: center; gap: 8px; } .pan-dt input { font: inherit; padding: 9px 12px; border: 1px solid #c9d6ff; border-radius: 12px; min-height: 44px; background: #fff; color: #14213D; }
+  .pan-stat { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 18px; }
+  .pan-s { background: #f4f7ff; border: 1px solid #e3e9f5; border-radius: 18px; padding: 18px 20px; } .pan-s b { display: block; font-size: 34px; font-weight: 800; line-height: 1.1; color: #14213D; } .pan-s span { font-size: 14px; font-weight: 700; color: #4B5567; }
+  .pan-grid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 18px; align-items: start; }
+  .pan-c { border: 1px solid #e3e9f5; border-radius: 18px; padding: 18px; background: #fff; } .pan-c h3 { margin: 0; font-size: 17px; font-weight: 800; color: #14213D; } .pan-sub { display: block; font-size: 12.5px; font-weight: 600; color: #4B5567; margin: 2px 0 12px; }
+  .pan-tw { overflow-x: auto; } .pan-t { width: 100%; border-collapse: collapse; font-size: 14px; color: #14213D; white-space: nowrap; }
+  .pan-t th { text-align: left; font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; color: #4B5567; background: #f4f7ff; padding: 10px 8px; } .pan-t td { padding: 12px 8px; border-top: 1px solid #e3e9f5; }
+  .pan-bar { display: inline-block; width: 90px; height: 8px; border-radius: 99px; background: #e3e9f5; vertical-align: middle; overflow: hidden; } .pan-bar i { display: block; height: 100%; background: #16a34a; }
+  .pan-pl { display: inline-block; min-width: 30px; text-align: center; padding: 3px 8px; border-radius: 99px; font-weight: 800; font-size: 13px; }
+  .pan-pl.s { background: #fef3c7; color: #b45309; } .pan-pl.i { background: #dbeafe; color: #1d4ed8; } .pan-pl.a { background: #fee2e2; color: #b91c1c; } .pan-pl.t { background: #ede9fe; color: #6d28d9; }
+  .pan-b { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #e3e9f5; } .pan-b:first-of-type { border-top: 0; }
+  .pan-b i { font-style: normal; width: 42px; height: 42px; border-radius: 50%; background: #e8efff; color: #1e3a8a; font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .pan-b div { flex: 1; min-width: 0; } .pan-b b { display: block; font-size: 14px; color: #14213D; } .pan-b small { display: block; font-size: 12px; color: #4B5567; font-weight: 600; }
+  .pan-b a, .pan-wa { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 14px; border-radius: 12px; font-weight: 800; font-size: 13.5px; text-decoration: none; border: 1px solid #c9d6ff; color: #1e3a8a; background: #fff; }
+  .pan-wa { display: flex; margin-top: 14px; background: #16a34a; border-color: #16a34a; color: #fff; } .pan-ok { padding: 14px 4px; font-weight: 700; color: #15803d; }
+
+  /* --- Data Siswa (kelas.html): daftar jadi tabel lebar --- */
+  .sw-bar { padding: 10px 4px; }
+  .sw-th, .sw-r { display: grid !important; grid-template-columns: 44px 40px 40px minmax(200px, 1.6fr) 44px 120px minmax(130px, 1fr) 140px 130px 72px; align-items: center; gap: 10px; }
+  .sw-th { padding: 10px 12px; background: #f4f7ff; border: 1px solid var(--line); border-radius: 14px 14px 0 0; font-size: 11.5px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+  .sw-th + .card { border-radius: 0 0 14px 14px; }
+  .sw-c { display: block; font-size: 14px; font-weight: 600; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sw-sh { display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; min-height: 40px; }
+  .sw-tx small { display: none; }
+  .sw-r .sw-tx b { font-size: 14.5px; }
+  .sw-th + .card .sw-r { padding: 8px 12px; }
+  .sw-r:hover { background: rgba(29,78,216,.05); }
+  .sw-md { max-width: 520px; }
+  .sw-md.sw-wide { max-width: 680px; }
+  #paneSis .k-stick { top: 0 !important; }
+  #paneSis:has(#swList) { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  #paneSis:has(#swList) > * { flex: 1 1 100%; margin-top: 0; margin-bottom: 0; }
+  #paneSis:has(#swList) > .btn.sw-add, #paneSis:has(#swList) > .btn.sw-alt { flex: 0 0 auto; width: auto !important; min-width: 220px; }
+  #paneSis:has(#swList) > .btn.sx-lk { flex: 0 0 auto; width: auto !important; }
+}
+@media (prefers-color-scheme: dark) { @media (min-width: 1100px) {
+  html, body { background: #0b0b0f; }
+  .dsk-note { background: rgba(100,130,255,.16); border-color: rgba(100,130,255,.35); color: #C9D6FF; }
+  .pan-top b, .pan-s b, .pan-c h3, .pan-t, .pan-b b { color: #F2F2F7; } .pan-s, .pan-c, .pan-t th { background: #1c1c24; border-color: rgba(255,255,255,.10); } .pan-t td, .pan-b { border-color: rgba(255,255,255,.10); }
+  .pan-dt input { background: #1c1c24; color: #F2F2F7; } .pan-sub, .pan-s span, .pan-t th, .pan-b small { color: #A8AFBF; }
+  .sw-th { background: #1c1c24; }
+} }
