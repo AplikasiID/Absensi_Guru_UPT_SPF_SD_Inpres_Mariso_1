@@ -80,6 +80,40 @@
   #paneSis:has(#swList) > * { flex: 1 1 100%; margin-top: 0; margin-bottom: 0; }
   #paneSis:has(#swList) > .btn.sw-add, #paneSis:has(#swList) > .btn.sw-alt { flex: 0 0 auto; width: auto !important; min-width: 220px; }
   #paneSis:has(#swList) > .btn.sx-lk { flex: 0 0 auto; width: auto !important; }
+
+  /* ===== Halaman lain (Riwayat, Grafik, Laporan/Perangkat Ajar, Pengaturan) ===== */
+  /* jangan ikut berubah saat dibuka di dalam iframe (Pengaturan?embed=1) */
+  html.emb body { padding-left: 0 !important; }
+  /* tab yang disembunyikan halaman (mis. Admin untuk non-admin) tetap tersembunyi di sidebar */
+  .bnav .bn-row > *[style*="display:none"]:not(.dsk-adm), .bnav .bn-row > *[style*="display: none"]:not(.dsk-adm) { display: none !important; }
+  /* ikon yang langsung di dalam <a> (Pengaturan) jangan terdorong ke tengah */
+  .bnav .bn-row > *:not(.dsk-adm) > svg { margin: 0 !important; flex: none; }
+
+  /* Banner tanpa pembungkus .ban-in (Laporan, Pengaturan): isi sejajar dengan kolom konten */
+  .ban:not(:has(.ban-in)) { padding-left: max(32px, calc((100% - 1216px) / 2)) !important; padding-right: max(32px, calc((100% - 1216px) / 2)) !important; }
+
+  /* Riwayat & Grafik (kerangka .page-shell: header diam, daftar discroll) */
+  body:has(.page-shell) { padding-bottom: 0 !important; box-sizing: border-box; }
+  .page-shell { max-width: none !important; }
+  .page-shell .sticky-top { padding-left: max(32px, calc((100% - 1216px) / 2)) !important; padding-right: max(32px, calc((100% - 1216px) / 2)) !important; }
+  .page-shell .scroll-area { padding-left: max(32px, calc((100% - 1216px) / 2)) !important; padding-right: max(32px, calc((100% - 1216px) / 2)) !important; }
+  .page-shell .summary-grid { max-width: 900px; }
+  .page-shell #content::after { display: none; }
+  .page-shell #content:not(:has(.gcard)) { max-width: 900px; }
+  /* Grafik: kartu grafik dua kolom */
+  .page-shell #content:has(.gcard) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: start; }
+  .page-shell #content:has(.gcard) > .gcard { margin-bottom: 0; min-width: 0; }
+  .page-shell #content:has(.gcard) > :not(.gcard) { grid-column: 1 / -1; }
+
+  /* Laporan / Perangkat Ajar: kolom nyaman dibaca */
+  #seg, #paneAjar, #paneRiw, #paneKeg, #paneStd { max-width: 900px; }
+
+  /* Pengaturan: Izin per Guru di kiri, Mode dan Simpan di kanan */
+  #kontenUtama[style*="block"] { display: grid !important; grid-template-columns: minmax(0, 1fr) 380px; gap: 16px; align-items: start; }
+  #kontenUtama[style*="block"] > .card { margin-bottom: 0; }
+  #kontenUtama[style*="block"] > .card:nth-child(1) { grid-column: 2; grid-row: 1; }
+  #kontenUtama[style*="block"] > .card:nth-child(2) { grid-column: 1; grid-row: 1 / span 2; }
+  #kontenUtama[style*="block"] > .card:nth-child(3) { grid-column: 2; grid-row: 2; }
 }
 @media (prefers-color-scheme: dark) { @media (min-width: 1100px) {
   html, body { background: #0b0b0f; }
