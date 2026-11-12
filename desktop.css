@@ -1,7 +1,10 @@
 /* SMART Mariso 1 - tampilan laptop (layar lebar). Di bawah 1100px (HP/tablet) TIDAK ada yang berubah. */
 .dsk-only { display: none; }
 @media (min-width: 1100px) {
-  :root { --sb: 260px; }
+  :root { --sb: 260px; --col: 1216px; }
+  /* Lebar kolom isi per halaman. Header, tab, dan isi memakai lebar yang sama supaya sejajar kiri-kanan. */
+  body:has(#viewAbsen):not(.mode-admin) { --col: 760px; }   /* Beranda guru */
+  .page-shell, body:has(#paneAjar) { --col: 900px; }        /* Riwayat, Grafik, Laporan */
   html, body { background: #EEF2FB; }
   body { padding-left: var(--sb) !important; padding-bottom: 32px !important; }
 
@@ -28,14 +31,17 @@
   /* --- banner jadi bilah atas selebar layar --- */
   .ban { max-width: none !important; margin: 0 !important; border-radius: 0 !important; padding-left: 32px !important; padding-right: 32px !important; }
   .ban::after { border-radius: 0 !important; }
-  .ban-in { max-width: 1280px; margin: 0 auto; }
-  .wrap { max-width: 1280px !important; padding: 0 32px !important; margin-left: auto !important; margin-right: auto !important; }
-  .seg { max-width: 640px; }
+  .ban-in { max-width: var(--col); margin: 0 auto; }
+  .wrap { max-width: calc(var(--col) + 64px) !important; padding: 0 32px !important; margin-left: auto !important; margin-right: auto !important; }
+  .seg { max-width: none; width: 100%; }
 
   /* --- Beranda guru (index.html): kolom nyaman, bukan melar --- */
   #viewAbsen { max-width: 760px; margin: 0 auto; }
   .name-float { max-width: 760px; margin-left: auto; margin-right: auto; }
   .dsk-note { max-width: 760px; margin: 0 auto 14px; background: #e8efff; border: 1px solid #c9d6ff; color: #1e3a8a; border-radius: 16px; padding: 13px 16px; font-weight: 700; font-size: 14px; line-height: 1.45; }
+
+  /* --- Absen hanya dari HP: tombol Absen Masuk/Pulang + kartu pengingatnya disembunyikan di laptop --- */
+  .act-card, #pgCard { display: none !important; }
 
   /* --- menu admin lebih lebar --- */
   .adm-tiles { grid-template-columns: repeat(4, 1fr) !important; }
@@ -90,23 +96,29 @@
   .bnav .bn-row > *:not(.dsk-adm) > svg { margin: 0 !important; flex: none; }
 
   /* Banner tanpa pembungkus .ban-in (Laporan, Pengaturan): isi sejajar dengan kolom konten */
-  .ban:not(:has(.ban-in)) { padding-left: max(32px, calc((100% - 1216px) / 2)) !important; padding-right: max(32px, calc((100% - 1216px) / 2)) !important; }
+  .ban:not(:has(.ban-in)) { padding-left: max(32px, calc((100% - var(--col)) / 2)) !important; padding-right: max(32px, calc((100% - var(--col)) / 2)) !important; }
 
   /* Riwayat & Grafik (kerangka .page-shell: header diam, daftar discroll) */
   body:has(.page-shell) { padding-bottom: 0 !important; box-sizing: border-box; }
   .page-shell { max-width: none !important; }
-  .page-shell .sticky-top { padding-left: max(32px, calc((100% - 1216px) / 2)) !important; padding-right: max(32px, calc((100% - 1216px) / 2)) !important; }
-  .page-shell .scroll-area { padding-left: max(32px, calc((100% - 1216px) / 2)) !important; padding-right: max(32px, calc((100% - 1216px) / 2)) !important; }
-  .page-shell .summary-grid { max-width: 900px; }
+  .page-shell .sticky-top { padding-left: max(32px, calc((100% - var(--col)) / 2)) !important; padding-right: max(32px, calc((100% - var(--col)) / 2)) !important; }
+  .page-shell .scroll-area { padding-left: max(32px, calc((100% - var(--col)) / 2)) !important; padding-right: max(32px, calc((100% - var(--col)) / 2)) !important; }
+  .page-shell .summary-grid { max-width: none; }
+  .page-shell .seg { margin-bottom: 14px; }
+  /* Header Riwayat/Grafik disamakan dengan halaman lain: gradasi biru, dasar lurus, garis oranye-hijau penuh */
+  .page-shell .sticky-top { background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 60%, #16a34a 140%) !important; border-radius: 0 !important; }
+  .page-shell .sticky-top::after { border-radius: 0 !important; background: linear-gradient(90deg, #f59e0b, #fde68a, #16a34a) !important; }
   .page-shell #content::after { display: none; }
-  .page-shell #content:not(:has(.gcard)) { max-width: 900px; }
+  .page-shell #content:not(:has(.gcard)) { max-width: none; }
   /* Grafik: kartu grafik dua kolom */
   .page-shell #content:has(.gcard) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: start; }
   .page-shell #content:has(.gcard) > .gcard { margin-bottom: 0; min-width: 0; }
   .page-shell #content:has(.gcard) > :not(.gcard) { grid-column: 1 / -1; }
 
   /* Laporan / Perangkat Ajar: kolom nyaman dibaca */
-  #seg, #paneAjar, #paneRiw, #paneKeg, #paneStd { max-width: 900px; }
+  #seg { max-width: none; }
+  #paneAjar, #paneRiw, #paneKeg, #paneStd { max-width: var(--col); }
+  body:has(#paneJur) #paneRiw { max-width: none; }   /* Kelas: kolom lebar (tabel siswa) */
 
   /* Pengaturan: Izin per Guru di kiri, Mode dan Simpan di kanan */
   #kontenUtama[style*="block"] { display: grid !important; grid-template-columns: minmax(0, 1fr) 380px; gap: 16px; align-items: start; }
