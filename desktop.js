@@ -34,6 +34,7 @@
       new MutationObserver(selaras).observe(rowL, { attributes: true, attributeFilter: ['style'] });
       selaras();
     }
+    namaOtomatis();
     keluarLaptop();
     berandaLaptop();
     // Menu admin di sidebar.
@@ -62,6 +63,36 @@
       na.addEventListener('click', function () { setTimeout(function () { if (mq.matches && !window.__admTerbatas && window.__admPin) window.admSub('pan'); sinkron(); }, 30); });
       sinkron();
     }
+  }
+
+
+  // Laptop yang sudah tertaut: nama guru dipilih otomatis (kolom "Pilih nama" disembunyikan oleh CSS),
+  // sehingga Laporan/Kelas/Riwayat langsung terbuka. Kunci hanya dari gerbang "Absen masuk dulu".
+  function namaOtomatis() {
+    var sel = $('guruSelect'); if (!sel) return;
+    var kode = '', dev = '';
+    try { kode = localStorage.getItem('absensi_guru_terakhir') || ''; dev = localStorage.getItem('absensi_device_id') || ''; } catch (e) { }
+    if (!kode || !dev) return;
+    document.body.classList.add('pg-paired');
+    var nama = '';
+    try { var c = JSON.parse(sessionStorage.getItem('sm1_lp') || 'null'); if (c && c.k === kode && c.nama) nama = c.nama; } catch (e) { }
+    var tanya = false;
+    function pastikan() {
+      var kl = kode.toLowerCase(), opt = null, i;
+      for (i = 0; i < sel.options.length; i++) if (String(sel.options[i].value).toLowerCase() === kl) { opt = sel.options[i]; break; }
+      if (!opt) {
+        if (!nama) {
+          if (!tanya && window.google && google.script && google.script.run) {
+            tanya = true;
+            google.script.run.withSuccessHandler(function (r) { if (r && r.ok && r.nama) nama = r.nama; }).infoLaptopGuru(kode, dev);
+          }
+          return;
+        }
+        opt = document.createElement('option'); opt.value = kode; opt.textContent = nama; sel.appendChild(opt);
+      }
+      if (sel.value !== opt.value) { sel.value = opt.value; sel.dispatchEvent(new Event('change', { bubbles: true })); }
+    }
+    pastikan(); setInterval(pastikan, 700);
   }
 
   // Tombol "Keluar dari laptop ini": hanya muncul di perangkat yang terdaftar sebagai laptop (bukan HP utama).
