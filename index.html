@@ -17,6 +17,7 @@
   <noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet"></noscript>
   <script src="config.js"></script>
   <script src="api.js"></script>
+  <script src="cepat.js"></script>
     <style>
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
@@ -1423,6 +1424,7 @@ body.adm-terbatas [data-terbatas]{display:none!important}
       <div class="adm-grp">KELOLA</div>
       <div class="adm-list">
         <button type="button" class="adm-item dsk-only" data-hub="1" style="display:none" onclick="window.admSub('pan')"><span class="adm-ic biru"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></span><span class="adm-tx"><b>Pantauan</b><small>Ringkasan hari ini untuk layar laptop</small></span></button>
+        <button type="button" class="adm-item dsk-only" data-hub="1" style="display:none" onclick="window.admSub('ds')"><span class="adm-ic biru"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="adm-tx"><b>Dashboard Siswa</b><small>Kehadiran siswa seluruh sekolah</small></span></button>
         <button type="button" class="adm-item" onclick="window.admSub('ket')"><span class="adm-ic merah"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l16-6v14L3 13z"/><path d="M7 13v4a2 2 0 0 0 4 0v-2"/></svg></span><span class="adm-tx"><b>Keterangan &amp; Pengumuman</b><small>Sakit, izin, dinas; info untuk guru dan TV</small></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
         <button type="button" class="adm-item" style="display:none" onclick="window.admSub('ket')"><span class="adm-ic biru"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></span><span class="adm-tx"><b>Ajukan Keterangan</b><small>Sakit, izin, dinas luar, cuti</small></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
         <button type="button" class="adm-item" style="display:none" onclick="window.admSub('info')"><span class="adm-ic merah"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l16-6v14L3 13z"/><path d="M7 13v4a2 2 0 0 0 4 0v-2"/></svg></span><span class="adm-tx"><b>Pengumuman</b><small>Untuk guru dan layar TV</small></span><svg class="adm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
@@ -1661,6 +1663,14 @@ body.adm-terbatas [data-terbatas]{display:none!important}
             <div class="kgx-sum"><div><b id="stLengkap">0</b><span id="stTa">Lengkap</span></div><div><b id="stTotal">8</b><span>Standar</span></div></div>
             <div id="stList"></div>
           </div>
+        </div>
+      </div>
+
+      <div class="adm-pane" id="admPaneDS">
+        <div class="card2">
+          <div class="pin-row pin-lock step1" id="dsPinRow"><div class="lk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><h2>Masukkan PIN Admin</h2><p class="sub">PIN diperlukan untuk membuka halaman ini</p><input type="password" id="dsPin" inputmode="numeric" placeholder="PIN admin" autocomplete="off"><button type="button" id="btnDsMuat">Buka</button></div>
+          <div id="dsStatus" class="status"></div>
+          <div id="dsBox" style="display:none"></div>
         </div>
       </div>
 
@@ -1908,6 +1918,7 @@ body.adm-terbatas [data-terbatas]{display:none!important}
     // Pakai icon lingkaran hijau + centang beranimasi supaya terasa hidup,
     // bukan sekadar teks status biasa.
     function showSudahAbsenModal(message) {
+      if (document.body.classList.contains('pg-paired')) return; // laptop tertaut: tidak perlu popup, status sudah tampil di Beranda
       var icon = document.getElementById('modalIcon');
       icon.className = 'modal-icon pp-ring ok';
       icon.innerHTML = ANIM.check;
@@ -4896,6 +4907,101 @@ body.adm-terbatas [data-terbatas]{display:none!important}
     $('admPanePan').classList.remove('on'); asli(k);
   };
   window.__panBuka = function () { window.admSub('pan'); };
+})();
+</script>
+<script>
+// ===== Dashboard Siswa (kepala sekolah / admin) =====
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var BLN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  var seq = 0, bulanP = '', kelasP = '';
+  function esc(x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function nb(b) { var p = b.split('-'); return BLN[+p[1] - 1] + ' ' + p[0]; }
+  function chart(tren) {
+    if (!tren || !tren.length) return '<div class="pan-ok" style="color:#4B5567">Belum ada data absen bulan ini.</div>';
+    var W = 560, H = 240, n = tren.length, xy = tren.map(function (t, i) { return [n === 1 ? W / 2 : 20 + i * (W - 40) / (n - 1), H - 24 - ((t.persen == null ? 0 : t.persen) - 50) / 50 * (H - 44)]; });
+    var g = ''; for (var k = 0; k < 4; k++) { var y = H - 24 - k * (H - 44) / 3; g += '<line x1="20" x2="' + (W - 20) + '" y1="' + y + '" y2="' + y + '" stroke="#e2e8f0"/><text x="0" y="' + (y + 4) + '" font-size="10" fill="#64748b">' + (50 + k * 50 / 3).toFixed(0) + '</text>'; }
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" height="' + H + '" role="img" aria-label="Tren kehadiran per minggu">' + g + '<polyline fill="none" stroke="#1e3a8a" stroke-width="3" points="' + xy.map(function (a) { return a[0].toFixed(0) + ',' + a[1].toFixed(0); }).join(' ') + '"/>' +
+      xy.map(function (a, i) { return '<circle cx="' + a[0].toFixed(0) + '" cy="' + a[1].toFixed(0) + '" r="4" fill="#1e3a8a"/><text x="' + a[0].toFixed(0) + '" y="' + (H - 4) + '" font-size="11" text-anchor="middle" fill="#64748b">M' + tren[i].minggu + '</text><text x="' + a[0].toFixed(0) + '" y="' + (a[1] - 9).toFixed(0) + '" font-size="11" text-anchor="middle" fill="#1e3a8a" font-weight="700">' + (tren[i].persen == null ? '' : tren[i].persen + '%') + '</text>'; }).join('') + '</svg>';
+  }
+  function gambar(r) {
+    $('dsPinRow').style.display = 'none'; var box = $('dsBox'); box.style.display = '';
+    var opt = r.bulanList.map(function (b) { return '<option value="' + b + '"' + (b === r.bulan ? ' selected' : '') + '>' + esc(nb(b)) + '</option>'; }).join('');
+    var kl = '<option value="">Semua kelas</option>' + r.kelasList.map(function (c) { return '<option' + (c === kelasP ? ' selected' : '') + '>' + esc(c) + '</option>'; }).join('');
+    function st(v, l) { return '<div class="pan-s"><b>' + v + '</b><span>' + l + '</span></div>'; }
+    var rs = r.ringkas;
+    var rank = r.kelas.filter(function (k) { return k.persenHadir != null; }).sort(function (a, b) { return b.persenHadir - a.persenHadir; }).map(function (k, i) {
+      return '<div class="pan-b"><i>#' + (i + 1) + '</i><div><b>' + esc(k.kelas) + '</b><small>' + esc(k.waliNama) + ' · ' + k.jumlahSiswa + ' siswa</small></div><span class="pan-bar"><i style="width:' + Math.min(100, k.persenHadir) + '%"></i></span><b style="min-width:54px;text-align:right">' + k.persenHadir + '%</b></div>';
+    }).join('') || '<div class="pan-ok" style="color:#4B5567">Belum ada data.</div>';
+    var per = r.perhatian.map(function (x) { return '<div class="pan-b"><i>' + esc(String(x.kelas).replace(/\D/g, '') ? 'K' + String(x.kelas).replace(/\D/g, '') : '?') + '</i><div><b>' + esc(x.nama) + '</b><small>' + esc(x.kelas) + ' · Sakit ' + x.s + ' · Izin ' + x.i + '</small></div><span class="pan-flag">Alpa ' + x.a + '</span></div>'; }).join('') || '<div class="pan-ok">✓ Tidak ada siswa yang perlu diperhatikan bulan ini.</div>';
+    box.innerHTML = '<div id="dsCetak"><div class="pan-top"><div><b>Dashboard Siswa</b><small style="color:#4B5567">Kehadiran siswa · ' + esc(nb(r.bulan)) + (kelasP ? ' · ' + esc(kelasP) : ' · semua kelas') + '</small></div><div class="pan-dt"><select id="dsBulan" class="pan-sel">' + opt + '</select><select id="dsKelas" class="pan-sel">' + kl + '</select><button type="button" id="dsCetakBtn" class="pan-btn">Cetak untuk rapat</button></div></div>' +
+      '<div class="pan-stat">' + st(rs.persenHadir == null ? '-' : rs.persenHadir + '%', 'Rata-rata hadir') + st(rs.siswa, 'Total siswa') + st(rs.sakitIzin, 'Sakit + Izin') + st(rs.alpa, 'Alpa bulan ini') + '</div>' +
+      '<div class="pan-grid"><div class="pan-c"><h3>Tren kehadiran</h3><small class="pan-sub">Persen hadir per minggu</small>' + chart(r.tren) + '</div><div class="pan-c"><h3>Peringkat kelas</h3><small class="pan-sub">Persen hadir bulan ini</small>' + rank + '</div></div>' +
+      '<div class="pan-c" style="margin-top:18px"><h3>Siswa yang perlu diperhatikan</h3><small class="pan-sub">Alpa 3 kali atau lebih bulan ini</small>' + per + '</div></div>';
+  }
+  function muat(pinBaru) {
+    var pin = pinBaru || window.__admPin;
+    if (!pin) { setStatus('dsStatus', 'err', 'Isi PIN admin dulu.'); return; }
+    var id = getDeviceId(); if (!id) { setStatus('dsStatus', 'err', 'Device ID tidak terdeteksi.'); return; }
+    var my = ++seq, btn = $('btnDsMuat'); btn.disabled = true; setStatus('dsStatus', 'info', 'Memuat dashboard siswa...');
+    google.script.run.withSuccessHandler(function (r) {
+      btn.disabled = false; if (my !== seq) return;
+      if (!r || !r.ok) { setStatus('dsStatus', 'err', (r && r.message) || 'Gagal memuat.'); return; }
+      window.__admPin = pin; $('dsPin').value = ''; $('dsStatus').className = 'status'; $('dsStatus').textContent = '';
+      bulanP = r.bulan; gambar(r);
+    }).withFailureHandler(function (e) { btn.disabled = false; setStatus('dsStatus', 'err', 'Error: ' + pesanError(e)); }).getDashboardSiswaAdmin(pin, id, bulanP, kelasP);
+  }
+  $('btnDsMuat').addEventListener('click', function () { muat($('dsPin').value.trim()); });
+  $('dsPin').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('btnDsMuat').click(); });
+  $('dsBox').addEventListener('change', function (e) { if (e.target.id === 'dsBulan') { bulanP = e.target.value; muat(); } else if (e.target.id === 'dsKelas') { kelasP = e.target.value; muat(); } });
+  $('dsBox').addEventListener('click', function (e) { if (e.target.id === 'dsCetakBtn') { document.body.classList.add('cetak-ds'); window.print(); setTimeout(function () { document.body.classList.remove('cetak-ds'); }, 500); } });
+  var asli = window.admSub;
+  window.admSub = function (k) {
+    if (k === 'ds') {
+      asli('menu');
+      $('admPaneMenu').classList.remove('on'); $('admPanePan').classList.remove('on'); $('admPaneDS').classList.add('on');
+      $('admGt1').textContent = 'Dashboard Siswa'; $('admGt2').textContent = 'Kehadiran siswa';
+      document.body.classList.add('adm-sub');
+      if (window.__admPin) muat();
+      return;
+    }
+    $('admPaneDS').classList.remove('on'); asli(k);
+  };
+})();
+</script>
+<script>
+/* Gerbang absen masuk: pada hari kerja, sebelum absen masuk menu Laporan & Kelas terkunci dan layar HP hanya menampilkan tombol Absen Masuk. */
+(function () {
+  var sel = document.getElementById('guruSelect'), va = document.getElementById('viewAbsen');
+  if (!sel || !va) return;
+  var st = document.createElement('style');
+  st.textContent = '.gb-box{display:none;margin:0 0 14px;padding:22px 20px;border-radius:20px;background:#fff7e6;border:1px solid #f5d9a0;text-align:center}'
+    + 'body.gerbang .gb-box{display:block}.gb-box h2{margin:0 0 6px;font-size:20px;color:#7a4a00;font-weight:800}.gb-box p{margin:0 0 12px;font-size:14.5px;line-height:1.5;color:#5b3d00;font-weight:600}'
+    + '.gb-box button{min-height:56px;padding:0 26px;border:0;border-radius:16px;background:#1d4ed8;color:#fff;font:inherit;font-weight:800;font-size:17px;cursor:pointer}.gb-box small{display:block;margin-top:10px;font-size:12.5px;color:#7a5a20;font-weight:600}'
+    + 'body.gerbang #navLaporan,body.gerbang #navKelas{opacity:.45}'
+    + '@media (max-width:1099px){body.gerbang #viewAbsen>*:not(.gb-box):not(.act-card){display:none!important}}'
+    + '@media (min-width:1100px){.gb-box button{display:none}}';
+  document.head.appendChild(st);
+  var box = document.createElement('div'); box.className = 'gb-box'; box.id = 'gbBox';
+  box.innerHTML = '<h2>Absen masuk dulu ya</h2><p id="gbTeks">Menu Laporan dan Kelas terbuka setelah kamu absen masuk hari ini.</p><button type="button" id="gbBtn">Absen Masuk Sekarang</button><small>Izin atau sakit? Isi keterangan di halaman absen, lalu menu terbuka.</small>';
+  va.insertBefore(box, va.firstChild);
+  document.getElementById('gbBtn').onclick = function () { var b = document.getElementById('btnMasuk'); if (b && !b.disabled) b.click(); };
+  var terkunci = false;
+  function hitung() {
+    var s = window.__lastStatus, adm = document.body.classList.contains('mode-admin');
+    var k = !adm && !!sel.value && !!s && s.hariKerja === true && s.deviceCocok !== false && !s.sudahMasuk && !s.sudahKeluar && !s.ket;
+    if (k !== terkunci) { terkunci = k; document.body.classList.toggle('gerbang', k); }
+    var t = document.getElementById('gbTeks');
+    if (t && k) t.textContent = (window.innerWidth >= 1100) ? 'Absen masuk dilakukan dari HP. Menu Laporan dan Kelas terbuka setelah kamu absen masuk hari ini.' : 'Menu Laporan dan Kelas terbuka setelah kamu absen masuk hari ini.';
+  }
+  setInterval(hitung, 600); sel.addEventListener('change', function () { setTimeout(hitung, 0); });
+  function cegat(e) {
+    if (!terkunci) return;
+    e.stopImmediatePropagation(); e.preventDefault();
+    var m = 'Absen masuk dulu ya, baru menu ini terbuka.';
+    if (window.lapToast) window.lapToast('err', m); else alert(m);
+  }
+  ['navLaporan', 'navKelas', 'lapCta'].forEach(function (id) { var el = document.getElementById(id); if (el) el.addEventListener('click', cegat, true); });
 })();
 </script>
 <script src="desktop.js"></script>
