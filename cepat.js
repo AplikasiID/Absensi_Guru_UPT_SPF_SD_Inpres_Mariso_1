@@ -4,6 +4,17 @@
  * 2) GPS dipanaskan di latar belakang (maks. 45 detik) saat tombol absen bisa dipakai,
  *    supaya saat tombol ditekan lokasi lebih cepat didapat. */
 (function () {
+  // Laptop yang belum tertaut: buka layar tautan (kode QR) dulu, bukan Beranda.
+  // Dilewati untuk HP, layar kecil, laptop yang sudah tertaut (ada guru tersimpan), dan kalau pengguna datang dari halaman tautan (tombol Kembali).
+  try {
+    var mobi = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent || '');
+    var lewat = false;
+    try { lewat = sessionStorage.getItem('smart_lewat_tautan') === '1'; } catch (e) { }
+    if (!lewat && /laptop\.html/.test(document.referrer || '')) { lewat = true; try { sessionStorage.setItem('smart_lewat_tautan', '1'); } catch (e) { } }
+    var punyaGuru = false;
+    try { punyaGuru = !!localStorage.getItem('absensi_guru_terakhir'); } catch (e) { punyaGuru = true; }
+    if (!mobi && window.innerWidth >= 1100 && !punyaGuru && !lewat) { location.replace('laptop.html'); return; }
+  } catch (e) { }
   var G = window.google && window.google.script && window.google.script.run;
   if (!G || typeof Proxy === 'undefined') return;
   var TUNDA = { cekRevisiGuru: 1, getInfoGuru: 1, infoLaptopGuru: 1, getKelasGuru: 1, getRiwayatAbsen: 1, cekPerangkatAdmin: 1 };
