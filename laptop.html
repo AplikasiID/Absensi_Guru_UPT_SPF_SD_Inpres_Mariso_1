@@ -42,6 +42,9 @@ input.kin { width: 100%; min-height: 56px; border: 2px solid var(--line); border
 .pesan.err { display: block; background: #fee2e2; color: #b91c1c; } .pesan.ok { display: block; background: var(--okbg); color: #166534; } .pesan.info { display: block; background: var(--info); color: var(--infoink); }
 .lk { display: block; text-align: center; text-decoration: none; margin-top: 10px; min-height: 48px; line-height: 48px; border-radius: 14px; background: var(--info); color: var(--infoink); font-weight: 800; font-size: 14px; }
 .back { display: inline-block; margin: 14px 0 0; color: var(--blue); font-weight: 800; font-size: 14px; text-decoration: none; }
+.qrbox { display: flex; justify-content: center; margin: 8px 0 4px; } .qrbox svg { width: min(260px, 70vw); height: auto; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+.lgkh { margin: 8px 0 0; padding-left: 20px; font-size: 14px; font-weight: 600; line-height: 1.7; color: var(--ink); }
+.scanv { width: 100%; border-radius: 16px; background: #000; aspect-ratio: 4 / 3; object-fit: cover; margin-top: 10px; }
 </style>
 <link rel="stylesheet" href="desktop.css">
 </head>
@@ -54,6 +57,7 @@ input.kin { width: 100%; min-height: 56px; border: 2px solid var(--line); border
   <div id="isi"><div class="card"><p>Memuat...</p></div></div>
   <a class="back" id="kembali" href="index.html">&larr; Kembali ke Absen</a>
 </div>
+<script src="qr.js"></script>
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
@@ -87,20 +91,22 @@ input.kin { width: 100%; min-height: 56px; border: 2px solid var(--line); border
       simpanCache(!!r.izin);
       if (!r.izin) h = '<div class="card"><h2>Belum diaktifkan</h2><p>Login di laptop belum diaktifkan untuk kamu. Minta kepala sekolah atau admin mengaktifkannya di Pengaturan.</p></div>';
       else if (r.iniUtama) {
-        h = '<div class="card"><h2>Pasangkan laptop</h2><p>Buat kode, lalu ketik kode itu di laptop. Kode berlaku 5 menit dan hanya bisa dipakai sekali.</p><button class="btn" id="btnKode">Buat kode untuk laptop</button><div id="kodeBox"></div><div class="pesan" id="pesan"></div></div>';
+        h = '<div class="card"><h2>Tautkan laptop</h2><p>Buka halaman ini di laptop sampai muncul kode QR, lalu pindai kode itu dari sini.</p><button class="btn" id="btnScan">Pindai QR dari laptop</button><div id="scanBox"></div><div class="pesan" id="pesan2"></div></div><div class="card"><h2>Atau pakai kode 6 angka</h2><p>Buat kode, lalu ketik kode itu di laptop. Kode berlaku 5 menit dan hanya bisa dipakai sekali.</p><button class="btn ghost" id="btnKode">Buat kode untuk laptop</button><div id="kodeBox"></div><div class="pesan" id="pesan"></div></div>';
         if (r.adaTambahan) h += '<div class="card"><h2>Laptop terdaftar</h2><p>' + esc(r.label || 'Laptop') + (r.sejak ? ' sejak ' + esc(r.sejak) : '') + '. Memasangkan laptop baru akan menggantikannya.</p><button class="btn red" id="btnLepas">Lepas laptop</button></div>';
       } else if (r.iniTambahan) {
         h = '<div class="card"><h2>Perangkat ini terdaftar</h2><p>Perangkat ini terdaftar sebagai laptop ' + esc(r.nama) + (r.sejak ? ' sejak ' + esc(r.sejak) : '') + '. Absen Masuk dan Pulang tetap dari HP.</p>' + tautan() + '<button class="btn red" id="btnLepas">Lepas perangkat ini</button><div class="pesan" id="pesan"></div></div>';
       } else if (!r.adaUtama) {
         h = '<div class="card"><h2>HP utama belum terdaftar</h2><p>Absen dulu sekali dari HP kamu, lalu kembali ke halaman ini.</p></div>';
       } else {
-        h = '<div class="card"><h2>Sambungkan HP ke laptop ini</h2><p>Di HP utama: buka aplikasi, pilih namamu, ketuk <b>Sambungkan perangkat laptop</b>, lalu <b>Buat kode</b>. Ketik 6 angka itu di sini.</p><input class="kin" id="kin" inputmode="numeric" maxlength="6" placeholder="------" autocomplete="off"><button class="btn" id="btnPasang">Pasangkan perangkat ini</button><div class="pesan" id="pesan"></div></div>';
+        h = '<div class="card"><h2>Sambungkan HP ke laptop ini</h2><p>Di HP utama: buka aplikasi, pilih namamu, ketuk <b>Sambungkan perangkat laptop</b>, lalu <b>Buat kode</b>. Ketik 6 angka itu di sini.</p><input class="kin" id="kin" inputmode="numeric" maxlength="6" placeholder="------" autocomplete="off"><button class="btn" id="btnPasang">Pasangkan perangkat ini</button><button class="btn ghost" id="btnQr">Atau tampilkan kode QR</button><div class="pesan" id="pesan"></div></div>';
       }
     }
     $('isi').innerHTML = h;
     var b;
     if ((b = $('btnKode'))) b.onclick = buatKode;
     if ((b = $('btnPasang'))) b.onclick = pasang;
+    if ((b = $('btnScan'))) b.onclick = scan;
+    if ((b = $('btnQr'))) b.onclick = mulaiQR;
     if ((b = $('btnLepas'))) b.onclick = function () { Popup.tanya('Perangkat ini tidak bisa lagi membuka Riwayat, Laporan, dan Kelas.', { judul: 'Lepas laptop?', ok: 'Ya, lepas', bahaya: true, ikon: 'warn' }, lepas); };
     if ((b = $('kin'))) b.addEventListener('keydown', function (e) { if (e.key === 'Enter') pasang(); });
   }
@@ -135,7 +141,101 @@ input.kin { width: 100%; min-height: 56px; border: 2px solid var(--line); border
     panggil('lepasLaptopSendiri', [kode, dev], function (r) { busy(false); if (r && r.ok) muat(); else pesan('err', (r && r.message) || 'Gagal melepas.'); });
   }
   $('kembali').href = 'index.html';
-  if (!kode) { render({ ok: false, message: 'Pilih namamu dulu di halaman Absen, lalu buka halaman ini lagi.' }); } else muat();
+  // ===== Tautkan lewat QR (seperti WhatsApp Web) =====
+  var qrTimer = null, qrPoll = null, qrUlang = 0, camStream = null, camStop = false;
+  function pastikanDev() {
+    if (dev) return dev;
+    try { dev = localStorage.getItem('absensi_device_id') || ''; } catch (e) { }
+    if (!dev) {
+      dev = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'dev-' + Date.now() + '-' + Math.random().toString(36).substring(2, 12);
+      try { localStorage.setItem('absensi_device_id', dev); } catch (e) { }
+      try { document.cookie = 'absensi_device_id=' + encodeURIComponent(dev) + '; max-age=31536000; path=/; SameSite=Lax'; } catch (e) { }
+    }
+    return dev;
+  }
+  function labelPerangkat() {
+    var u = navigator.userAgent || '', br = /Edg\//.test(u) ? 'Edge' : /OPR\//.test(u) ? 'Opera' : /Firefox\//.test(u) ? 'Firefox' : /Chrome\//.test(u) ? 'Chrome' : /Safari\//.test(u) ? 'Safari' : 'Browser';
+    var os = /Windows/.test(u) ? 'Windows' : /Mac OS/.test(u) ? 'Mac' : /Linux/.test(u) ? 'Linux' : '';
+    return 'Laptop ' + br + (os ? ' · ' + os : '');
+  }
+  function hentiQR() { clearInterval(qrTimer); clearInterval(qrPoll); qrTimer = qrPoll = null; }
+  function mulaiQR() {
+    hentiQR(); pastikanDev();
+    if (!dev) { $('isi').innerHTML = '<div class="card"><h2>Tidak bisa dibuka</h2><p>Perangkat tidak terdeteksi. Gunakan Chrome biasa (bukan mode penyamaran).</p></div>'; return; }
+    $('sub').textContent = 'Tautkan laptop ini lewat HP';
+    $('isi').innerHTML = '<div class="card"><p>Menyiapkan kode QR...</p></div>';
+    panggil('mintaTautanLaptop', [dev, labelPerangkat()], function (r) {
+      if (!r || !r.ok) { $('isi').innerHTML = '<div class="card"><h2>Tidak bisa membuat QR</h2><p>' + esc((r && r.message) || GAGAL) + '</p><button class="btn" id="btnUlang">Coba lagi</button></div>'; $('btnUlang').onclick = mulaiQR; return; }
+      var url = location.href.split('#')[0].split('?')[0] + '?q=' + r.token, t0 = Date.now(), sisa = r.detik || 150;
+      var svg; try { svg = SM1QR.svg(url, 260); } catch (e) { svg = '<p>' + esc(url) + '</p>'; }
+      $('isi').innerHTML = '<div class="card"><h2>Tautkan laptop ini</h2><div class="qrbox">' + svg + '</div><div class="ket" id="qrKet"></div><ol class="lgkh"><li>Buka SMART Mariso 1 di <b>HP utama</b> kamu.</li><li>Ketuk <b>Sambungkan perangkat laptop</b>, lalu <b>Pindai QR dari laptop</b>.</li><li>Arahkan kamera HP ke kode ini, lalu ketuk <b>Ya</b>.</li></ol><div class="pesan" id="pesan"></div></div>';
+      function tik() { var s = Math.max(0, sisa - Math.floor((Date.now() - t0) / 1000)), e = $('qrKet'); if (e) e.textContent = s > 0 ? 'Kode berlaku ' + Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2) + ' lagi' : 'Memperbarui kode...'; }
+      tik(); qrTimer = setInterval(tik, 1000);
+      qrPoll = setInterval(function () {
+        google.script.run.withSuccessHandler(function (c) {
+          if (!c || !c.ok) return;
+          if (c.status === 'ok') {
+            hentiQR();
+            try { localStorage.setItem('absensi_guru_terakhir', c.kode); } catch (e) { }
+            $('isi').innerHTML = '<div class="card"><h2>Laptop tertaut</h2><p>Berhasil masuk sebagai <b>' + esc(c.nama || c.kode) + '</b>. Absen Masuk dan Pulang tetap dari HP.</p><a class="lk" href="index.html">Buka beranda</a></div>';
+            setTimeout(function () { location.href = 'index.html'; }, 1800);
+          } else if (c.status === 'habis') {
+            hentiQR(); qrUlang++;
+            if (qrUlang <= 5) mulaiQR(); else $('isi').innerHTML = '<div class="card"><h2>Kode kedaluwarsa</h2><p>Tidak ada yang memindai kode ini.</p><button class="btn" id="btnUlang">Tampilkan QR baru</button></div>', $('btnUlang').onclick = function () { qrUlang = 0; mulaiQR(); };
+          }
+        }).cekTautanLaptop(r.token, dev);
+      }, 2500);
+    });
+  }
+  function tutupKamera() { camStop = true; if (camStream) { try { camStream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) { } camStream = null; } var v = $('scanBox'); if (v) v.innerHTML = ''; }
+  function ambilToken(teks) { var m = /[?&]q=([0-9a-f]{24})(?![0-9a-f])/i.exec(teks || '') || /^([0-9a-f]{24})$/i.exec(String(teks || '').trim()); return m ? m[1].toLowerCase() : ''; }
+  function scan() {
+    var box = $('scanBox'), ms = function (t, m) { var e = $('pesan2'); if (e) { e.className = 'pesan ' + t; e.textContent = m; } };
+    if (!window.BarcodeDetector || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { ms('info', 'Pemindai di dalam aplikasi belum didukung di HP ini. Buka kamera bawaan HP, arahkan ke QR di laptop, lalu ketuk tautan yang muncul.'); return; }
+    ms('info', 'Membuka kamera...'); camStop = false;
+    var det; try { det = new BarcodeDetector({ formats: ['qr_code'] }); } catch (e) { ms('err', 'Pemindai tidak bisa dibuka di HP ini.'); return; }
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false }).then(function (st) {
+      camStream = st;
+      box.innerHTML = '<video class="scanv" id="scanV" playsinline muted autoplay></video><button class="btn ghost" id="btnTutupScan">Batal</button>';
+      var v = $('scanV'); v.srcObject = st; v.play().catch(function () { });
+      $('btnTutupScan').onclick = function () { tutupKamera(); ms('info', ''); $('pesan2').className = 'pesan'; };
+      ms('info', 'Arahkan kamera ke kode QR di layar laptop.');
+      (function loop() {
+        if (camStop) return;
+        if (v.readyState >= 2) {
+          det.detect(v).then(function (hasil) {
+            for (var i = 0; i < hasil.length; i++) { var t = ambilToken(hasil[i].rawValue); if (t) { tutupKamera(); konfirmasi(t); return; } }
+            setTimeout(loop, 250);
+          }, function () { setTimeout(loop, 400); });
+        } else setTimeout(loop, 250);
+      })();
+    }, function () { ms('err', 'Kamera tidak diizinkan. Izinkan kamera untuk situs ini, atau buka kamera bawaan HP dan arahkan ke QR di laptop.'); });
+  }
+  // HP utama: layar "Tautkan laptop ini?" (dari hasil pindai atau dari tautan QR)
+  function konfirmasi(token) {
+    clearInterval(timer);
+    if (!kode) { $('isi').innerHTML = '<div class="card"><h2>Buka dari HP utama</h2><p>Buka aplikasi di HP utama kamu, pilih namamu dan absen sekali, lalu pindai QR lagi.</p></div>'; return; }
+    $('isi').innerHTML = '<div class="card"><p>Memeriksa QR...</p></div>';
+    panggil('infoTautanLaptop', [kode, dev, token], function (r) {
+      if (!r || !r.ok) { $('isi').innerHTML = '<div class="card"><h2>Tidak bisa menautkan</h2><p>' + esc((r && r.message) || GAGAL) + '</p><a class="lk" href="laptop.html">Kembali</a></div>'; return; }
+      $('sub').textContent = r.nama || '';
+      $('isi').innerHTML = '<div class="card"><h2>Tautkan laptop ini?</h2><p>Perangkat: <b>' + esc(r.label || 'Laptop') + '</b><br>Akun: <b>' + esc(r.nama) + '</b></p><p>Laptop ini bisa membuka Riwayat, Laporan, dan Kelas atas nama kamu. Absen Masuk dan Pulang tetap dari HP. Tautkan hanya jika laptop itu ada di depanmu.</p><button class="btn" id="btnYa">Ya, tautkan</button><button class="btn red" id="btnTidak">Tidak</button><div class="pesan" id="pesan"></div></div>';
+      $('btnTidak').onclick = function () { location.href = 'laptop.html'; };
+      $('btnYa').onclick = function () {
+        busy(true); pesan('info', 'Menautkan...');
+        panggil('setujuiTautanLaptop', [kode, dev, token], function (c) {
+          busy(false);
+          if (c && c.ok) $('isi').innerHTML = '<div class="card"><h2>Berhasil</h2><p>' + esc(c.message) + ' Layar laptop akan masuk sendiri dalam beberapa detik.</p><a class="lk" href="laptop.html">Selesai</a></div>';
+          else pesan('err', (c && c.message) || 'Gagal menautkan.');
+        });
+      };
+    });
+  }
+  $('kembali').href = 'index.html';
+  var HP = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent || '');
+  if (q.q && ambilToken('?q=' + q.q)) { pastikanDev(); konfirmasi(ambilToken('?q=' + q.q)); }
+  else if (!kode && !HP) mulaiQR();
+  else if (!kode) { render({ ok: false, message: 'Pilih namamu dulu di halaman Absen, lalu buka halaman ini lagi.' }); } else muat();
 })();
 </script>
 <script src="desktop.js"></script>
