@@ -328,7 +328,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
 </div>
 
 <div class="wrap">
-  <div class="seg" id="seg" role="tablist"><button type="button" id="segJur" class="on">Jurnal</button><button type="button" id="segAbs">Absen Siswa</button><button type="button" id="segSis">Siswa</button><button type="button" id="segRiw">Riwayat</button></div>
+  <div class="seg" id="seg" role="tablist"><button type="button" id="segJur" class="on">Jurnal</button><button type="button" id="segAbs">Absen Siswa</button><button type="button" id="segSis">Siswa</button><button type="button" id="segRiw">Riwayat</button><button type="button" id="segDs" class="dsk-only">Dashboard</button></div>
   <div id="paneJur"><div class="sk"></div></div>
   <div id="paneAbs" style="display:none"><div class="sk"></div></div>
   <div class="sx-sh" id="swSheet"><div class="sx-sp"><div class="sx-grip"></div>
@@ -344,6 +344,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
 </div></div>
 <div id="paneSis" style="display:none"><div class="sk"></div></div>
 <div id="paneRiw" style="display:none"><div class="sk"></div></div>
+<div id="paneDs" style="display:none"><div class="sk"></div></div>
 </div>
 
 <nav class="bnav" id="bnav">
@@ -431,17 +432,18 @@ textarea.kg-in{resize:vertical;min-height:84px}
   var info = null, tab = 'jur';
   function pilihTab(t) {
     tab = t;
-    [['jur', 'segJur', 'paneJur'], ['abs', 'segAbs', 'paneAbs'], ['sis', 'segSis', 'paneSis'], ['riw', 'segRiw', 'paneRiw']].forEach(function (x) {
+    [['jur', 'segJur', 'paneJur'], ['abs', 'segAbs', 'paneAbs'], ['sis', 'segSis', 'paneSis'], ['riw', 'segRiw', 'paneRiw'], ['ds', 'segDs', 'paneDs']].forEach(function (x) {
       $(x[1]).className = x[0] === t ? 'on' : ''; $(x[2]).style.display = x[0] === t ? '' : 'none';
     });
     if (!info) return;
-    if (t === 'jur') jurMuat(); else if (t === 'abs') absMuat(); else if (t === 'riw') rwMuat(); else sisMuat();
+    if (t === 'jur') jurMuat(); else if (t === 'abs') absMuat(); else if (t === 'riw') rwMuat(); else if (t === 'ds') dsMuat(); else sisMuat();
     try { window.scrollTo(0, 0); } catch (e) { }
   }
   $('segJur').onclick = function () { pilihTab('jur'); };
   $('segAbs').onclick = function () { pilihTab('abs'); };
   $('segSis').onclick = function () { pilihTab('sis'); };
   $('segRiw').onclick = function () { pilihTab('riw'); };
+  $('segDs').onclick = function () { pilihTab('ds'); };
   (function () {
     var x0 = 0, y0 = 0, t0 = 0, urut = ['jur', 'abs', 'sis', 'riw'];
     document.addEventListener('touchstart', function (e) { var t = e.touches[0]; x0 = t.clientX; y0 = t.clientY; t0 = Date.now(); }, { passive: true });
@@ -1087,6 +1089,39 @@ textarea.kg-in{resize:vertical;min-height:84px}
       }, swGagal);
     }
   });
+
+  // ================= DASHBOARD SISWA (wali kelas, layar laptop) =================
+  var ds = null, dsKelas = '', dsBulan = '', dsSeq = 0;
+  function dsChart(tren) {
+    if (!tren || !tren.length) return '<div class="empty">Belum ada data absen bulan ini.</div>';
+    var W = 560, H = 220, n = tren.length, xy = tren.map(function (t, i) { return [n === 1 ? W / 2 : 20 + i * (W - 40) / (n - 1), H - 24 - ((t.persen == null ? 0 : t.persen) - 50) / 50 * (H - 44)]; });
+    var g = ''; for (var k = 0; k < 4; k++) { var y = H - 24 - k * (H - 44) / 3; g += '<line x1="20" x2="' + (W - 20) + '" y1="' + y + '" y2="' + y + '" stroke="#e2e8f0"/><text x="0" y="' + (y + 4) + '" font-size="10" fill="#64748b">' + (50 + k * 50 / 3).toFixed(0) + '</text>'; }
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" height="' + H + '" role="img" aria-label="Tren kehadiran per minggu">' + g + '<polyline fill="none" stroke="#1e3a8a" stroke-width="3" points="' + xy.map(function (a) { return a[0].toFixed(0) + ',' + a[1].toFixed(0); }).join(' ') + '"/>' +
+      xy.map(function (a, i) { return '<circle cx="' + a[0].toFixed(0) + '" cy="' + a[1].toFixed(0) + '" r="4" fill="#1e3a8a"/><text x="' + a[0].toFixed(0) + '" y="' + (H - 4) + '" font-size="11" text-anchor="middle" fill="#64748b">M' + tren[i].minggu + '</text><text x="' + a[0].toFixed(0) + '" y="' + (a[1] - 9).toFixed(0) + '" font-size="11" text-anchor="middle" fill="#1e3a8a" font-weight="700">' + (tren[i].persen == null ? '' : tren[i].persen + '%') + '</text>'; }).join('') + '</svg>';
+  }
+  function dsMuat(bulan, kelas) {
+    if (kelas) dsKelas = kelas; if (bulan) dsBulan = bulan;
+    var my = ++dsSeq; $('paneDs').innerHTML = '<div class="sk"></div>';
+    run('getDashboardSiswaWali', [dsKelas, dsBulan], function (r) {
+      if (my !== dsSeq) return;
+      if (!r || !r.ok) { $('paneDs').innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; return; }
+      ds = r; dsKelas = r.kelasPilih; dsBulan = r.bulan; dsGambar();
+    }, function () { if (my === dsSeq) $('paneDs').innerHTML = '<div class="empty">' + GAGAL + '</div>'; });
+  }
+  function dsGambar() {
+    var r = ds, k = r.kelas[0], opt = r.bulanList.map(function (b) { return '<option value="' + b + '"' + (b === r.bulan ? ' selected' : '') + '>' + esc(rwNama(b)) + '</option>'; }).join('');
+    var kl = r.kelasList.length > 1 ? '<select id="dsKelas" class="pan-sel">' + r.kelasList.map(function (c) { return '<option' + (c === r.kelasPilih ? ' selected' : '') + '>' + esc(c) + '</option>'; }).join('') + '</select>' : '<b>' + esc(r.kelasPilih) + '</b>';
+    function st(v, l) { return '<div class="pan-s"><b>' + v + '</b><span>' + l + '</span></div>'; }
+    var rs = r.ringkas, baris = k.siswa.slice().sort(function (a, b) { return (b.a - a.a) || ((a.persen == null ? 101 : a.persen) - (b.persen == null ? 101 : b.persen)); }).map(function (x, i) {
+      return '<tr><td>' + (i + 1) + '</td><td><b>' + esc(x.nama) + '</b></td><td>' + (x.persen == null ? '-' : '<span class="pan-bar"><i style="width:' + Math.min(100, x.persen) + '%"></i></span> ' + x.persen + '%') + '</td><td><span class="pan-pl s">' + x.s + '</span></td><td><span class="pan-pl i">' + x.i + '</span></td><td><span class="pan-pl a">' + x.a + '</span></td><td><span class="pan-pl t">' + x.t + '</span></td><td>' + (x.perlu ? '<span class="pan-flag">Perlu perhatian</span>' : '') + '</td></tr>';
+    }).join('');
+    $('paneDs').innerHTML = '<div id="dsCetak"><div class="pan-top"><div><b>Dashboard Siswa · ' + esc(r.kelasPilih) + '</b><small style="color:#4B5567">Kehadiran siswa kelasmu · ' + esc(rwNama(r.bulan)) + '</small></div><div class="pan-dt">' + kl + ' <select id="dsBulan" class="pan-sel">' + opt + '</select><button type="button" id="dsCetakBtn" class="pan-btn">Cetak</button></div></div>' +
+      '<div class="pan-stat">' + st(rs.persenHadir == null ? '-' : rs.persenHadir + '%', 'Rata-rata hadir') + st(rs.siswa, 'Siswa') + st(rs.sakitIzin, 'Sakit + Izin') + st(rs.alpa, 'Alpa bulan ini') + '</div>' +
+      '<div class="pan-c" style="margin-bottom:16px"><h3>Tren kehadiran</h3><small class="pan-sub">Persen hadir per minggu</small>' + dsChart(r.tren) + '</div>' +
+      '<div class="pan-c"><h3>Kehadiran per siswa</h3><small class="pan-sub">Urut dari yang paling sering alpa. Siswa dianggap hadir kecuali tercatat S, I, A, atau T.</small><div class="pan-tw"><table class="pan-t"><thead><tr><th>No</th><th>Nama siswa</th><th>% hadir</th><th>S</th><th>I</th><th>A</th><th>T</th><th></th></tr></thead><tbody>' + (baris || '<tr><td colspan="8">Belum ada siswa.</td></tr>') + '</tbody></table></div></div></div>';
+  }
+  $('paneDs').addEventListener('change', function (e) { if (e.target.id === 'dsBulan') dsMuat(e.target.value); else if (e.target.id === 'dsKelas') dsMuat('', e.target.value); });
+  $('paneDs').addEventListener('click', function (e) { if (e.target.id === 'dsCetakBtn') { document.body.classList.add('cetak-ds'); window.print(); setTimeout(function () { document.body.classList.remove('cetak-ds'); }, 500); } });
 
   // ================= RIWAYAT ABSEN SISWA =================
   var rw = null, rwKelas = '', rwBulan = '', rwSeq = 0;
