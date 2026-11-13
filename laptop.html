@@ -168,7 +168,8 @@ input.kin { width: 100%; min-height: 56px; border: 2px solid var(--line); border
       if (!r || !r.ok) { $('isi').innerHTML = '<div class="card"><h2>Tidak bisa membuat QR</h2><p>' + esc((r && r.message) || GAGAL) + '</p><button class="btn" id="btnUlang">Coba lagi</button></div>'; $('btnUlang').onclick = mulaiQR; return; }
       var url = location.href.split('#')[0].split('?')[0] + '?q=' + r.token, t0 = Date.now(), sisa = r.detik || 150;
       var svg; try { svg = SM1QR.svg(url, 260); } catch (e) { svg = '<p>' + esc(url) + '</p>'; }
-      $('isi').innerHTML = '<div class="card"><h2>Tautkan laptop ini</h2><div class="qrbox">' + svg + '</div><div class="ket" id="qrKet"></div><ol class="lgkh"><li>Buka SMART Mariso 1 di <b>HP utama</b> kamu.</li><li>Ketuk <b>Sambungkan perangkat laptop</b>, lalu <b>Pindai QR dari laptop</b>.</li><li>Arahkan kamera HP ke kode ini, lalu ketuk <b>Ya</b>.</li></ol><div class="pesan" id="pesan"></div></div>';
+      $('isi').innerHTML = '<div class="card"><h2>Tautkan laptop ini</h2><div class="qrbox">' + svg + '</div><div class="ket" id="qrKet"></div><ol class="lgkh"><li>Buka SMART Mariso 1 di <b>HP utama</b> kamu.</li><li>Ketuk <b>Sambungkan perangkat laptop</b>, lalu <b>Pindai QR dari laptop</b>.</li><li>Arahkan kamera HP ke kode ini, lalu ketuk <b>Ya</b>.</li></ol><div class="pesan" id="pesan"></div><button class="btn ghost" id="btnMuatQR">Muat ulang QR</button></div>';
+      $('btnMuatQR').onclick = function () { hentiQR(); qrUlang = 0; mulaiQR(); };
       function tik() { var s = Math.max(0, sisa - Math.floor((Date.now() - t0) / 1000)), e = $('qrKet'); if (e) e.textContent = s > 0 ? 'Kode berlaku ' + Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2) + ' lagi' : 'Memperbarui kode...'; }
       tik(); qrTimer = setInterval(tik, 1000);
       qrPoll = setInterval(function () {
