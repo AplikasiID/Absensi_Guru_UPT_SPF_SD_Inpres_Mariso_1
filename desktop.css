@@ -1,5 +1,5 @@
 /* SMART Mariso 1 - tampilan laptop (layar lebar). Di bawah 1100px (HP/tablet) TIDAK ada yang berubah. */
-.dsk-only { display: none; }
+.dsk-only, .seg > .dsk-only, .adm-item.dsk-only { display: none; }
 @media (min-width: 1100px) {
   :root { --sb: 260px; --col: 1216px; }
   /* Lebar kolom isi per halaman. Header, tab, dan isi memakai lebar yang sama supaya sejajar kiri-kanan. */
@@ -21,6 +21,10 @@
   .bnav .bn-row > *:not(.dsk-adm):hover { background: rgba(255,255,255,.10) !important; }
   .bnav .bn-row > .on:not(.dsk-adm), .bnav .bn-row > [aria-current] { background: #fff !important; color: #1e3a8a !important; }
   .bnav .bn-credit { margin-top: auto !important; padding-top: 14px; text-align: center; color: #9db4ee !important; font-size: 12px !important; }
+  .bnav .dsk-keluar { flex: 0 0 auto !important; height: auto !important; margin-top: auto !important; display: flex !important; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; padding: 11px 14px; border-radius: 14px; border: 1px solid rgba(255,255,255,.28); background: rgba(255,255,255,.08); color: #fff; font-family: inherit; cursor: pointer; text-align: left; min-height: 46px; }
+  .bnav .dsk-keluar span { font-weight: 800; font-size: 14.5px; color: #fff !important; } .bnav .dsk-keluar small { font-size: 12px; color: #cfdcff !important; font-weight: 600; }
+  .dsk-keluar:hover { background: rgba(255,255,255,.16); } .dsk-keluar[disabled] { opacity: .6; }
+  .dsk-keluar + .bn-credit { margin-top: 10px !important; }
   .dsk-adm { display: none; margin: 4px 0 8px 10px; padding-left: 12px; border-left: 2px solid rgba(255,255,255,.18); }
   .dsk-adm.on { display: block !important; width: auto !important; }
   body.mode-admin .dsk-note { display: none; }
@@ -78,7 +82,7 @@
   /* --- Pantauan admin --- */
   #admPanePan .card2 { padding: 22px; }
   .pan-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
-  .pan-top b { font-size: 20px; font-weight: 800; color: #14213D; } .pan-top small { font-size: 13px; font-weight: 700; color: #b45309; }
+  .pan-top b { font-size: 20px; font-weight: 800; color: #14213D; } .pan-top small { display: block; font-size: 13px; font-weight: 700; color: #b45309; }
   .pan-dt { font-weight: 800; font-size: 13px; color: #1e3a8a; display: flex; align-items: center; gap: 8px; } .pan-dt input { font: inherit; padding: 9px 12px; border: 1px solid #c9d6ff; border-radius: 12px; min-height: 44px; background: #fff; color: #14213D; }
   .pan-stat { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 18px; }
   .pan-s { background: #f4f7ff; border: 1px solid #e3e9f5; border-radius: 18px; padding: 18px 20px; } .pan-s b { display: block; font-size: 34px; font-weight: 800; line-height: 1.1; color: #14213D; } .pan-s span { font-size: 14px; font-weight: 700; color: #4B5567; }
@@ -90,10 +94,17 @@
   .pan-pl { display: inline-block; min-width: 30px; text-align: center; padding: 3px 8px; border-radius: 99px; font-weight: 800; font-size: 13px; }
   .pan-pl.s { background: #fef3c7; color: #b45309; } .pan-pl.i { background: #dbeafe; color: #1d4ed8; } .pan-pl.a { background: #fee2e2; color: #b91c1c; } .pan-pl.t { background: #ede9fe; color: #6d28d9; }
   .pan-b { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #e3e9f5; } .pan-b:first-of-type { border-top: 0; }
-  .pan-b i { font-style: normal; width: 42px; height: 42px; border-radius: 50%; background: #e8efff; color: #1e3a8a; font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .pan-b > i { font-style: normal; width: 42px; height: 42px; border-radius: 50%; background: #e8efff; color: #1e3a8a; font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .pan-b div { flex: 1; min-width: 0; } .pan-b b { display: block; font-size: 14px; color: #14213D; } .pan-b small { display: block; font-size: 12px; color: #4B5567; font-weight: 600; }
   .pan-b a, .pan-wa { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 14px; border-radius: 12px; font-weight: 800; font-size: 13.5px; text-decoration: none; border: 1px solid #c9d6ff; color: #1e3a8a; background: #fff; }
   .pan-wa { display: flex; margin-top: 14px; background: #16a34a; border-color: #16a34a; color: #fff; } .pan-ok { padding: 14px 4px; font-weight: 700; color: #15803d; }
+  .seg > .dsk-only { display: block; }
+  .pan-sel { font: inherit; font-weight: 700; padding: 9px 12px; border: 1px solid #c9d6ff; border-radius: 12px; min-height: 44px; background: #fff; color: #14213D; }
+  .pan-btn { white-space: nowrap; font: inherit; font-weight: 800; padding: 0 16px; min-height: 44px; border-radius: 12px; border: 1px solid #c9d6ff; background: #fff; color: #1e3a8a; cursor: pointer; }
+  .pan-flag { display: inline-block; padding: 4px 10px; border-radius: 99px; background: #fee2e2; color: #b91c1c; font-weight: 800; font-size: 12.5px; white-space: nowrap; }
+  #paneDs .pan-dt, #dsBox .pan-dt { gap: 10px; }
+  #paneDs { padding-bottom: 20px; }
+  .pan-top .pan-dt select { margin-left: 0; }
 
   /* --- Data Siswa (kelas.html): daftar jadi tabel lebar --- */
   .sw-bar { padding: 10px 4px; }
@@ -113,6 +124,37 @@
   #paneSis:has(#swList) > * { flex: 1 1 100%; margin-top: 0; margin-bottom: 0; }
   #paneSis:has(#swList) > .btn.sw-add, #paneSis:has(#swList) > .btn.sw-alt { flex: 0 0 auto; width: auto !important; min-width: 220px; }
   #paneSis:has(#swList) > .btn.sx-lk { flex: 0 0 auto; width: auto !important; }
+
+  /* --- Beranda laptop: kartu angka, Jurnal hari ini, Riwayat, Pengumuman (dibuat desktop.js) --- */
+  body:has(#dskDash):not(.mode-admin) { --col: 1100px; }
+  #viewAbsen, .name-float, .dsk-note, #dskDash { max-width: 1100px; }
+  .dsk-dash { margin: 0 auto 16px; }
+  body.mode-admin .dsk-dash { display: none !important; }
+  body.gerbang .dsk-dash { display: none !important; }
+  .dd-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 14px; }
+  .dd-st { display: flex; align-items: center; gap: 14px; background: #fff; border: 1px solid #e3e9f5; border-radius: 18px; padding: 18px 20px; box-shadow: 0 6px 18px rgba(20,33,61,.06); }
+  .dd-ic { width: 46px; height: 46px; border-radius: 14px; background: #e8efff; color: #1e3a8a; display: flex; align-items: center; justify-content: center; flex: none; }
+  .dd-ic svg { width: 24px; height: 24px; }
+  .dd-st b { display: block; font-size: 30px; line-height: 1.1; color: #14213D; font-weight: 800; }
+  .dd-st span:not(.dd-ic) { display: block; font-size: 13.5px; font-weight: 700; color: #4B5567; margin-top: 2px; }
+  .dd-cols { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+  .dd-side { display: grid; gap: 14px; }
+  .dd-card { background: #fff; border: 1px solid #e3e9f5; border-radius: 18px; padding: 20px 22px; box-shadow: 0 6px 18px rgba(20,33,61,.06); }
+  .dd-card h3 { margin: 0 0 12px; font-size: 17px; color: #14213D; font-weight: 800; }
+  .dd-sub { margin: -6px 0 12px; font-size: 13px; font-weight: 700; color: #4B5567; }
+  .dd-nol { margin: 4px 0 14px; font-size: 14px; font-weight: 600; color: #4B5567; }
+  .dd-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #e3e9f5; }
+  .dd-row:first-of-type { border-top: 0; }
+  .dd-row i { font-style: normal; width: 42px; height: 42px; border-radius: 50%; background: #e8efff; color: #1e3a8a; font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center; flex: none; }
+  .dd-row div { flex: 1; min-width: 0; } .dd-row b { display: block; font-size: 14.5px; color: #14213D; } .dd-row small { display: block; font-size: 12.5px; font-weight: 600; color: #4B5567; }
+  .dd-ok { padding: 4px 10px; border-radius: 99px; background: #dcfce7; color: #15803d; font-weight: 800; font-size: 12.5px; white-space: nowrap; }
+  .dd-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .dd-chips span { padding: 5px 11px; border-radius: 99px; font-weight: 800; font-size: 13px; }
+  .dd-chips .c1 { background: #dcfce7; color: #15803d; } .dd-chips .c2 { background: #fef3c7; color: #b45309; } .dd-chips .c3 { background: #fee2e2; color: #b91c1c; } .dd-chips .c4 { background: #e0e7ff; color: #3730a3; }
+  .dd-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 16px; border-radius: 12px; border: 1px solid #c9d6ff; background: #fff; color: #1e3a8a; font-weight: 800; font-size: 14px; text-decoration: none; margin-top: 6px; }
+  .dd-btn:hover { background: #f4f7ff; }
+  .dd-inf { padding: 8px 0; border-top: 1px solid #e3e9f5; } .dd-inf:first-of-type { border-top: 0; padding-top: 0; }
+  .dd-inf b { display: block; font-size: 14px; color: #14213D; } .dd-inf small { display: block; font-size: 12.5px; font-weight: 600; color: #4B5567; line-height: 1.4; }
 
   /* ===== Halaman lain (Riwayat, Grafik, Laporan/Perangkat Ajar, Pengaturan) ===== */
   /* jangan ikut berubah saat dibuka di dalam iframe (Pengaturan?embed=1) */
@@ -161,3 +203,41 @@
   .pan-dt input { background: #1c1c24; color: #F2F2F7; } .pan-sub, .pan-s span, .pan-t th, .pan-b small { color: #A8AFBF; }
   .sw-th { background: #1c1c24; }
 } }
+
+@media print {
+  body.cetak-ds * { visibility: hidden !important; }
+  body.cetak-ds #dsCetak, body.cetak-ds #dsCetak * { visibility: visible !important; }
+  body.cetak-ds #dsCetak { position: absolute; left: 0; top: 0; width: 100%; padding: 12px; background: #fff; color: #000; }
+  body.cetak-ds .pan-dt, body.cetak-ds .pan-btn { display: none !important; }
+  body.cetak-ds { padding-left: 0 !important; background: #fff; }
+}
+@media print {
+  /* --- Pantauan admin --- */
+  #admPanePan .card2 { padding: 22px; }
+  .pan-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+  .pan-top b { font-size: 20px; font-weight: 800; color: #14213D; } .pan-top small { display: block; font-size: 13px; font-weight: 700; color: #b45309; }
+  .pan-dt { font-weight: 800; font-size: 13px; color: #1e3a8a; display: flex; align-items: center; gap: 8px; } .pan-dt input { font: inherit; padding: 9px 12px; border: 1px solid #c9d6ff; border-radius: 12px; min-height: 44px; background: #fff; color: #14213D; }
+  .pan-stat { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 18px; }
+  .pan-s { background: #f4f7ff; border: 1px solid #e3e9f5; border-radius: 18px; padding: 18px 20px; } .pan-s b { display: block; font-size: 34px; font-weight: 800; line-height: 1.1; color: #14213D; } .pan-s span { font-size: 14px; font-weight: 700; color: #4B5567; }
+  .pan-grid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 18px; align-items: start; }
+  .pan-c { border: 1px solid #e3e9f5; border-radius: 18px; padding: 18px; background: #fff; } .pan-c h3 { margin: 0; font-size: 17px; font-weight: 800; color: #14213D; } .pan-sub { display: block; font-size: 12.5px; font-weight: 600; color: #4B5567; margin: 2px 0 12px; }
+  .pan-tw { overflow-x: auto; } .pan-t { width: 100%; border-collapse: collapse; font-size: 14px; color: #14213D; white-space: nowrap; }
+  .pan-t th { text-align: left; font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; color: #4B5567; background: #f4f7ff; padding: 10px 8px; } .pan-t td { padding: 12px 8px; border-top: 1px solid #e3e9f5; }
+  .pan-bar { display: inline-block; width: 90px; height: 8px; border-radius: 99px; background: #e3e9f5; vertical-align: middle; overflow: hidden; } .pan-bar i { display: block; height: 100%; background: #16a34a; }
+  .pan-pl { display: inline-block; min-width: 30px; text-align: center; padding: 3px 8px; border-radius: 99px; font-weight: 800; font-size: 13px; }
+  .pan-pl.s { background: #fef3c7; color: #b45309; } .pan-pl.i { background: #dbeafe; color: #1d4ed8; } .pan-pl.a { background: #fee2e2; color: #b91c1c; } .pan-pl.t { background: #ede9fe; color: #6d28d9; }
+  .pan-b { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #e3e9f5; } .pan-b:first-of-type { border-top: 0; }
+  .pan-b > i { font-style: normal; width: 42px; height: 42px; border-radius: 50%; background: #e8efff; color: #1e3a8a; font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .pan-b div { flex: 1; min-width: 0; } .pan-b b { display: block; font-size: 14px; color: #14213D; } .pan-b small { display: block; font-size: 12px; color: #4B5567; font-weight: 600; }
+  .pan-b a, .pan-wa { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 14px; border-radius: 12px; font-weight: 800; font-size: 13.5px; text-decoration: none; border: 1px solid #c9d6ff; color: #1e3a8a; background: #fff; }
+  .pan-wa { display: flex; margin-top: 14px; background: #16a34a; border-color: #16a34a; color: #fff; } .pan-ok { padding: 14px 4px; font-weight: 700; color: #15803d; }
+
+  .seg > .dsk-only { display: block; }
+  .pan-sel { font: inherit; font-weight: 700; padding: 9px 12px; border: 1px solid #c9d6ff; border-radius: 12px; min-height: 44px; background: #fff; color: #14213D; }
+  .pan-btn { white-space: nowrap; font: inherit; font-weight: 800; padding: 0 16px; min-height: 44px; border-radius: 12px; border: 1px solid #c9d6ff; background: #fff; color: #1e3a8a; cursor: pointer; }
+  .pan-flag { display: inline-block; padding: 4px 10px; border-radius: 99px; background: #fee2e2; color: #b91c1c; font-weight: 800; font-size: 12.5px; white-space: nowrap; }
+  #paneDs .pan-dt, #dsBox .pan-dt { gap: 10px; }
+  #paneDs { padding-bottom: 20px; }
+  .pan-top .pan-dt select { margin-left: 0; }
+
+}
