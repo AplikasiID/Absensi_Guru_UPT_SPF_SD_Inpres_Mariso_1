@@ -34,10 +34,10 @@
       new MutationObserver(selaras).observe(rowL, { attributes: true, attributeFilter: ['style'] });
       selaras();
     }
+    try { menuNilai(); } catch (e) { }
     namaOtomatis();
     keluarLaptop();
     berandaLaptop();
-    menuNilai();
     // Menu admin di sidebar.
     var na = $('navAdmin'), bn = $('bnav');
     if (na && bn && window.admSub) {
@@ -71,18 +71,21 @@
   // sehingga Laporan/Kelas/Riwayat langsung terbuka. Kunci hanya dari gerbang "Absen masuk dulu".
   // Menu "Nilai & Rapor" di sidebar laptop (muncul setelah menu Kelas pernah terbuka / di halaman Nilai).
   function menuNilai() {
-    var row = document.querySelector('.bnav .bn-row'), kl = $('navKelasLink'); if (!row || !kl || $('dskNilai')) return;
-    var di = /nilai\.html/.test(location.pathname), ok = false;
-    try { ok = localStorage.getItem('sm1_nilai_ok') === '1'; } catch (e) { }
+    var row = document.querySelector('.bnav .bn-row');
+    var kl = $('navKelasLink') || $('navKelas') || document.querySelector('.bnav .bn-row a[href^="kelas.html"]') || $('navLaporanLink');
+    if (!row || !kl || $('dskNilai')) return;
+    var di = /nilai\.html/.test(location.pathname), ok = false, kode = '', dev = '';
+    try { ok = localStorage.getItem('sm1_nilai_ok') === '1'; kode = localStorage.getItem('absensi_guru_terakhir') || ''; dev = localStorage.getItem('absensi_device_id') || ''; } catch (e) { }
     if (!di && !ok) return;
-    var a = document.createElement('a'); a.id = 'dskNilai'; a.href = kl.href.replace(/kelas\.html/, 'nilai.html');
-    if (!/nilai\.html/.test(a.href)) a.href = 'nilai.html';
+    var a = document.createElement('a'); a.id = 'dskNilai';
+    a.href = 'nilai.html' + (kode ? '?kode=' + encodeURIComponent(kode) + '&dev=' + encodeURIComponent(dev) : '');
     a.innerHTML = '<span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M8 8h6M8 12h4"/></svg></span>Nilai & Rapor';
     if (di) { a.className = 'on'; a.setAttribute('aria-current', 'page'); kl.classList.remove('on'); kl.removeAttribute('aria-current'); }
     kl.parentNode.insertBefore(a, kl.nextSibling);
-    var kh = kl.getAttribute('href'); if (di && kh && kh !== '#') { /* tetap menuju Kelas */ }
   }
+  window.addEventListener('sm1-nilai-ok', function () { if (mq.matches) menuNilai(); });
 
+  // Laptop yang sudah tertaut: nama guru dipilih otomatis (kolom "Pilih nama" disembunyikan CSS).
   function namaOtomatis() {
     var sel = $('guruSelect'); if (!sel) return;
     var kode = '', dev = '';
