@@ -1224,7 +1224,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
     run('getKelasGuru', [], function (r) {
       if (!r || !r.ok) { $('paneJur').innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; return; }
       if (r.tampil === false) { try { $('guruPill').textContent = String(r.nama || '').split(',')[0]; $('guruKelas').textContent = r.jabatan || ''; $('sub').textContent = ''; } catch (e) { } $('paneJur').innerHTML = '<div class="empty">Menu Kelas khusus untuk guru.</div>'; return; }
-      info = r; try { if (r.kelas.length) { var ln = $('lnkNilai'); ln.href = 'nilai.html?kode=' + enc; ln.style.display = 'flex'; localStorage.setItem('sm1_nilai_ok', '1'); } } catch (e) { }
+      info = r; try { if (r.kelas.length) { var ln = $('lnkNilai'); ln.href = 'nilai.html?kode=' + enc; ln.style.display = 'flex'; localStorage.setItem('sm1_nilai_ok', '1'); window.dispatchEvent(new Event('sm1-nilai-ok')); } } catch (e) { }
       try { $('guruPill').textContent = String(r.nama || '').split(',')[0]; $('guruKelas').textContent = r.jabatan || ''; } catch (e) { }
       var sy = kelasSaya(); $('sub').textContent = sy.length ? 'Wali kelas: ' + sy.join(', ') : 'Jurnal mengajar & lihat daftar siswa';
       if (!info.kelas.length) { $('paneJur').innerHTML = '<div class="empty">Belum ada kelas yang diatur.' + (info.alasan ? '<br><br><span style="font-weight:600">' + esc(info.alasan) + '</span>' : '') + '</div>'; return; }
