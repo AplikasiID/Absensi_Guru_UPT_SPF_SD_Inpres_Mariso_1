@@ -1318,6 +1318,10 @@ body.adm-terbatas [data-terbatas]{display:none!important}
 }
 </style>
 <link rel="stylesheet" href="desktop.css">
+<style>
+#viewAdmin #admPanePg > .card2{background:transparent!important;box-shadow:none!important;padding:0!important;border:0!important}
+body.mode-admin #lnkLaptopRow{display:none!important}
+</style>
 </head>
 <body>
   <!-- Layar pembuka -->
@@ -1545,6 +1549,8 @@ body.adm-terbatas [data-terbatas]{display:none!important}
           </div>
         </div>
       </div>
+
+      <div class="adm-pane" id="admPaneLp"></div>
 
       <div class="adm-pane" id="admPaneInfo">
         <div class="card2">
@@ -4690,9 +4696,11 @@ body.adm-terbatas [data-terbatas]{display:none!important}
   var $ = function (id) { return document.getElementById(id); };
   var G = [
     [['kg', 'Kegiatan', 'admPaneKg'], ['kr', 'Rekap', 'admPaneKr'], ['st', '8 Standar', 'admPaneSt'], ['rek', 'Ringkasan', 'admPaneRek']],
-    [['dev', 'Perangkat', 'admPaneDev'], ['pg', 'Pengaturan', 'admPanePg'], ['man', 'Absen Manual', 'admPaneMan']],
+    [['dev', 'Perangkat', 'admPaneDev'], ['lp', 'Laptop', 'admPaneLp'], ['pg', 'Pengaturan', 'admPanePg'], ['man', 'Absen Manual', 'admPaneMan']],
     [['ket', 'Keterangan', 'admPaneKet'], ['info', 'Pengumuman', 'admPaneInfo']]
   ];
+  // Kartu "Login di Laptop" dipindah dari tab Perangkat ke tab sendiri (Laptop).
+  (function () { var lp = $('admPaneLp'), kt = $('tmbCard'); if (lp && kt) lp.appendChild(kt); })();
   var cur = '', grp = null;
   function cari(k) { for (var g = 0; g < G.length; g++) for (var i = 0; i < G[g].length; i++) if (G[g][i][0] === k) return G[g]; return null; }
   G.forEach(function (tabs) {
@@ -4718,22 +4726,28 @@ body.adm-terbatas [data-terbatas]{display:none!important}
   setInterval(function () { if ($('admPanePg').classList.contains('on')) ukurFrame(); }, 600);
   var asli = window.admSub;
   window.admSub = function (k) {
-    if (window.__admTerbatas && (k === 'dev' || k === 'pg' || k === 'man')) k = 'menu';
+    if (window.__admTerbatas && (k === 'dev' || k === 'pg' || k === 'man' || k === 'lp')) k = 'menu';
     if (k === 'man') {
       asli('dev');
-      $('admPaneDev').classList.remove('on'); $('admPanePg').classList.remove('on'); $('admPaneMan').classList.add('on');
+      $('admPaneDev').classList.remove('on'); $('admPanePg').classList.remove('on'); $('admPaneLp').classList.remove('on'); $('admPaneMan').classList.add('on');
       $('admGt1').textContent = 'Absen Manual'; $('admGt2').textContent = 'Isi jam guru saat internet atau listrik mati';
       aktifkan('man'); if (window.admManBuka) window.admManBuka(); return;
     }
     if (k === 'pg') {
       asli('dev');
-      $('admPaneDev').classList.remove('on'); $('admPaneMan').classList.remove('on'); $('admPanePg').classList.add('on');
+      $('admPaneDev').classList.remove('on'); $('admPaneMan').classList.remove('on'); $('admPaneLp').classList.remove('on'); $('admPanePg').classList.add('on');
       $('admGt1').textContent = 'Pengaturan'; $('admGt2').textContent = 'Mode absen dan izin daring';
       var f = $('pgFrame'); if (!f.getAttribute('src')) f.setAttribute('src', 'pengaturan.html?embed=1');
       aktifkan('pg'); return;
     }
+    if (k === 'lp') {
+      asli('dev');
+      $('admPaneDev').classList.remove('on'); $('admPaneMan').classList.remove('on'); $('admPanePg').classList.remove('on'); $('admPaneLp').classList.add('on');
+      $('admGt1').textContent = 'Login di Laptop'; $('admGt2').textContent = 'Guru yang boleh memakai laptop';
+      aktifkan('lp'); return;
+    }
     asli(k);
-    $('admPaneMan').classList.remove('on'); $('admPanePg').classList.remove('on');
+    $('admPaneMan').classList.remove('on'); $('admPanePg').classList.remove('on'); $('admPaneLp').classList.remove('on');
     if (k === 'ket' && window.__admPin && !$('ketFields').classList.contains('open')) { $('ketPin').value = window.__admPin; try { window.bukaFormKeterangan(); } catch (e) { } $('ketPin').value = ''; }
     if (k === 'dev') {
       $('admGt1').textContent = 'Perangkat'; $('admGt2').textContent = 'Daftar HP dan reset';
@@ -4755,6 +4769,17 @@ body.adm-terbatas [data-terbatas]{display:none!important}
   $('pgFrame').addEventListener('load', function () {
     try {
       var d = $('pgFrame').contentDocument, sx = 0, sy = 0, st = 0;
+      // Rapikan tampilan Pengaturan di dalam admin: latar transparan (tanpa pita hitam di mode gelap), kartu tidak dobel,
+      // dan di laptop dibuat dua kolom. Hanya gaya yang disisipkan; isi halaman Pengaturan tidak diubah.
+      if (!d.getElementById('pgRapi')) {
+        var sy2 = d.createElement('style'); sy2.id = 'pgRapi';
+        sy2.textContent = 'html.emb,html.emb body{background:transparent!important}html.emb .wrap{max-width:none}' +
+          'html.emb .card{border:1px solid var(--line);box-shadow:none;border-radius:20px;padding:18px}' +
+          'html.emb .mode-btn{min-height:64px}html.emb .search-box{min-height:46px}html.emb #btnSimpan,html.emb .aksi{min-height:50px;border-radius:14px}' +
+          '@media (min-width:820px){html.emb #kontenUtama{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}' +
+          'html.emb #kontenUtama>.card{margin:0}html.emb #kontenUtama>.card:nth-child(1){grid-column:1;grid-row:1}html.emb #kontenUtama>.card:nth-child(3){grid-column:1;grid-row:2}html.emb #kontenUtama>.card:nth-child(2){grid-column:2;grid-row:1/span 2}}';
+        d.head.appendChild(sy2);
+      }
       d.addEventListener('touchstart', function (e) { var t = e.touches[0]; sx = t.clientX; sy = t.clientY; st = Date.now(); }, { passive: true });
       d.addEventListener('touchend', function (e) {
         var t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
