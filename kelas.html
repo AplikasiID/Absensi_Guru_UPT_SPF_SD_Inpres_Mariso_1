@@ -317,6 +317,38 @@ textarea.kg-in{resize:vertical;min-height:84px}
 .bl-i{align-items:center;flex-wrap:wrap}.bl-b{border:1px solid var(--line);background:var(--card);color:var(--infoink);border-radius:10px;padding:0 12px;min-height:40px;font-family:inherit;font-weight:800;font-size:12.5px;display:inline-flex;align-items:center;text-decoration:none;cursor:pointer}
 .bl-b.wa{background:#16a34a;border-color:#16a34a;color:#fff}.bl-b.rs{color:#b91c1c}.bl-b[disabled]{opacity:.55}
 .sw-md.sw-wide{max-width:620px}
+@media (max-width:1099px){
+/* Dashboard Siswa (tab Dashboard) - tampilan HP; di laptop diatur lagi oleh desktop.css */
+#paneDs .pan-top{display:flex;flex-direction:column;gap:12px;margin:2px 0 14px}
+#paneDs .pan-top b{display:block;font-size:19px;font-weight:800;color:var(--ink);line-height:1.25}
+#paneDs .pan-top small{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin-top:3px}
+#paneDs .pan-dt{display:flex;gap:8px;align-items:center}
+#paneDs .pan-dt > b{display:none}
+#paneDs .pan-sel{flex:1;min-width:0;min-height:46px;padding:0 12px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);font:inherit;font-size:14px;font-weight:700;appearance:none;-webkit-appearance:none}
+#paneDs .pan-btn{flex:none;min-height:46px;padding:0 16px;border:0;border-radius:14px;background:var(--info);color:var(--infoink);font:inherit;font-size:14px;font-weight:800}
+#paneDs .pan-stat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+#paneDs .pan-s{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 14px 12px;box-shadow:0 6px 16px rgba(30,58,138,.07)}
+#paneDs .pan-s b{display:block;font-size:28px;font-weight:800;line-height:1.1;color:var(--ink)}
+#paneDs .pan-s span{display:block;margin-top:4px;font-size:12.5px;font-weight:700;color:var(--muted)}
+#paneDs .pan-s:nth-child(1) b{color:#16a34a}#paneDs .pan-s:nth-child(3) b{color:#d97706}#paneDs .pan-s:nth-child(4) b{color:#dc2626}
+#paneDs .pan-c{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px 14px;box-shadow:0 6px 16px rgba(30,58,138,.07)}
+#paneDs .pan-c h3{margin:0;font-size:16px;font-weight:800;color:var(--ink)}
+#paneDs .pan-sub{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin:3px 0 12px;line-height:1.45}
+#paneDs .pan-c svg text{font-size:15px}
+#paneDs .pan-tw{overflow-x:auto;margin:0 -4px;-webkit-overflow-scrolling:touch}
+#paneDs .pan-t{width:100%;border-collapse:collapse;font-size:13.5px;color:var(--ink);white-space:nowrap}
+#paneDs .pan-t th{text-align:left;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:8px 6px;border-bottom:1px solid var(--line)}
+#paneDs .pan-t td{padding:10px 6px;border-top:1px solid var(--line)}
+#paneDs .pan-t tbody tr:first-child td{border-top:0}
+#paneDs .pan-t td:nth-child(2){white-space:normal;min-width:130px}
+#paneDs .pan-bar{display:inline-block;width:56px;height:7px;border-radius:99px;background:var(--line);vertical-align:middle;overflow:hidden;margin-right:4px}
+#paneDs .pan-bar i{display:block;height:100%;background:#16a34a}
+#paneDs .pan-pl{display:inline-block;min-width:26px;text-align:center;padding:2px 7px;border-radius:99px;font-weight:800;font-size:12.5px}
+#paneDs .pan-pl.s{background:#fef3c7;color:#b45309}#paneDs .pan-pl.i{background:#dbeafe;color:#1d4ed8}#paneDs .pan-pl.a{background:#fee2e2;color:#b91c1c}#paneDs .pan-pl.t{background:#ede9fe;color:#6d28d9}
+#paneDs .pan-flag{display:inline-block;padding:3px 9px;border-radius:99px;background:#fee2e2;color:#b91c1c;font-size:11.5px;font-weight:800}
+#paneDs .pan-c + .pan-c,#paneDs .pan-c[style]{margin-bottom:14px}
+@media (prefers-color-scheme:dark){#paneDs .pan-c svg polyline{stroke:#60a5fa}#paneDs .pan-c svg circle{fill:#60a5fa}#paneDs .pan-c svg text[fill='#1e3a8a']{fill:#93C5FD}#paneDs .pan-c svg line{stroke:rgba(255,255,255,.12)}#paneDs .pan-pl.s{background:rgba(245,158,11,.18);color:#FBBF4D}#paneDs .pan-pl.i{background:rgba(59,130,246,.2);color:#93C5FD}#paneDs .pan-pl.a{background:rgba(239,68,68,.18);color:#FF8F86}#paneDs .pan-pl.t{background:rgba(139,92,246,.2);color:#C4B5FD}#paneDs .pan-flag{background:rgba(239,68,68,.18);color:#FF8F86}#paneDs .pan-s,#paneDs .pan-c{box-shadow:none}}
+}
 </style>
 <link rel="stylesheet" href="desktop.css">
 </head>
@@ -328,7 +360,8 @@ textarea.kg-in{resize:vertical;min-height:84px}
 </div>
 
 <div class="wrap">
-  <div class="seg" id="seg" role="tablist"><button type="button" id="segJur" class="on">Jurnal</button><button type="button" id="segAbs">Absen Siswa</button><button type="button" id="segSis">Siswa</button><button type="button" id="segRiw">Riwayat</button><button type="button" id="segDs" class="dsk-only">Dashboard</button></div>
+  <div class="seg" id="seg" role="tablist"><button type="button" id="segJur" class="on">Jurnal</button><button type="button" id="segAbs">Absen Siswa</button><button type="button" id="segSis">Siswa</button><button type="button" id="segRiw">Riwayat</button><button type="button" id="segDs">Dashboard</button></div>
+  <a id="lnkNilai" href="nilai.html" style="display:none;align-items:center;gap:12px;background:var(--card);border-radius:16px;padding:12px 14px;margin-bottom:10px;text-decoration:none;color:var(--ink);box-shadow:0 6px 16px rgba(30,58,138,.08)"><span style="width:38px;height:38px;border-radius:12px;background:#e8efff;color:#1e3a8a;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M8 8h6M8 12h4"/></svg></span><span style="flex:1;min-width:0"><b style="display:block;font-size:14px;font-weight:800">Nilai &amp; Rapor</b><small style="color:var(--muted);font-weight:600;font-size:12px">Input nilai, deskripsi, cetak rapor</small></span><span style="color:var(--muted);font-weight:800">&rsaquo;</span></a>
   <div id="paneJur"><div class="sk"></div></div>
   <div id="paneAbs" style="display:none"><div class="sk"></div></div>
   <div class="sx-sh" id="swSheet"><div class="sx-sp"><div class="sx-grip"></div>
@@ -1191,7 +1224,8 @@ textarea.kg-in{resize:vertical;min-height:84px}
     run('getKelasGuru', [], function (r) {
       if (!r || !r.ok) { $('paneJur').innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; return; }
       if (r.tampil === false) { try { $('guruPill').textContent = String(r.nama || '').split(',')[0]; $('guruKelas').textContent = r.jabatan || ''; $('sub').textContent = ''; } catch (e) { } $('paneJur').innerHTML = '<div class="empty">Menu Kelas khusus untuk guru.</div>'; return; }
-      info = r; try { $('guruPill').textContent = String(r.nama || '').split(',')[0]; $('guruKelas').textContent = r.jabatan || ''; } catch (e) { }
+      info = r; try { if (r.kelas.length) { var ln = $('lnkNilai'); ln.href = 'nilai.html?kode=' + enc; ln.style.display = 'flex'; localStorage.setItem('sm1_nilai_ok', '1'); } } catch (e) { }
+      try { $('guruPill').textContent = String(r.nama || '').split(',')[0]; $('guruKelas').textContent = r.jabatan || ''; } catch (e) { }
       var sy = kelasSaya(); $('sub').textContent = sy.length ? 'Wali kelas: ' + sy.join(', ') : 'Jurnal mengajar & lihat daftar siswa';
       if (!info.kelas.length) { $('paneJur').innerHTML = '<div class="empty">Belum ada kelas yang diatur.' + (info.alasan ? '<br><br><span style="font-weight:600">' + esc(info.alasan) + '</span>' : '') + '</div>'; return; }
       var t = (location.hash || '').replace('#', ''); pilihTab(t === 'abs' || t === 'sis' || t === 'riw' ? t : 'jur');
