@@ -37,16 +37,17 @@
     namaOtomatis();
     keluarLaptop();
     berandaLaptop();
+    menuNilai();
     // Menu admin di sidebar.
     var na = $('navAdmin'), bn = $('bnav');
     if (na && bn && window.admSub) {
       var box = document.createElement('div'); box.className = 'dsk-adm'; box.id = 'dskAdm';
-      var item = [['pan', 'Pantauan'], ['ds', 'Dashboard Siswa'], ['kl', 'Kelas & Siswa'], ['rek', 'Ringkasan Sekolah'], ['lap', 'Verifikasi Laporan'], ['aj', 'Perangkat Ajar'], ['dev', 'Perangkat Guru'], ['pengaturan', 'Pengaturan']];
+      var item = [['pan', 'Pantauan'], ['ds', 'Dashboard Siswa'], ['kl', 'Kelas & Siswa'], ['rek', 'Ringkasan Sekolah'], ['lap', 'Verifikasi Laporan'], ['aj', 'Perangkat Ajar'], ['dev', 'Perangkat Guru'], ['lp', 'Login di Laptop'], ['pengaturan', 'Pengaturan']];
       box.innerHTML = item.map(function (x) { return '<button type="button" data-k="' + x[0] + '">' + x[1] + '</button>'; }).join('');
       na.parentNode.insertBefore(box, na.nextSibling);
       box.addEventListener('click', function (e) {
         var b = e.target.closest('button'); if (!b) return; var k = b.getAttribute('data-k');
-        if (k === 'pengaturan') { location.href = 'pengaturan.html'; return; }
+        if (k === 'pengaturan') k = 'pg';
         if (!document.body.classList.contains('mode-admin')) na.click();
         window.admSub(k);
       });
@@ -54,8 +55,8 @@
         var a = document.body.classList.contains('mode-admin') && na.style.display !== 'none';
         box.classList.toggle('on', a);
         var t = !!window.__admTerbatas;
-        [].forEach.call(box.children, function (b) { var k = b.getAttribute('data-k'); b.style.display = (t && (k === 'dev' || k === 'pengaturan')) ? 'none' : ''; });
-        var aktif = ''; ['Pan', 'Ds', 'Kl', 'Rek', 'Lap', 'Aj', 'Dev'].forEach(function (p) { var el = $('admPane' + p); if (el && el.classList.contains('on')) aktif = p.toLowerCase(); });
+        [].forEach.call(box.children, function (b) { var k = b.getAttribute('data-k'); b.style.display = (t && (k === 'dev' || k === 'lp' || k === 'pengaturan')) ? 'none' : ''; });
+        var aktif = ''; ['Pan', 'Ds', 'Kl', 'Rek', 'Lap', 'Aj', 'Dev', 'Lp', 'Pg'].forEach(function (p) { var el = $('admPane' + p); if (el && el.classList.contains('on')) aktif = (p === 'Pg' ? 'pengaturan' : p.toLowerCase()); });
         [].forEach.call(box.children, function (b) { b.classList.toggle('on', b.getAttribute('data-k') === aktif); });
       }
       new MutationObserver(sinkron).observe(document.body, { attributes: true, attributeFilter: ['class'], subtree: false });
@@ -68,6 +69,20 @@
 
   // Laptop yang sudah tertaut: nama guru dipilih otomatis (kolom "Pilih nama" disembunyikan oleh CSS),
   // sehingga Laporan/Kelas/Riwayat langsung terbuka. Kunci hanya dari gerbang "Absen masuk dulu".
+  // Menu "Nilai & Rapor" di sidebar laptop (muncul setelah menu Kelas pernah terbuka / di halaman Nilai).
+  function menuNilai() {
+    var row = document.querySelector('.bnav .bn-row'), kl = $('navKelasLink'); if (!row || !kl || $('dskNilai')) return;
+    var di = /nilai\.html/.test(location.pathname), ok = false;
+    try { ok = localStorage.getItem('sm1_nilai_ok') === '1'; } catch (e) { }
+    if (!di && !ok) return;
+    var a = document.createElement('a'); a.id = 'dskNilai'; a.href = kl.href.replace(/kelas\.html/, 'nilai.html');
+    if (!/nilai\.html/.test(a.href)) a.href = 'nilai.html';
+    a.innerHTML = '<span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M8 8h6M8 12h4"/></svg></span>Nilai & Rapor';
+    if (di) { a.className = 'on'; a.setAttribute('aria-current', 'page'); kl.classList.remove('on'); kl.removeAttribute('aria-current'); }
+    kl.parentNode.insertBefore(a, kl.nextSibling);
+    var kh = kl.getAttribute('href'); if (di && kh && kh !== '#') { /* tetap menuju Kelas */ }
+  }
+
   function namaOtomatis() {
     var sel = $('guruSelect'); if (!sel) return;
     var kode = '', dev = '';
@@ -97,7 +112,7 @@
 
   // Tombol "Keluar dari laptop ini": hanya muncul di perangkat yang terdaftar sebagai laptop (bukan HP utama).
   function keluarLaptop() {
-    var bn = $('bnav'); if (!bn || $('dskKeluar') || !(window.google && google.script && google.script.run)) return;
+    var bn = $('bnav') || document.querySelector('.bnav'); if (!bn || $('dskKeluar') || !(window.google && google.script && google.script.run)) return;
     var kode = '', dev = '';
     try { kode = localStorage.getItem('absensi_guru_terakhir') || ''; dev = localStorage.getItem('absensi_device_id') || ''; } catch (e) { }
     if (!kode || !dev) return;
