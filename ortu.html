@@ -71,6 +71,23 @@ input:focus { outline: none; border-color: var(--blue); }
 .ft { text-align: center; font-size: 12px; color: var(--muted); font-weight: 600; margin-top: 6px; padding: 0 16px; }
 .ft a { color: var(--blue); font-weight: 700; }
 [hidden] { display: none !important; }
+#cetak { display: none; }
+.rp { box-sizing: border-box; width: 210mm; min-height: 296mm; background: #fff; color: #111; padding: 9mm 13mm 8mm; font-family: 'Times New Roman', Georgia, serif; position: relative; }
+.rp * { box-sizing: border-box; }
+.rp .kop { display: flex; align-items: center; gap: 14px; border-bottom: 3px double #111; padding-bottom: 8px; margin-bottom: 10px; }
+.rp .kop img { width: 20mm; height: 20mm; object-fit: contain; }
+.rp .kop div { text-align: center; flex: 1; margin-right: 20mm; } .rp .kop small { display: block; font-size: 11.5px; } .rp .kop b { display: block; font-size: 18px; margin: 2px 0; } .rp .kop span { font-size: 10.5px; font-style: italic; }
+.rp h2 { text-align: center; font-size: 14.5px; text-decoration: underline; margin: 6px 0 9px; letter-spacing: .03em; }
+.rp .id { display: grid; grid-template-columns: 27mm 1fr 24mm 1fr; gap: 3px 6px; font-size: 12px; margin-bottom: 10px; }
+.rp table { border-collapse: collapse; width: 100%; font-size: 11.2px; } .rp th, .rp td { border: 1px solid #111; padding: 4px 6px; } .rp th { background: #eee; text-align: center; }
+.rp .c { text-align: center; } .rp .d { font-size: 10.6px; line-height: 1.36; }
+.rp h3 { font-size: 12px; margin: 11px 0 4px; } .rp .two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
+.rp .ttd { display: grid; grid-template-columns: 1fr 1fr 1fr; text-align: center; font-size: 12px; margin-top: 4px; } .rp .ttd p { height: 52px; margin: 0; }
+.rp .cat { height: 12mm; vertical-align: top; font-size: 11px; }
+
+.nl { display:flex; gap:8px; align-items:flex-start; padding:9px 0; border-top:1px solid var(--line); font-size:13.5px; } .nl b { flex:1; font-weight:700; } .nl .v { font-weight:800; min-width:40px; text-align:right; } .nl small { display:block; color:var(--muted); font-weight:600; font-size:12px; line-height:1.4; margin-top:2px; font-style:normal; }
+.rsel { width:100%; min-height:44px; border:2px solid var(--line); border-radius:12px; background:var(--card); color:var(--ink); font-size:14px; font-weight:700; padding:0 10px; margin-bottom:8px; }
+@media print { @page { size: A4; margin: 0; } html, body { background:#fff !important; min-height:0 !important; } body > *:not(#cetak) { display:none !important; } #cetak { display:block !important; } #cetak .rp { page-break-after: always; } #cetak .rp:last-child { page-break-after: auto; } * { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
 </style>
 </head>
 <body>
@@ -104,6 +121,7 @@ input:focus { outline: none; border-color: var(--blue); }
         <div class="mrow"><h2 id="rkJdl">Rekap</h2><div class="nav"><button type="button" id="bPrev" aria-label="Bulan sebelumnya">&#9664;</button><button type="button" id="bNext" aria-label="Bulan berikutnya">&#9654;</button></div></div>
         <div class="rk" id="rk"></div>
       </div>
+      <div class="card" id="cRapor" hidden><h2>Nilai &amp; Rapor</h2><div id="rpIsi"></div></div>
       <div class="card"><h2>Riwayat per tanggal</h2><ul class="hist" id="hist"></ul></div>
       <div class="ft" id="ftSem"></div>
       <div class="ft" style="margin-top:10px"><a href="#" id="lnkKeluar">Keluar dari perangkat ini</a></div>
@@ -113,6 +131,7 @@ input:focus { outline: none; border-color: var(--blue); }
   </div>
 </div>
 
+<div id="cetak"></div>
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
@@ -162,13 +181,64 @@ input:focus { outline: none; border-color: var(--blue); }
   function berhasil(r, token) {
     data = r; bulan = bulanAkhir();
     if (token) { simpan(token); try { history.replaceState(null, '', location.pathname + '?t=' + encodeURIComponent(token)); } catch (e) { } }
-    gambar(); tampil('vData');
+    gambar(); tampil('vData'); TOK = token || baca(); muatRapor('');
   }
   function gagalLink(pesan) {
     hapus();
     try { history.replaceState(null, '', location.pathname); } catch (e) { }
     tampil('vMasuk'); var p = $('pesan'); p.textContent = pesan; p.classList.add('on');
   }
+  // ---------- Nilai & Rapor (hanya setelah diterbitkan wali kelas) ----------
+  var RP = null, TOK = '', LOGO = (document.querySelector('.br img') || {}).src || '', LBL = { A: 'Sangat Baik', B: 'Baik', C: 'Cukup', D: 'Perlu Bimbingan' };
+  function attr(x) { return esc(x); }
+  function tglTeks() { return '..... ................'; }
+  function lembar() {
+    var r = RP, s = RP.anak, sk = r.sekolah || {}, d3 = function (t) { return t ? esc(t) : '..............................'; };
+    var h = '<div class="rp"><div class="kop"><img src="' + LOGO + '" alt=""><div><small>' + esc(sk.instansi || '') + '</small><b>' + esc(sk.nama || '') + '</b><span>' + esc(sk.alamat || '') + '</span></div></div>';
+    h += '<h2>LAPORAN HASIL BELAJAR (RAPOR)</h2><div class="id"><span>Nama Murid</span><b>: ' + esc(s.nama) + '</b><span>Kelas</span><b>: ' + esc(r.kelas) + '</b><span>NISN</span><b>: ' + esc(s.nisn || '-') + '</b><span>Fase</span><b>: ' + esc(r.fase || '-') + '</b><span>Sekolah</span><b>: ' + esc(sk.singkat || sk.nama || '') + '</b><span>Semester</span><b>: ' + esc(r.semesterTeks) + '</b><span>Alamat</span><b>: ' + (sk.alamat ? esc(sk.alamat) : '........................') + '</b><span>Tahun Ajaran</span><b>: ' + esc(r.tahunAjaran) + '</b></div>';
+    h += '<table><thead><tr><th style="width:8mm">No</th><th style="width:48mm">Mata Pelajaran</th><th style="width:13mm">Nilai Akhir</th><th style="width:13mm">Predikat</th><th>Capaian Kompetensi</th></tr></thead><tbody>';
+    if (!s.mapel.length) h += '<tr><td class="c" colspan="5">Belum ada nilai.</td></tr>';
+    s.mapel.forEach(function (m, i) { h += '<tr><td class="c">' + (i + 1) + '</td><td>' + esc(m.mapel) + '</td><td class="c"><b>' + (m.akhir === null ? '-' : (m.kual ? LBL[m.predikat] : m.akhir)) + '</b></td><td class="c">' + (m.kual ? '-' : (m.predikat || '-')) + '</td><td class="d">' + esc(m.desk || '') + '</td></tr>'; });
+    h += '</tbody></table><h3>Sikap</h3><table><tbody><tr><td style="width:30mm">Spiritual</td><td class="d">' + (esc(s.sikapS) || '-') + '</td></tr><tr><td>Sosial</td><td class="d">' + (esc(s.sikapO) || '-') + '</td></tr></tbody></table><div class="two"><div><h3>Ekstrakurikuler</h3><table><thead><tr><th>Kegiatan</th><th>Keterangan</th></tr></thead><tbody>';
+    if (!s.ekskul.length) h += '<tr><td>-</td><td>-</td></tr>'; s.ekskul.forEach(function (x) { h += '<tr><td>' + esc(x.k) + '</td><td>' + esc(x.ket) + '</td></tr>'; });
+    h += '</tbody></table></div><div><h3>Ketidakhadiran</h3><table><tbody><tr><td>Sakit</td><td class="c" style="width:18mm">' + s.sakit + ' hari</td></tr><tr><td>Izin</td><td class="c">' + s.izin + ' hari</td></tr><tr><td>Tanpa Keterangan</td><td class="c">' + s.alpa + ' hari</td></tr></tbody></table></div></div>';
+    h += '<h3>Catatan Wali Kelas</h3><table><tbody><tr><td class="cat">' + esc(s.catatan || '') + '</td></tr></tbody></table>';
+    h += '<div style="text-align:right;font-size:12px;margin-top:14px;padding-right:9mm">' + esc(sk.kota || 'Makassar') + ', ' + tglTeks() + '</div>';
+    h += '<div class="ttd"><div>Orang Tua / Wali<p></p><b>..............................</b></div><div style="margin-top:24mm">Mengetahui,<br>Kepala Sekolah<p style="height:40px"></p><b>' + (sk.kepsek ? esc(sk.kepsek) : '..............................') + '</b><br>NIP. ' + (sk.nipKepsek ? esc(sk.nipKepsek) : '....................') + '</div><div>Wali Kelas<p></p><b>' + d3(r.waliNama) + '</b></div></div></div>';
+    return h;
+  }
+
+  function muatRapor(sem) {
+    if (!TOK) return;
+    google.script.run.withSuccessHandler(function (r) {
+      if (!r || !r.ok) return;
+      RP = r.ada ? r : null; gambarRapor(r);
+    }).withFailureHandler(function () { }).ortuGetRapor(TOK, sem || '');
+  }
+  function gambarRapor(r) {
+    var c = $('cRapor'), el = $('rpIsi'); c.hidden = false;
+    if (!r.ada) { el.innerHTML = '<div class="hint">Rapor semester ini belum diterbitkan oleh wali kelas. Nilai akan tampil di sini setelah diterbitkan.</div>'; return; }
+    var a = r.anak, h = '';
+    if (r.daftar.length > 1) h += '<select class="rsel" id="rpSem">' + r.daftar.map(function (x) { var m = /^(\d{4})\/(\d{4})-([12])$/.exec(x); return '<option value="' + esc(x) + '"' + (x === r.semester ? ' selected' : '') + '>' + (m ? (m[3] === '1' ? 'Ganjil ' : 'Genap ') + m[1] + '/' + m[2] : esc(x)) + '</option>'; }).join('') + '</select>';
+    else h += '<div class="hint" style="margin-bottom:6px">Semester ' + esc(r.semesterTeks) + ' · TA ' + esc(r.tahunAjaran) + '</div>';
+    a.mapel.forEach(function (m) {
+      h += '<div class="nl"><b>' + esc(m.mapel) + (m.desk ? '<small>' + esc(m.desk) + '</small>' : '') + '</b><span class="v">' + (m.akhir === null ? '–' : (m.kual ? esc(LBL[m.predikat] || '') : m.akhir + ' <small style="display:inline">' + esc(m.predikat) + '</small>')) + '</span></div>';
+    });
+    if (!a.mapel.length) h += '<div class="hint">Belum ada nilai.</div>';
+    if (a.sikapS || a.sikapO) h += '<div class="nl"><b>Sikap<small>' + esc([a.sikapS, a.sikapO].filter(Boolean).join(' ')) + '</small></b></div>';
+    if (a.ekskul.length) h += '<div class="nl"><b>Ekstrakurikuler<small>' + a.ekskul.map(function (x) { return esc(x.k + (x.ket ? ' (' + x.ket + ')' : '')); }).join(', ') + '</small></b></div>';
+    h += '<div class="nl"><b>Ketidakhadiran<small>Sakit ' + a.sakit + ' · Izin ' + a.izin + ' · Tanpa keterangan ' + a.alpa + ' hari</small></b></div>';
+    if (a.catatan) h += '<div class="nl"><b>Catatan wali kelas<small>' + esc(a.catatan) + '</small></b></div>';
+    h += '<button class="btn" id="rpCetak" type="button">Unduh / Cetak Rapor (PDF)</button><div class="hint" style="margin-top:8px">Di jendela cetak pilih "Simpan sebagai PDF".</div>';
+    el.innerHTML = h;
+  }
+  document.addEventListener('change', function (e) { if (e.target.id === 'rpSem') muatRapor(e.target.value); });
+  document.addEventListener('click', function (e) {
+    if (e.target.id !== 'rpCetak' || !RP) return;
+    $('cetak').innerHTML = lembar(); var j = document.title; document.title = 'Rapor ' + RP.anak.nama;
+    setTimeout(function () { try { window.print(); } catch (x) { } setTimeout(function () { document.title = j; $('cetak').innerHTML = ''; }, 1500); }, 150);
+  });
+
   function bukaToken(t) {
     tampil('vMuat');
     google.script.run.withSuccessHandler(function (r) {
@@ -194,7 +264,7 @@ input:focus { outline: none; border-color: var(--blue); }
   $('bPrev').addEventListener('click', function () { if (data && bulan > bulanAwal()) { bulan = geser(bulan, -1); rekap(); } });
   $('bNext').addEventListener('click', function () { if (data && bulan < bulanAkhir()) { bulan = geser(bulan, 1); rekap(); } });
   $('lnkKeluar').addEventListener('click', function (e) {
-    e.preventDefault(); hapus(); data = null;
+    e.preventDefault(); hapus(); data = null; RP = null; TOK = ''; $('cRapor').hidden = true;
     try { history.replaceState(null, '', location.pathname); } catch (x) { }
     $('jdl').textContent = 'Pantau Kehadiran Anak'; $('sub').textContent = 'Untuk orang tua / wali siswa';
     $('inNisn').value = ''; $('inHp').value = ''; $('pesan').classList.remove('on'); tampil('vMasuk');
