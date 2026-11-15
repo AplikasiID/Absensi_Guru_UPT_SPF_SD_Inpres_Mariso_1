@@ -77,13 +77,25 @@
     var di = /nilai\.html/.test(location.pathname), ok = false, kode = '', dev = '';
     try { ok = localStorage.getItem('sm1_nilai_ok') === '1'; kode = localStorage.getItem('absensi_guru_terakhir') || ''; dev = localStorage.getItem('absensi_device_id') || ''; } catch (e) { }
     if (!di && !ok) return;
-    var a = document.createElement('a'); a.id = 'dskNilai';
-    a.href = 'nilai.html' + (kode ? '?kode=' + encodeURIComponent(kode) + '&dev=' + encodeURIComponent(dev) : '');
-    a.innerHTML = '<span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M8 8h6M8 12h4"/></svg></span>Nilai & Rapor';
-    if (di) { a.className = 'on'; a.setAttribute('aria-current', 'page'); kl.classList.remove('on'); kl.removeAttribute('aria-current'); }
+    var btn = kl.tagName === 'BUTTON', a = document.createElement(btn ? 'button' : 'a'); a.id = 'dskNilai'; if (btn) a.type = 'button'; a.className = String(kl.className || '').replace(/\bon\b/g, '').trim();
+    var tujuan = 'nilai.html' + (kode ? '?kode=' + encodeURIComponent(kode) + '&dev=' + encodeURIComponent(dev) : '');
+    if (btn) a.onclick = function () { location.href = tujuan; }; else a.href = tujuan;
+    a.innerHTML = '<span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M8 8h6M8 12h4"/></svg></span>' + (mq.matches ? 'Nilai & Rapor' : 'Nilai');
+    if (di) { a.className = (a.className + ' on').trim(); a.setAttribute('aria-current', 'page'); kl.classList.remove('on'); kl.removeAttribute('aria-current'); }
     kl.parentNode.insertBefore(a, kl.nextSibling);
+    // Ikut tersembunyi seperti tab Kelas (tenaga kependidikan): sinkron dengan tombol Kelas, dan cek akses langsung di halaman lain.
+    var kelasPunya = kl.id === 'navKelasLink' || kl.id === 'navKelas';
+    function sinkron() { var hilang = kelasPunya && (kl.style.display === 'none' || kl.hidden); a.style.display = hilang ? 'none' : ''; }
+    sinkron();
+    if (kelasPunya && window.MutationObserver) new MutationObserver(sinkron).observe(kl, { attributes: true, attributeFilter: ['style', 'hidden'] });
+    if (!$('guruSelect') && window.KelasAkses && kode && !di) {
+      try { window.KelasAkses.cek(kode, dev, function (ok) { if (!ok) { a.style.display = 'none'; try { localStorage.setItem('sm1_nilai_ok', '0'); } catch (e) { } } }); } catch (e) { }
+    }
   }
-  window.addEventListener('sm1-nilai-ok', function () { if (mq.matches) menuNilai(); });
+  window.addEventListener('sm1-nilai-ok', function () { menuNilai(); });
+  // Di HP: item "Nilai" di menu bawah (jalan() hanya berjalan di laptop).
+  function nilaiHP() { if (!mq.matches) { try { menuNilai(); } catch (e) { } } }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', nilaiHP); else nilaiHP();
 
   // Laptop yang sudah tertaut: nama guru dipilih otomatis (kolom "Pilih nama" disembunyikan CSS).
   function namaOtomatis() {
