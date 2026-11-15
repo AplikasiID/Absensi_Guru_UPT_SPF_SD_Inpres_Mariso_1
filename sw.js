@@ -2,7 +2,7 @@
  * belakang layar untuk pembukaan berikutnya (stale-while-revalidate). Kalau belum
  * ada di cache (pertama kali), diambil dari jaringan. Panggilan ke Apps Script
  * TIDAK pernah di-cache. */
-var CACHE = "absensi-v67";
+var CACHE = "absensi-v68";
 var SHELL = ["./", "./index.html", "./dashboard.html", "./pengaturan.html", "./riwayat.html", "./grafik.html", "./laporan.html", "./kelas.html", "./nilai.html", "./laptop.html", "./ortu.html", "./qr.js", "./cepat.js", "./desktop.css", "./desktop.js",
              "./config.js", "./api.js", "./ikon-192.png"];
 
