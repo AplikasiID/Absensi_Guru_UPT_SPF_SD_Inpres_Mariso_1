@@ -1265,6 +1265,7 @@ body.adm-terbatas [data-terbatas]{display:none!important}
 .kd-tr button{flex:1;min-width:0;min-height:44px;border-radius:12px;border:1px solid #e2e8f0;background:#fff;color:inherit;font-weight:800;font-size:13.5px;font-family:inherit}
 .kd-tr button.on{background:#1e3a8a;color:#fff;border-color:#1e3a8a}
 .kd-tr button.lock{background:#fef3c7;color:#b45309;border-color:#f59e0b}
+.kd-mp{margin:12px 0 4px}.kd-mph{font-size:12.5px;font-weight:800;color:#64748b;margin-bottom:6px}.kd-mph small{font-weight:600}#kdMp{display:flex;flex-wrap:wrap;gap:6px}#kdMp button{min-height:38px;padding:0 11px;border-radius:99px;border:1px solid #e2e8f0;background:#fff;color:inherit;font-weight:800;font-size:12.5px;font-family:inherit}#kdMp button.on{background:#1e3a8a;color:#fff;border-color:#1e3a8a}
 .kd-tr button.all{flex:0 0 64px;background:#e0e7ff;color:#1e3a8a;border:0;font-size:12px}
 .kd-cnt{font-size:12.5px;font-weight:800;color:#1e3a8a;margin:6px 2px 0}
 .kd-hint{font-size:12px;font-weight:600;color:#64748b;margin:8px 2px;line-height:1.45}
@@ -1309,7 +1310,7 @@ body.adm-terbatas [data-terbatas]{display:none!important}
 .kd-sp{background:#1c1c24;color:#F2F2F7}.kd-grip{background:rgba(255,255,255,.25)}.kd-sub,.kd-hint,.kd-tr>span{color:#A8AFBF}
 .kd-top button{background:rgba(100,130,255,.2);color:#C9D6FF}.kd-top button.on{background:#3b6cf0;color:#fff}.kd-top button.kos{border-color:rgba(255,255,255,.14);color:#A8AFBF}
 .kd-tr button{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)}
-.kd-tr button.on{background:#3b6cf0;border-color:#3b6cf0;color:#fff}
+.kd-tr button.on,#kdMp button.on{background:#3b6cf0;border-color:#3b6cf0;color:#fff}#kdMp button{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)}
 .kd-tr button.lock{background:rgba(245,158,11,.18);color:#FBBF4D;border-color:rgba(245,158,11,.5)}
 .kd-tr button.all{background:rgba(100,130,255,.2);color:#C9D6FF}
 .kd-cnt{color:#9DB7FF}
@@ -1646,8 +1647,9 @@ body.mode-admin #lnkLaptopRow{display:none!important}
                 <h3 id="kdHn"></h3><div class="kd-sub" id="kdHs"></div>
                 <div class="kd-top"><button type="button" id="kdSemua"></button><button type="button" id="kdKosong" class="kos">Kosongkan</button></div>
                 <div id="kdGrid"></div>
+                <div class="kd-mp"><div class="kd-mph">Mapel yang diajar <small>(kosong = semua mapel)</small></div><div id="kdMp"></div></div>
                 <div class="kd-cnt" id="kdCnt"></div>
-                <div class="kd-hint">Guru PJOK dan Agama biasanya cukup ketuk &ldquo;Semua kelas&rdquo;. &ldquo;Semua&rdquo; di tiap baris memilih seluruh kelas tingkat itu. Kelas bertanda kunci adalah kelas wali, tidak bisa dilepas.</div>
+                <div class="kd-hint">Untuk guru PJOK/Agama: pilih mapelnya di atas, supaya di Nilai & Rapor mereka hanya melihat mapel itu. Biasanya cukup ketuk &ldquo;Semua kelas&rdquo;. &ldquo;Semua&rdquo; di tiap baris memilih seluruh kelas tingkat itu. Kelas bertanda kunci adalah kelas wali, tidak bisa dilepas.</div>
                 <div class="kd-st" id="kdSt" role="status"></div>
                 <button type="button" class="kd-btn" id="kdSimpan">Simpan</button>
                 <button type="button" class="kd-btn alt" id="kdBatal">Batal</button>
@@ -4328,7 +4330,7 @@ body.mode-admin #lnkLaptopRow{display:none!important}
   }
   function kdTag(c) { return '<span class="kd-tg">' + esc(kdNama(c)) + '</span>'; }
   function kdTags(g) {
-    var h = g.wali.map(function (w) { return '<span class="kd-tg w">Wali ' + esc(kdNama(w)) + '</span>'; }).join('');
+    var h = g.wali.map(function (w) { return '<span class="kd-tg w">Wali ' + esc(kdNama(w)) + '</span>'; }).join('') + ((g.m && g.m.length) ? '<span class="kd-tg">' + esc(g.m.map(function (m) { return MPK[m] || m; }).join(', ')) + '</span>' : '');
     if (!g.diatur) return h + '<span class="kd-tg no">Belum diatur</span>';
     var lain = g.k.filter(function (x) { return g.wali.indexOf(x) < 0; });
     var semua = kdD.kelas.length > 0 && kdD.kelas.every(function (c) { return g.wali.indexOf(c) >= 0 || lain.indexOf(c) >= 0; });
@@ -4350,6 +4352,11 @@ body.mode-admin #lnkLaptopRow{display:none!important}
       h += '<button type="button" class="kd-g" data-i="' + i + '"><span class="kd-av">' + esc(inisial(g.nama)) + '</span><div class="kd-tx"><b>' + esc(g.nama) + '</b><div class="kd-tags">' + kdTags(g) + '</div></div><span class="kd-cv" aria-hidden="true">\u203A</span></button>';
     });
     $('kdList').innerHTML = h || '<div class="dev-kosong">' + (G.length ? 'Guru tidak ditemukan.' : 'Belum ada data guru.') + '</div>';
+  }
+  var kdMapSel = [], MPK = { 'Pendidikan Agama Islam dan Budi Pekerti': 'Agama', 'Pendidikan Pancasila': 'Pancasila', 'Bahasa Indonesia': 'B. Indonesia', 'Matematika': 'Matematika', 'Ilmu Pengetahuan Alam dan Sosial (IPAS)': 'IPAS', 'Seni dan Budaya': 'Seni Budaya', 'Pendidikan Jasmani, Olahraga, dan Kesehatan': 'PJOK', 'Bahasa Inggris': 'B. Inggris', 'Muatan Lokal (Bahasa Daerah)': 'Mulok' };
+  function kdMapelGambar() {
+    var dm = (kdD && kdD.daftarMapel) || Object.keys(MPK);
+    $('kdMp').innerHTML = dm.map(function (m) { var on = kdMapSel.indexOf(m) >= 0; return '<button type="button" data-m="' + esc(m) + '" class="' + (on ? 'on' : '') + '" aria-pressed="' + on + '" title="' + esc(m) + '">' + esc(MPK[m] || m) + '</button>'; }).join('');
   }
   function kdGridGambar() {
     var kunci = kdCur.wali, h = '';
@@ -4374,6 +4381,7 @@ body.mode-admin #lnkLaptopRow{display:none!important}
     $('kdHn').textContent = g.nama;
     $('kdHs').textContent = g.wali.length ? 'Wali kelas ' + g.wali.map(kdNama).join(', ') + ' \u00B7 pilih kelas lain yang juga diajar' : 'Guru mapel \u00B7 pilih kelas yang diajar';
     $('kdSt').className = 'kd-st'; $('kdSt').textContent = '';
+    kdMapSel = (g.m || []).slice(); kdMapelGambar();
     kdGridGambar();
     $('kdSh').className = 'kd-sh on';
   }
@@ -4383,10 +4391,11 @@ body.mode-admin #lnkLaptopRow{display:none!important}
     var s = siap('', 'klStatus'); if (!s) { kdPesan('err', 'Isi PIN admin dulu.'); return; }
     var btn = $('kdSimpan'); kdBusy = true; btn.disabled = true; btn.textContent = 'Menyimpan...';
     function selesai() { kdBusy = false; btn.disabled = false; btn.textContent = 'Simpan'; }
-    api('simpanKelasDiajar', [s.pin, s.id, g.kode, kdSel.slice()], function (r) {
+    api('simpanKelasDiajar', [s.pin, s.id, g.kode, kdSel.slice(), kdMapSel.slice()], function (r) {
       selesai();
       if (!r || !r.ok) { kdPesan('err', (r && r.message) || 'Gagal menyimpan.'); return; }
       g.k = Array.isArray(r.k) ? r.k : kdSel.filter(function (c) { return g.wali.indexOf(c) < 0; });
+      g.m = Array.isArray(r.m) ? r.m : kdMapSel.slice();
       g.diatur = true; kdGambar();
       kdPesan('ok', r.message || 'Tersimpan.');
       clearTimeout(kdTimer); kdTimer = setTimeout(kdTutup, 900);
@@ -4398,6 +4407,7 @@ body.mode-admin #lnkLaptopRow{display:none!important}
     if (e.target === $('kdSh')) { if (!kdBusy) kdTutup(); return; }
     var b = e.target.closest('button'); if (!b || !kdCur || kdBusy) return;
     var id = b.id;
+    if (b.hasAttribute('data-m')) { var mm = b.getAttribute('data-m'), mi = kdMapSel.indexOf(mm); if (mi >= 0) kdMapSel.splice(mi, 1); else kdMapSel.push(mm); kdMapelGambar(); return; }
     if (b.hasAttribute('data-c')) {
       var c = b.getAttribute('data-c'); if (kdCur.wali.indexOf(c) >= 0) return;
       var x = kdSel.indexOf(c); if (x >= 0) kdSel.splice(x, 1); else kdSel.push(c);
