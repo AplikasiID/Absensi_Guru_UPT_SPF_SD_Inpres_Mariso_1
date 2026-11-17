@@ -616,12 +616,12 @@ textarea.kg-in{resize:vertical;min-height:84px}
     google.script.run
       .withSuccessHandler(function (r) {
         kgBusy = false;
-        if (!r || !r.ok) { b.disabled = false; setSt($('kgSt'), 'err', (r && r.message) || 'Gagal menghapus.'); return; }
+        if (!r || !r.ok) { b.disabled = false; setSt($('kgSt'), 'err', (r && r.message) || 'Gagal menghapus.'); try { Popup.info((r && r.message) || 'Gagal menghapus.', { judul: 'Tidak bisa dihapus' }); } catch (e_) { } return; }
         if (kgEdit === it.id) kgReset();
         setSt($('kgSt'), 'ok', r.message); kgMuatData(kgBulan);
       })
-      .withFailureHandler(function (e_) { kgBusy = false; b.disabled = false; setSt($('kgSt'), 'err', pesanGagal(e_, 'Tidak bisa terhubung ke server. Coba lagi.')); })
-      .hapusKegiatanGuru(kode, dev, id);
+      .withFailureHandler(function (e_) { kgBusy = false; b.disabled = false; setSt($('kgSt'), 'err', pesanGagal(e_, 'Tidak bisa terhubung ke server. Coba lagi.')); try { Popup.info(pesanGagal(e_, 'Tidak bisa terhubung ke server. Coba lagi.'), { judul: 'Tidak bisa terhubung' }); } catch (e2) { } })
+      .hapusKegiatanGuru(kode, dev, it.id);
   }
 
   // ================= 8 STANDAR =================
