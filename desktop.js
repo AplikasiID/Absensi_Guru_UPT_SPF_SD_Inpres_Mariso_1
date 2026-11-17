@@ -1,3 +1,46 @@
+/* Cadangan Popup: dipakai hanya jika halaman belum punya window.Popup (mis. cepat.js tidak dimuat).
+   Tersedia: Popup.tanya(teks, opsi, onYa), Popup.info(teks, opsi), Popup.isi(teks, opsi, onIsi). */
+(function () {
+  if (window.Popup) return;
+  function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; }
+  function buka(teks, o, mode, cb) {
+    o = o || {};
+    var bg = el('div', 'pp-bg');
+    bg.setAttribute('style', 'position:fixed;inset:0;z-index:99999;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;padding:16px;font-family:inherit');
+    var bx = el('div', 'pp-box');
+    bx.setAttribute('style', 'background:#fff;color:#0f172a;border-radius:16px;max-width:380px;width:100%;padding:20px;box-shadow:0 20px 50px rgba(0,0,0,.3)');
+    bx.appendChild(Object.assign(el('div', 'pp-jd', o.judul || (mode === 'info' ? 'Informasi' : 'Konfirmasi')), {})).setAttribute('style', 'font-weight:800;font-size:17px;margin-bottom:8px');
+    bx.appendChild(el('div', 'pp-tx', teks || '')).setAttribute('style', 'font-size:14px;line-height:1.5;color:#334155');
+    if (o.rincian) {
+      var r = el('div', 'pp-rc'); r.setAttribute('style', 'margin-top:10px;padding:10px;border-radius:10px;background:#f1f5f9;font-size:13px');
+      if (o.rincianJudul) { var rj = el('div', '', o.rincianJudul); rj.setAttribute('style', 'font-weight:700;margin-bottom:2px'); r.appendChild(rj); }
+      r.appendChild(el('div', '', o.rincian)); bx.appendChild(r);
+    }
+    var inp = null;
+    if (mode === 'isi') {
+      inp = document.createElement(o.sandi ? 'input' : 'textarea'); if (o.sandi) inp.type = 'password';
+      inp.placeholder = o.placeholder || ''; inp.setAttribute('style', 'width:100%;margin-top:10px;padding:10px;border:1px solid #cbd5e1;border-radius:10px;font:inherit;box-sizing:border-box');
+      bx.appendChild(inp);
+    }
+    var bar = el('div', 'pp-bar'); bar.setAttribute('style', 'display:flex;gap:8px;justify-content:flex-end;margin-top:16px');
+    function tutup() { if (bg.parentNode) bg.parentNode.removeChild(bg); }
+    function tombol(t, warna, fn) { var b = el('button', '', t); b.type = 'button'; b.setAttribute('style', 'border:0;border-radius:10px;padding:10px 16px;font:inherit;font-weight:700;cursor:pointer;' + warna); b.onclick = fn; bar.appendChild(b); return b; }
+    if (mode !== 'info') tombol('Batal', 'background:#e2e8f0;color:#334155', tutup);
+    var ya = tombol(o.ok || 'OK', 'color:#fff;background:' + (o.bahaya ? '#dc2626' : '#2563eb'), function () {
+      var v = inp ? inp.value : undefined;
+      if (inp && o.wajib && !String(v).trim()) { inp.focus(); return; }
+      tutup(); if (cb) cb(v);
+    });
+    bx.appendChild(bar); bg.appendChild(bx);
+    bg.addEventListener('click', function (e) { if (e.target === bg) tutup(); });
+    document.body.appendChild(bg); (inp || ya).focus();
+  }
+  window.Popup = {
+    tanya: function (t, o, cb) { buka(t, o, 'tanya', cb); },
+    info: function (t, o) { buka(t, o, 'info'); },
+    isi: function (t, o, cb) { buka(t, o, 'isi', cb); }
+  };
+})();
 /* SMART Mariso 1 - tambahan tampilan laptop. Hanya bekerja di layar >= 1100px; di HP tidak melakukan apa pun. */
 (function () {
   var mq = window.matchMedia ? window.matchMedia('(min-width: 1100px)') : null;
