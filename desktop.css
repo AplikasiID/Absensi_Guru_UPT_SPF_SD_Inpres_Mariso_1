@@ -302,3 +302,47 @@
   .pan-top .pan-dt select { margin-left: 0; }
 
 }
+
+/* ===== Laptop: butir Perangkat Ajar (Laporan > Ajar) jadi satu baris per butir =====
+   Hanya tampilan. Markup, tombol, dan skrip tidak diubah. Di bawah 1100px (HP) tidak ada yang berubah. */
+@media (min-width: 1100px) {
+  #paneAjar .pj-it { display: grid; grid-template-columns: minmax(230px, 1fr) minmax(0, 1.5fr) auto; align-items: center; column-gap: 16px; row-gap: 4px; padding: 12px 18px; }
+  #paneAjar .pj-it > .pj-row { grid-column: 1; grid-row: 1; }
+  #paneAjar .pj-it > .pj-lnk { grid-column: 2; grid-row: 1; margin: 0; width: 100%; box-sizing: border-box; }
+  #paneAjar .pj-it > .pj-btns { grid-column: 3; grid-row: 1; margin: 0; justify-content: flex-end; flex-wrap: nowrap; }
+  #paneAjar .pj-it.kunci > .pj-btns { grid-column: 2 / 4; }
+  #paneAjar .pj-it > .pj-ntc { grid-column: 1 / -1; grid-row: 2; margin: 2px 0 0 40px; }
+  #paneAjar .pj-it > .pj-need { grid-column: 1 / -1; grid-row: 3; margin: 0 0 0 40px; }
+  #paneAjar .pj-it > .pj-m { grid-column: 1 / -1; grid-row: 4; margin: 2px 0 0 40px; }
+  #paneAjar .pj-it .pj-tk { margin-left: 10px; white-space: nowrap; }
+  #paneAjar .pj-row b { overflow: hidden; text-overflow: ellipsis; }
+  #paneAjar .pj-b { white-space: nowrap; min-height: 40px; display: inline-flex; align-items: center; }
+}
+
+/* ===== Laptop: Admin > Perangkat Ajar (pemeriksaan) lebih ringkas =====
+   Hanya tampilan. Markup, tombol, dan skrip tidak diubah. Di bawah 1100px (HP) tidak ada yang berubah. */
+@media (min-width: 1100px) {
+  #viewAdmin #ajBox.open { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 320px); column-gap: 14px; align-items: center; }
+  #viewAdmin #ajBox > .aj-sem { grid-column: 1 / -1; grid-row: 1; }
+  #viewAdmin #ajBox > .ajs { grid-column: 1 / -1; grid-row: 2; }
+  #viewAdmin #ajBox > .ajc { grid-column: 1; grid-row: 3; margin-bottom: 0; }
+  #viewAdmin #ajBox > .ajq { grid-column: 2; grid-row: 3; margin: 0; }
+  #viewAdmin #ajBox > #ajList { grid-column: 1 / -1; grid-row: 4; }
+  #viewAdmin #ajBox .ajl { flex-direction: row; gap: 28px; }
+  #viewAdmin #ajBox .ajl > div { flex: 1; justify-content: space-between; }
+  #viewAdmin #ajList .ajg { max-width: 260px; }
+  #viewAdmin #ajList .ajg i { height: 6px; }
+  #viewAdmin #ajList .ajk .lap-row { padding: 12px 10px; border-radius: 12px; }
+  #viewAdmin #ajList .ajk .lap-row.bisa:hover { background: #f4f7fe; }
+  #viewAdmin #ajList .aj-det { margin: 0 0 14px 58px; padding: 8px 16px 14px; }
+  #viewAdmin #ajList .aj-act { justify-content: flex-end; }
+  #viewAdmin #ajList .aj-act button { flex: 0 0 auto; min-width: 170px; }
+}
+
+/* Pesan "Login di laptop belum aktif" hanya untuk HP; di laptop tidak ditampilkan. */
+@media (min-width: 1100px) { #lnkLaptopOff { display: none !important; } }
+
+/* Laptop: tombol "Atau pakai kode 6 angka" tepat di bawah kode QR (opsi kedua). */
+@media (min-width: 1100px) {
+  body.pg-laptop .card:has(.qrbox) #btnKodeAlt { grid-column: 2; grid-row: 4; width: 100%; margin-top: 12px; }
+}
