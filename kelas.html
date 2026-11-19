@@ -506,7 +506,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
     if (!jr) $('paneJur').innerHTML = '<div class="sk"></div>';
     run('getJurnalGuru', [bulan || jrBulan || ''], function (r) {
       if (my !== jrSeq) return;
-      if (!r || !r.ok) { $('paneJur').innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; return; }
+      if (!r || !r.ok) { $('paneJur').innerHTML = kosongHtml(r); return; }
       jr = r; jrBulan = r.bulan; jurGambar();
     }, function () { if (my === jrSeq) $('paneJur').innerHTML = '<div class="empty">' + GAGAL + '</div>'; });
   }
@@ -663,7 +663,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
     var my = ++abSeq; $('paneAbs').innerHTML = '<div class="sk"></div>';
     run('getAbsenKelas', [abKelas, tgl || abTgl || ''], function (r) {
       if (my !== abSeq) return;
-      if (!r || !r.ok) { $('paneAbs').innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; return; }
+      if (!r || !r.ok) { $('paneAbs').innerHTML = kosongHtml(r); return; }
       ab = r; abTgl = r.tanggal; abStat = {}; r.siswa.forEach(function (s) { if (s.s) abStat[s.id] = s.s; }); absGambar();
     }, function () { if (my === abSeq) $('paneAbs').innerHTML = '<div class="empty">' + GAGAL + '</div>'; });
   }
@@ -731,7 +731,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
     var my = ++swSeq; $('paneSis').innerHTML = '<div class="sk"></div>';
     run('getSiswaKelas', [swKelas], function (r) {
       if (my !== swSeq) return;
-      if (!r || !r.ok) { $('paneSis').innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; return; }
+      if (!r || !r.ok) { $('paneSis').innerHTML = kosongHtml(r); return; }
       sw = r; sisGambar();
     }, function () { if (my === swSeq) $('paneSis').innerHTML = '<div class="empty">' + GAGAL + '</div>'; });
   }
@@ -1137,7 +1137,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
     var my = ++dsSeq; $('paneDs').innerHTML = '<div class="sk"></div>';
     run('getDashboardSiswaWali', [dsKelas, dsBulan], function (r) {
       if (my !== dsSeq) return;
-      if (!r || !r.ok) { $('paneDs').innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; return; }
+      if (!r || !r.ok) { $('paneDs').innerHTML = kosongHtml(r); return; }
       ds = r; dsKelas = r.kelasPilih; dsBulan = r.bulan; dsGambar();
     }, function () { if (my === dsSeq) $('paneDs').innerHTML = '<div class="empty">' + GAGAL + '</div>'; });
   }
@@ -1166,7 +1166,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
     var my = ++rwSeq; $('paneRiw').innerHTML = '<div class="sk"></div>';
     run('getRiwayatAbsenKelas', [rwKelas, bulan || rwBulan || ''], function (r) {
       if (my !== rwSeq) return;
-      if (!r || !r.ok) { $('paneRiw').innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; return; }
+      if (!r || !r.ok) { $('paneRiw').innerHTML = kosongHtml(r); return; }
       rw = r; rwBulan = r.bulan; rwGambar();
     }, function () { if (my === rwSeq) $('paneRiw').innerHTML = '<div class="empty">' + GAGAL + '</div>'; });
   }
@@ -1219,10 +1219,15 @@ textarea.kg-in{resize:vertical;min-height:84px}
   });
 
   // ================= MULAI =================
+  // Gerbang absen masuk: kalau server menolak karena guru belum absen masuk, tampilkan layar yang jelas.
+  function kosongHtml(r) {
+    if (r && r.gerbang) return '<div class="empty"><div style="font-size:30px;margin-bottom:6px">🔒</div><b style="display:block;font-size:16px;color:var(--ink);margin-bottom:4px">Absen masuk dulu ya</b>Menu ini terbuka setelah kamu absen masuk hari ini.<br><a href="index.html" style="display:inline-block;margin-top:14px;padding:11px 22px;border-radius:14px;background:#1d4ed8;color:#fff;font-weight:800;text-decoration:none">Ke Beranda untuk Absen</a></div>';
+    return '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>';
+  }
   function mulai() {
     if (!kode) { $('paneJur').innerHTML = '<div class="empty">Buka lewat menu Absen dulu, lalu pilih namamu.</div>'; return; }
-    run('getKelasGuru', [], function (r) {
-      if (!r || !r.ok) { $('paneJur').innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; return; }
+    run('getKelasGuru', [true], function (r) {
+      if (!r || !r.ok) { $('paneJur').innerHTML = kosongHtml(r); return; }
       if (r.tampil === false) { try { $('guruPill').textContent = String(r.nama || '').split(',')[0]; $('guruKelas').textContent = r.jabatan || ''; $('sub').textContent = ''; } catch (e) { } $('paneJur').innerHTML = '<div class="empty">Menu Kelas khusus untuk guru.</div>'; return; }
       info = r; try { if (r.kelas.length) { var ln = $('lnkNilai'); ln.href = 'nilai.html?kode=' + enc; ln.style.display = 'flex'; localStorage.setItem('sm1_nilai_ok', '1'); window.dispatchEvent(new Event('sm1-nilai-ok')); } } catch (e) { }
       try { $('guruPill').textContent = String(r.nama || '').split(',')[0]; $('guruKelas').textContent = r.jabatan || ''; } catch (e) { }
