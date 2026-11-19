@@ -315,6 +315,11 @@ textarea.kg-in{resize:vertical;min-height:84px}
     } else html += '<div class="hint">Sudah lengkap, tidak bisa diubah lagi.</div>';
     box.innerHTML = html;
   }
+  // Gerbang absen masuk: kalau server menolak karena guru belum absen masuk, tampilkan layar yang jelas.
+  function kosongHtml(r) {
+    if (r && r.gerbang) return '<div class="empty"><div style="font-size:30px;margin-bottom:6px">🔒</div><b style="display:block;font-size:16px;color:var(--ink);margin-bottom:4px">Absen masuk dulu ya</b>Menu ini terbuka setelah kamu absen masuk hari ini.<br><a href="index.html" style="display:inline-block;margin-top:14px;padding:11px 22px;border-radius:14px;background:#1d4ed8;color:#fff;font-weight:800;text-decoration:none">Ke Beranda untuk Absen</a></div>';
+    return '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>';
+  }
   function ajPesan(t, j) { var e = $('ajSt'); if (!e) return; e.textContent = t || ''; e.className = 'st ' + (j || ''); }
   function ajMuatData() {
     var box = $('paneAjar');
@@ -322,7 +327,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
     box.innerHTML = '<div class="sk"></div>'; ajMuat = true;
     google.script.run
       .withSuccessHandler(function (r) {
-        if (!r || !r.ok) { box.innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; ajMuat = false; return; }
+        if (!r || !r.ok) { box.innerHTML = kosongHtml(r); ajMuat = false; return; }
         aj = r; $('guruPill').textContent = r.nama.split(',')[0]; $('guruKelas').textContent = r.jabatan || '';
         ajDraft = {}; (r.items || []).forEach(function (it) { ajDraft[it.key] = { ada: !!it.ada, link: it.link || '', edit: false, need: false, busy: false, up: false, msg: '', msgJ: '' }; });
         ajGambar();
@@ -516,7 +521,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
     google.script.run
       .withSuccessHandler(function (r) {
         if (my !== kgSeq) return; kgMuat = false;
-        if (!r || !r.ok) { var m = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; if (kgSiap) $('kgList').innerHTML = m; else box.innerHTML = m; return; }
+        if (!r || !r.ok) { var m = kosongHtml(r); if (kgSiap) $('kgList').innerHTML = m; else box.innerHTML = m; return; }
         kg = r; kgBulan = r.bulan; isiPill(r);
         if (!kgSiap) kgBangun();
         kgGambarList(); kgSalinTampil();
@@ -675,7 +680,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
     google.script.run
       .withSuccessHandler(function (r) {
         if (my !== stSeq) return; stMuat = false;
-        if (!r || !r.ok) { box.innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; return; }
+        if (!r || !r.ok) { box.innerHTML = kosongHtml(r); return; }
         st = r; isiPill(r); stGambar();
       })
       .withFailureHandler(function (e_) { if (my !== stSeq) return; stMuat = false; box.innerHTML = '<div class="empty">Tidak bisa terhubung ke server. Periksa internet, lalu buka lagi.</div>'; })
@@ -777,7 +782,7 @@ textarea.kg-in{resize:vertical;min-height:84px}
     google.script.run
       .withSuccessHandler(function (r) {
         riwMuat = false;
-        if (!r || !r.ok) { box.innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; return; }
+        if (!r || !r.ok) { box.innerHTML = kosongHtml(r); return; }
         riw = r; $('guruPill').textContent = r.nama.split(',')[0]; $('guruKelas').textContent = r.jabatan || ''; riwGambar();
       })
       .withFailureHandler(function (e_) { riwMuat = false; box.innerHTML = '<div class="empty">Tidak bisa terhubung ke server. Periksa internet, lalu buka lagi.</div>'; })
