@@ -1147,6 +1147,39 @@ var e='?kode='+encodeURIComponent(k)+'&dev='+encodeURIComponent(d);
 var set=function(id,h){var a=document.getElementById(id);if(a){if(a.classList.contains('on')){a.onclick=function(){return false;};}else a.href=h;}};
 set('segRiwayat','riwayat.html'+e);set('segGrafik','grafik.html'+e);set('navLaporanLink','laporan.html'+e);set('navRiwayatLink','riwayat.html'+e);})();
 </script>
+<script>
+/* Gerbang absen masuk: pada hari kerja, sebelum absen masuk, menu Laporan & Kelas di menu bawah diredupkan dan tidak bisa dibuka (aturan sama dengan Beranda; server juga menolak). */
+(function () {
+  var q = new URLSearchParams(location.search), k = q.get('kode') || '', d = q.get('dev') || '';
+  try { if (!k) k = localStorage.getItem('absensi_guru_terakhir') || ''; if (!d) d = localStorage.getItem('absensi_device_id') || ''; } catch (e) { }
+  if (!k || !(window.google && google.script && google.script.run)) return;
+  var st = document.createElement('style');
+  st.textContent = 'body.gerbang #navLaporanLink,body.gerbang .bnav a[href^="laporan.html"],body.gerbang .bnav a[href^="kelas.html"],body.gerbang #dskLaporan,body.gerbang #dskKelas{opacity:.45}'
+    + '.gb-toast{position:fixed;left:50%;transform:translateX(-50%);bottom:110px;z-index:99999;background:#7a4a00;color:#fff;padding:11px 18px;border-radius:14px;font:700 13.5px/1.3 system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.3);max-width:90%;text-align:center}';
+  document.head.appendChild(st);
+  var terkunci = false, tt = null;
+  function toast() {
+    var m = 'Absen masuk dulu ya, baru menu ini terbuka.';
+    var el = document.querySelector('.gb-toast'); if (el) el.remove();
+    el = document.createElement('div'); el.className = 'gb-toast'; el.textContent = m; document.body.appendChild(el);
+    clearTimeout(tt); tt = setTimeout(function () { el.remove(); }, 2600);
+  }
+  document.addEventListener('click', function (e) {
+    if (!terkunci) return;
+    var a = e.target.closest ? e.target.closest('a,button') : null; if (!a) return;
+    var h = a.getAttribute('href') || '', id = a.id || '';
+    if (id === 'navLaporanLink' || id === 'dskLaporan' || id === 'dskKelas' || /^(laporan|kelas)\.html/.test(h)) {
+      if (!a.closest('.bnav') && !/^dsk/.test(id)) return;
+      e.stopImmediatePropagation(); e.preventDefault(); toast();
+    }
+  }, true);
+  google.script.run.withSuccessHandler(function (s) {
+    if (!s) return;
+    var kunci = s.hariKerja === true && s.deviceCocok !== false && !s.sudahMasuk && !s.sudahKeluar && !s.ket;
+    terkunci = !!kunci; document.body.classList.toggle('gerbang', terkunci);
+  }).withFailureHandler(function () { }).getStatusHariIni(k, d);
+})();
+</script>
 <script src="desktop.js"></script>
 </body>
 </html>
