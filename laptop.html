@@ -34,6 +34,7 @@ button, input, textarea { font-family: inherit; }
 .card { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 18px; margin-bottom: 14px; box-shadow: 0 6px 20px rgba(30,58,138,.07); }
 .card h2 { margin: 0 0 6px; font-size: 17px; font-weight: 800; } .card p { margin: 0 0 12px; font-size: 14px; line-height: 1.55; color: var(--muted); font-weight: 600; }
 .btn { width: 100%; min-height: 52px; border: 0; border-radius: 16px; background: var(--blue); color: #fff; font-size: 15px; font-weight: 800; cursor: pointer; } .btn:disabled { opacity: .55; }
+.card.peringatan { background: var(--warn); border-color: rgba(245,158,11,.45); } .card.peringatan h2 { color: var(--warnink); }
 .btn.red { background: #fee2e2; color: #b91c1c; margin-top: 10px; } .btn.ghost { background: var(--info); color: var(--infoink); margin-top: 10px; }
 .kode { font-size: 42px; font-weight: 800; letter-spacing: 8px; text-align: center; color: var(--infoink); background: var(--info); border-radius: 18px; padding: 16px 8px; margin: 6px 0 8px; font-variant-numeric: tabular-nums; }
 .ket { text-align: center; font-size: 13px; font-weight: 700; color: var(--muted); }
@@ -44,6 +45,7 @@ input.kin { width: 100%; min-height: 56px; border: 2px solid var(--line); border
 .back { display: inline-block; margin: 14px 0 0; color: var(--blue); font-weight: 800; font-size: 14px; text-decoration: none; }
 .qrbox { display: flex; justify-content: center; margin: 8px 0 4px; } .qrbox svg { width: min(260px, 70vw); height: auto; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
 .lgkh { margin: 8px 0 0; padding-left: 20px; font-size: 14px; font-weight: 600; line-height: 1.7; color: var(--ink); }
+select.kin { font-size: 16px; letter-spacing: 0; text-align: left; padding: 0 14px; }
 .scanv { width: 100%; border-radius: 16px; background: #000; aspect-ratio: 4 / 3; object-fit: cover; margin-top: 10px; }
 </style>
 <link rel="stylesheet" href="desktop.css">
@@ -92,7 +94,7 @@ input.kin { width: 100%; min-height: 56px; border: 2px solid var(--line); border
       if (!r.izin) h = '<div class="card"><h2>Belum diaktifkan</h2><p>Login di laptop belum diaktifkan untuk kamu. Minta kepala sekolah atau admin mengaktifkannya di Pengaturan.</p></div>';
       else if (r.iniUtama) {
         h = '<div class="card"><h2>Tautkan laptop</h2><p>Buka halaman ini di laptop sampai muncul kode QR, lalu pindai kode itu dari sini.</p><button class="btn" id="btnScan">Pindai QR dari laptop</button><div id="scanBox"></div><div class="pesan" id="pesan2"></div></div><div class="card"><h2>Atau pakai kode 6 angka</h2><p>Buat kode, lalu ketik kode itu di laptop. Kode berlaku 5 menit dan hanya bisa dipakai sekali.</p><button class="btn ghost" id="btnKode">Buat kode untuk laptop</button><div id="kodeBox"></div><div class="pesan" id="pesan"></div></div>';
-        if (r.adaTambahan) h += '<div class="card"><h2>Laptop terdaftar</h2><p>' + esc(r.label || 'Laptop') + (r.sejak ? ' sejak ' + esc(r.sejak) : '') + '. Memasangkan laptop baru akan menggantikannya.</p><button class="btn red" id="btnLepas">Lepas laptop</button></div>';
+        if (r.adaTambahan) h = '<div class="card peringatan"><h2>Sudah ada laptop tersambung</h2><p><b>' + esc(r.label || 'Laptop') + '</b>' + (r.sejak ? ' (sejak ' + esc(r.sejak) + ')' : '') + '. Satu guru hanya bisa satu laptop. Kalau kamu menyambungkan laptop lain, laptop ini akan <b>diganti dan otomatis keluar</b>.</p><button class="btn red" id="btnLepas">Lepas laptop</button></div>' + h;
       } else if (r.iniTambahan) {
         h = '<div class="card"><h2>Perangkat ini terdaftar</h2><p>Perangkat ini terdaftar sebagai laptop ' + esc(r.nama) + (r.sejak ? ' sejak ' + esc(r.sejak) : '') + '. Absen Masuk dan Pulang tetap dari HP.</p>' + tautan() + '<button class="btn red" id="btnLepas">Lepas perangkat ini</button><div class="pesan" id="pesan"></div></div>';
       } else if (!r.adaUtama) {
@@ -168,8 +170,9 @@ input.kin { width: 100%; min-height: 56px; border: 2px solid var(--line); border
       if (!r || !r.ok) { $('isi').innerHTML = '<div class="card"><h2>Tidak bisa membuat QR</h2><p>' + esc((r && r.message) || GAGAL) + '</p><button class="btn" id="btnUlang">Coba lagi</button></div>'; $('btnUlang').onclick = mulaiQR; return; }
       var url = location.href.split('#')[0].split('?')[0] + '?q=' + r.token, t0 = Date.now(), sisa = r.detik || 150;
       var svg; try { svg = SM1QR.svg(url, 260); } catch (e) { svg = '<p>' + esc(url) + '</p>'; }
-      $('isi').innerHTML = '<div class="card"><h2>Tautkan laptop ini</h2><div class="qrbox">' + svg + '</div><div class="ket" id="qrKet"></div><ol class="lgkh"><li>Buka SMART Mariso 1 di <b>HP utama</b> kamu.</li><li>Ketuk <b>Sambungkan perangkat laptop</b>, lalu <b>Pindai QR dari laptop</b>.</li><li>Arahkan kamera HP ke kode ini, lalu ketuk <b>Ya</b>.</li></ol><div class="pesan" id="pesan"></div><button class="btn ghost" id="btnMuatQR">Muat ulang QR</button></div>';
+      $('isi').innerHTML = '<div class="card"><h2>Tautkan laptop ini</h2><div class="qrbox">' + svg + '</div><div class="ket" id="qrKet"></div><ol class="lgkh"><li>Buka SMART Mariso 1 di <b>HP utama</b> kamu.</li><li>Ketuk <b>Sambungkan perangkat laptop</b>, lalu <b>Pindai QR dari laptop</b>.</li><li>Arahkan kamera HP ke kode ini, lalu ketuk <b>Ya</b>.</li></ol><div class="pesan" id="pesan"></div><button class="btn ghost" id="btnMuatQR">Muat ulang QR</button><button class="btn ghost" id="btnKodeAlt">Atau pakai kode 6 angka</button></div>';
       $('btnMuatQR').onclick = function () { hentiQR(); qrUlang = 0; mulaiQR(); };
+      $('btnKodeAlt').onclick = tampilKode;
       function tik() { var s = Math.max(0, sisa - Math.floor((Date.now() - t0) / 1000)), e = $('qrKet'); if (e) e.textContent = s > 0 ? 'Kode berlaku ' + Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2) + ' lagi' : 'Memperbarui kode...'; }
       tik(); qrTimer = setInterval(tik, 1000);
       qrPoll = setInterval(function () {
@@ -186,6 +189,21 @@ input.kin { width: 100%; min-height: 56px; border: 2px solid var(--line); border
           }
         }).cekTautanLaptop(r.token, dev);
       }, 2500);
+    });
+  }
+  // Pindah dari layar QR ke kode 6 angka. Kalau nama belum diketahui, pilih nama dulu.
+  function tampilKode() {
+    hentiQR(); pastikanDev();
+    if (kode) { enc = encodeURIComponent(kode) + '&dev=' + encodeURIComponent(dev); muat(); return; }
+    $('sub').textContent = 'Pakai kode 6 angka';
+    $('isi').innerHTML = '<div class="card"><h2>Pilih namamu</h2><p>Pilih akun yang mau disambungkan, lalu masukkan kode 6 angka dari HP utama.</p><select class="kin sel" id="pilNama" aria-label="Pilih nama"><option value="">Memuat nama...</option></select><button class="btn" id="btnLanjut" disabled>Lanjut</button><button class="btn ghost" id="btnBalikQR">Kembali ke kode QR</button><div class="pesan" id="pesan"></div></div>';
+    $('btnBalikQR').onclick = mulaiQR;
+    var sel = $('pilNama'), lanjut = $('btnLanjut');
+    sel.onchange = function () { lanjut.disabled = !sel.value; };
+    lanjut.onclick = function () { if (!sel.value) return; kode = sel.value; enc = encodeURIComponent(kode) + '&dev=' + encodeURIComponent(dev); muat(); };
+    panggil('getDaftarGuru', [], function (list) {
+      if (!list || !list.length) { sel.innerHTML = '<option value="">Daftar nama tidak tersedia</option>'; pesan('err', 'Daftar nama tidak bisa dimuat. Coba lagi atau pakai kode QR.'); return; }
+      sel.innerHTML = '<option value="">Pilih nama...</option>' + list.map(function (g) { return '<option value="' + esc(g.kode) + '">' + esc(g.nama) + '</option>'; }).join('');
     });
   }
   function tutupKamera() { camStop = true; if (camStream) { try { camStream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) { } camStream = null; } var v = $('scanBox'); if (v) v.innerHTML = ''; }
@@ -220,9 +238,7 @@ input.kin { width: 100%; min-height: 56px; border: 2px solid var(--line); border
     panggil('infoTautanLaptop', [kode, dev, token], function (r) {
       if (!r || !r.ok) { $('isi').innerHTML = '<div class="card"><h2>Tidak bisa menautkan</h2><p>' + esc((r && r.message) || GAGAL) + '</p><a class="lk" href="laptop.html">Kembali</a></div>'; return; }
       $('sub').textContent = r.nama || '';
-      $('isi').innerHTML = '<div class="card"><h2>Tautkan laptop ini?</h2><p>Perangkat: <b>' + esc(r.label || 'Laptop') + '</b><br>Akun: <b>' + esc(r.nama) + '</b></p><p>Laptop ini bisa membuka Riwayat, Laporan, dan Kelas atas nama kamu. Absen Masuk dan Pulang tetap dari HP. Tautkan hanya jika laptop itu ada di depanmu.</p><button class="btn" id="btnYa">Ya, tautkan</button><button class="btn red" id="btnTidak">Tidak</button><div class="pesan" id="pesan"></div></div>';
-      $('btnTidak').onclick = function () { location.href = 'laptop.html'; };
-      $('btnYa').onclick = function () {
+      var ya = function () {
         busy(true); pesan('info', 'Menautkan...');
         panggil('setujuiTautanLaptop', [kode, dev, token], function (c) {
           busy(false);
@@ -230,6 +246,12 @@ input.kin { width: 100%; min-height: 56px; border: 2px solid var(--line); border
           else pesan('err', (c && c.message) || 'Gagal menautkan.');
         });
       };
+      var tampil = function (peringatan) { $('isi').innerHTML = (peringatan || '') + '<div class="card"><h2>Tautkan laptop ini?</h2><p>Perangkat: <b>' + esc(r.label || 'Laptop') + '</b><br>Akun: <b>' + esc(r.nama) + '</b></p><p>Laptop ini bisa membuka Riwayat, Laporan, dan Kelas atas nama kamu. Absen Masuk dan Pulang tetap dari HP. Tautkan hanya jika laptop itu ada di depanmu.</p><button class="btn" id="btnYa">Ya, tautkan</button><button class="btn red" id="btnTidak">Tidak</button><div class="pesan" id="pesan"></div></div>';
+      $('btnTidak').onclick = function () { location.href = 'laptop.html'; };
+      $('btnYa').onclick = ya; };
+      panggil('infoLaptopGuru', [kode, dev], function (i2) {
+        tampil(i2 && i2.ok && i2.adaTambahan ? '<div class="card peringatan"><h2>Laptop lama akan diganti</h2><p>Sudah ada laptop tersambung: <b>' + esc(i2.label || 'Laptop') + '</b>' + (i2.sejak ? ' (sejak ' + esc(i2.sejak) + ')' : '') + '. Satu guru hanya bisa satu laptop, jadi laptop lama akan otomatis keluar kalau kamu menautkan laptop ini.</p></div>' : '');
+      });
     });
   }
   $('kembali').href = 'index.html';
