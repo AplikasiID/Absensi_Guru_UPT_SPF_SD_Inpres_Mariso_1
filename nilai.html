@@ -664,10 +664,15 @@ table.g select { width: 100%; min-width: 120px; height: 38px; border: 1px solid 
   (function () { var sm = semAwal(); S.sem = ''; $('selMapel').innerHTML = '<option>Memuat…</option>'; fillSel($('selSem'), sm, sm[0], semLabel); })();
 
   // ---------- Mulai ----------
+  // Gerbang absen masuk: kalau server menolak karena guru belum absen masuk, tampilkan layar yang jelas.
+  function kosongHtml(r) {
+    return '<div class="empty"><div style="font-size:30px;margin-bottom:6px">🔒</div><b style="display:block;font-size:16px;color:var(--ink);margin-bottom:4px">Absen masuk dulu ya</b>Menu ini terbuka setelah kamu absen masuk hari ini.<br><a href="index.html" style="display:inline-block;margin-top:14px;padding:11px 22px;border-radius:14px;background:#1d4ed8;color:#fff;font-weight:800;text-decoration:none">Ke Beranda untuk Absen</a></div>';
+  }
   function mulai() {
     if (!kode) { $('pIn').innerHTML = '<div class="empty">Buka lewat menu Absen dulu, lalu pilih namamu.</div>'; return; }
     S.rapTgl = ls('sm1_rapor_tgl');
-    run('getKelasGuru', [], function (r) {
+    run('getKelasGuru', [true], function (r) {
+      if (r && r.gerbang) { try { $('sel').style.display = 'none'; $('seg').style.display = 'none'; } catch (e) { } $('pIn').innerHTML = kosongHtml(r); return; }
       if (!r || !r.ok) { $('pIn').innerHTML = '<div class="empty">' + esc((r && r.message) || 'Gagal memuat.') + '</div>'; return; }
       try { $('guruPill').textContent = String(r.nama || '').split(',')[0]; $('guruKelas').textContent = r.jabatan || ''; } catch (e) { }
       if (r.tampil === false || !r.kelas.length) { ls('sm1_nilai_ok', '0'); $('sel').style.display = 'none'; $('seg').style.display = 'none'; $('pIn').innerHTML = '<div class="empty">' + esc(r.tampil === false ? 'Menu ini khusus untuk guru.' : (r.alasan || 'Belum ada kelas yang diatur.')) + '</div>'; return; }
