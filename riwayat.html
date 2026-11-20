@@ -851,6 +851,14 @@
       google.script.run
         .withSuccessHandler(function (result) {
           if (mySeq !== reqSeq) return; // bulan lain sudah dipilih
+          if (result && result.gerbang) {
+            // Gerbang absen masuk: belum absen masuk hari ini -> riwayat tidak ditampilkan (data tersimpan pun disembunyikan).
+            lastRows = []; activeFilter = null;
+            try { document.getElementById('summaryGrid').innerHTML = ''; } catch (e) { }
+            document.getElementById('content').innerHTML = '<div style="text-align:center;padding:30px 16px;color:var(--rw-muted,#5B6475);font-weight:600;font-size:13.5px;line-height:1.5"><div style="font-size:30px;margin-bottom:6px">\uD83D\uDD12</div><b style="display:block;font-size:16px;margin-bottom:4px">Absen masuk dulu ya</b>Menu ini terbuka setelah kamu absen masuk hari ini.<br><a href="index.html" style="display:inline-block;margin-top:14px;padding:11px 22px;border-radius:14px;background:#1d4ed8;color:#fff;font-weight:800;text-decoration:none">Ke Beranda untuk Absen</a></div>';
+            setSync('', false);
+            return;
+          }
           if (!result.ok) {
             if (!cached) { renderError(result.message); return; }
             setSync('Gagal memperbarui: ' + (result.message || 'HP tidak dikenali') + ' (data tersimpan pukul ' + jamTeks(cached._savedAt) + ').', true, true);
@@ -865,7 +873,7 @@
           if (!cached) { renderError('Terjadi kesalahan: ' + (err && err.message)); return; }
           setSync('Tidak bisa terhubung ke server \u2014 menampilkan data tersimpan pukul ' + jamTeks(cached._savedAt) + '. Mungkin belum lengkap.', true, true);
         })
-        .getRiwayatAbsen(kode, deviceId, bulanTahun);
+        .getRiwayatAbsen(kode, deviceId, bulanTahun, true);
     }
 
     function renderError(msg) {
@@ -1154,9 +1162,21 @@ set('segRiwayat','riwayat.html'+e);set('segGrafik','grafik.html'+e);set('navLapo
   try { if (!k) k = localStorage.getItem('absensi_guru_terakhir') || ''; if (!d) d = localStorage.getItem('absensi_device_id') || ''; } catch (e) { }
   if (!k || !(window.google && google.script && google.script.run)) return;
   var st = document.createElement('style');
-  st.textContent = 'body.gerbang #navLaporanLink,body.gerbang .bnav a[href^="laporan.html"],body.gerbang .bnav a[href^="kelas.html"],body.gerbang #dskLaporan,body.gerbang #dskKelas{opacity:.45}'
+  st.textContent = 'body.gerbang #navLaporanLink,body.gerbang .bnav a[href^="laporan.html"],body.gerbang .bnav a[href^="kelas.html"],body.gerbang .bnav a[href^="nilai.html"],body.gerbang #dskNilai{opacity:.45}'
+    + '@media (max-width:1099px){body.gerbang .bnav{padding-top:25px}.gb-grp{display:none}body.gerbang .gb-grp{display:block;position:absolute;top:7px;height:14px;font:800 9.5px/14px system-ui,sans-serif;letter-spacing:.3px;color:#7a4a00;text-align:center;white-space:nowrap;overflow:hidden;pointer-events:none}body.gerbang .gb-grp:after{content:"";position:absolute;left:6px;right:6px;bottom:0;height:1px;background:rgba(245,158,11,.55)}body.gerbang #navLaporanLink{box-shadow:-1px 0 0 rgba(148,163,184,.55)}body.gerbang #dskNilai{box-shadow:1px 0 0 rgba(148,163,184,.55)}}@media (min-width:1100px){.gb-grp{display:none!important}}@media (max-width:1099px) and (prefers-color-scheme:dark){body.gerbang .gb-grp{color:#fcd34d}}'
     + '.gb-toast{position:fixed;left:50%;transform:translateX(-50%);bottom:110px;z-index:99999;background:#7a4a00;color:#fff;padding:11px 18px;border-radius:14px;font:700 13.5px/1.3 system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.3);max-width:90%;text-align:center}';
   document.head.appendChild(st);
+
+  // Label kelompok "Terbuka setelah absen" di atas tab yang terkunci (HP).
+  function grp() {
+    var nav = document.getElementById('bnav') || document.querySelector('.bnav'); if (!nav) return;
+    var el = document.getElementById('gbGrp');
+    if (!el) { el = document.createElement('div'); el.id = 'gbGrp'; el.className = 'gb-grp'; el.textContent = '\uD83D\uDD12 TERBUKA SETELAH ABSEN'; nav.appendChild(el); }
+    var a = document.getElementById('navLaporanLink'), z = document.getElementById('dskNilai') || document.querySelector('.bnav .bn-row a[href^="kelas.html"]') || a; if (!a || !z || !a.offsetWidth || !z.offsetWidth) { el.style.width = '0'; return; }
+    var nr = nav.getBoundingClientRect(), ar = a.getBoundingClientRect(), zr = z.getBoundingClientRect();
+    el.style.left = (ar.left - nr.left) + 'px'; el.style.width = (zr.right - ar.left) + 'px';
+    el.textContent = (zr.right - ar.left) < 170 ? '\uD83D\uDD12 SETELAH ABSEN' : '\uD83D\uDD12 TERBUKA SETELAH ABSEN';
+  }
   var terkunci = false, tt = null;
   function toast() {
     var m = 'Absen masuk dulu ya, baru menu ini terbuka.';
@@ -1168,8 +1188,8 @@ set('segRiwayat','riwayat.html'+e);set('segGrafik','grafik.html'+e);set('navLapo
     if (!terkunci) return;
     var a = e.target.closest ? e.target.closest('a,button') : null; if (!a) return;
     var h = a.getAttribute('href') || '', id = a.id || '';
-    if (id === 'navLaporanLink' || id === 'dskLaporan' || id === 'dskKelas' || /^(laporan|kelas)\.html/.test(h)) {
-      if (!a.closest('.bnav') && !/^dsk/.test(id)) return;
+    if (id === 'navLaporanLink' || id === 'dskNilai' || /^(laporan|kelas|nilai)\.html/.test(h)) {
+      if (!a.closest('.bnav')) return;
       e.stopImmediatePropagation(); e.preventDefault(); toast();
     }
   }, true);
@@ -1177,6 +1197,7 @@ set('segRiwayat','riwayat.html'+e);set('segGrafik','grafik.html'+e);set('navLapo
     if (!s) return;
     var kunci = s.hariKerja === true && s.deviceCocok !== false && !s.sudahMasuk && !s.sudahKeluar && !s.ket;
     terkunci = !!kunci; document.body.classList.toggle('gerbang', terkunci);
+    if (terkunci && window.innerWidth < 1100) { grp(); setTimeout(grp, 700); window.addEventListener('resize', grp); }
   }).withFailureHandler(function () { }).getStatusHariIni(k, d);
 })();
 </script>
