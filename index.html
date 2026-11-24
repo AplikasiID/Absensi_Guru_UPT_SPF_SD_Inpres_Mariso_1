@@ -1322,6 +1322,18 @@ body.adm-terbatas [data-terbatas]{display:none!important}
 <style>
 #viewAdmin #admPanePg > .card2{background:transparent!important;box-shadow:none!important;padding:0!important;border:0!important}
 body.mode-admin #lnkLaptopRow{display:none!important}
+@media (max-width:1099px){
+#lnkLaptopRow{position:fixed;right:16px;bottom:96px;margin:0!important;z-index:40}
+#lnkLaptopRow .lap-btn{position:relative;min-height:48px;height:48px;padding:0 16px 0 10px;gap:8px;border-radius:24px;background:#1d4ed8;color:#fff;box-shadow:0 8px 18px rgba(29,78,216,.42)}
+#lnkLaptopRow .lap-btn .lap-ic{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2)}
+#lnkLaptopRow .lap-tx small,#lnkLaptopRow .lap-ch{display:none}
+#lnkLaptopRow .lap-tx b{font-size:13px;white-space:nowrap}
+#lnkLaptopRow .lap-dot{display:none;position:absolute;top:4px;right:4px;width:11px;height:11px;border-radius:50%;background:#22c55e;border:2px solid #fff}
+#lnkLaptopRow.tsb .lap-btn{width:48px;padding:0;justify-content:center}
+#lnkLaptopRow.tsb .lap-tx{display:none}
+#lnkLaptopRow.tsb .lap-dot{display:block}
+}
+@media (max-width:1099px) and (prefers-color-scheme:dark){#lnkLaptopRow .lap-btn{background:#3b5bdb;color:#fff}#lnkLaptopRow .lap-btn .lap-ic{background:rgba(255,255,255,.2)}#lnkLaptopRow .lap-dot{border-color:#1c1c24}}
 body.mode-admin #lnkLaptopOff{display:none!important}
 .lap-btn{display:flex;align-items:center;gap:12px;min-height:60px;padding:10px 14px;border-radius:16px;background:rgba(30,58,138,.10);color:#1e3a8a;text-decoration:none;text-align:left}
 .lap-btn .lap-ic,.lap-off .lap-ic{width:40px;height:40px;border-radius:12px;background:#1e3a8a;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -1360,7 +1372,7 @@ body.mode-admin #lnkLaptopOff{display:none!important}
       </select>
       <a href="#" id="riwayatLink" class="riwayat-link" onclick="return false;" style="display:none;">Riwayat</a>
     </div>
-    <div id="lnkLaptopRow" style="display:none;margin:10px 0 12px"><a href="#" id="lnkLaptop" class="lap-btn"><span class="lap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="11" rx="2"/><path d="M2 20h20"/></svg></span><span class="lap-tx"><b>Sambungkan ke laptop</b><small>Buka Riwayat, Laporan, dan Kelas di laptop</small></span><span class="lap-ch" aria-hidden="true">&rsaquo;</span></a></div>
+    <div id="lnkLaptopRow" style="display:none;margin:10px 0 12px"><a href="#" id="lnkLaptop" class="lap-btn"><span class="lap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="11" rx="2"/><path d="M2 20h20"/></svg></span><span class="lap-tx"><b>Sambung laptop</b><small>Buka Riwayat, Laporan, dan Kelas di laptop</small></span><span class="lap-ch" aria-hidden="true">&rsaquo;</span><i class="lap-dot" aria-hidden="true"></i></a></div>
     <div id="lnkLaptopOff" class="lap-off" style="display:none" role="note"><span class="lap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="11" rx="2"/><path d="M2 20h20"/></svg></span><span class="lap-tx"><b>Login di laptop belum aktif</b><small>Minta kepala sekolah atau admin mengaktifkannya di Pengaturan.</small></span></div>
 
     <div id="viewAbsen">
@@ -3183,15 +3195,26 @@ body.mode-admin #lnkLaptopOff{display:none!important}
       var kunci = 'absensi_laptop_izin_' + k, c = null, row = $('lnkLaptopRow');
       try { c = JSON.parse(localStorage.getItem(kunci) || 'null'); } catch (e) { }
       row.style.display = c && c.v === true ? '' : 'none';
+      row.classList.toggle('tsb', !!(c && c.s));
       $('lnkLaptopOff').style.display = c && c.v === false ? '' : 'none';
       if (c && typeof c.v === 'boolean' && Date.now() - c.t < 3600000) return;
       if (!window.google || !google.script || !google.script.run) return;
       google.script.run.withSuccessHandler(function (r) {
         if (!r || !r.ok) return;
-        try { localStorage.setItem(kunci, JSON.stringify({ v: !!r.izin, t: Date.now() })); } catch (e) { }
-        if ($('guruSelect').value === k) { row.style.display = r.izin ? '' : 'none'; $('lnkLaptopOff').style.display = r.izin ? 'none' : ''; }
+        try { localStorage.setItem(kunci, JSON.stringify({ v: !!r.izin, t: Date.now(), s: !!r.adaTambahan })); } catch (e) { }
+        if ($('guruSelect').value === k) { row.style.display = r.izin ? '' : 'none'; row.classList.toggle('tsb', !!r.adaTambahan); $('lnkLaptopOff').style.display = r.izin ? 'none' : ''; }
       }).withFailureHandler(function () { }).infoLaptopGuru(k, getDeviceId() || '');
     }
+    // Tombol bulat "Sambung laptop" melayang tepat di atas menu bawah (HP).
+    function posisiLaptop() {
+      var nav = document.getElementById('bnav') || document.querySelector('.bnav'), row = $('lnkLaptopRow');
+      if (!nav || !row || window.innerWidth >= 1100) return;
+      var b = Math.round(window.innerHeight - nav.getBoundingClientRect().top + 12);
+      if (row.getAttribute('data-b') !== String(b)) { row.style.bottom = b + 'px'; row.setAttribute('data-b', b); }
+    }
+    setInterval(posisiLaptop, 500); window.addEventListener('resize', posisiLaptop);
+    // Setelah menyentuh tombol ini, status laptop dianggap basi supaya tanda "tersambung" diperbarui saat kembali ke Beranda.
+    $('lnkLaptop').addEventListener('click', function () { try { var kk = 'absensi_laptop_izin_' + $('guruSelect').value, cc = JSON.parse(localStorage.getItem(kk) || 'null'); if (cc) { cc.t = 0; localStorage.setItem(kk, JSON.stringify(cc)); } } catch (e) { } });
     $('lnkLaptop').addEventListener('click', function (e) {
       e.preventDefault();
       var k = $('guruSelect').value; if (!k) return;
@@ -5032,7 +5055,7 @@ body.mode-admin #lnkLaptopOff{display:none!important}
     + '@media (min-width:1100px){.gb-box button{display:none}}';
   document.head.appendChild(st);
   var box = document.createElement('div'); box.className = 'gb-box'; box.id = 'gbBox';
-  box.innerHTML = '<h2>Absen masuk dulu ya</h2><p id="gbTeks">Menu Riwayat, Laporan, Kelas, dan Nilai terbuka setelah kamu absen masuk hari ini.</p><button type="button" id="gbBtn">Absen Masuk Sekarang</button><small>Izin atau sakit? Isi keterangan di halaman absen, lalu menu terbuka.</small>';
+  box.innerHTML = '<h2>Absen masuk dulu ya</h2><p id="gbTeks">Menu Riwayat dan Mengajar (Laporan, Kelas, Nilai) terbuka setelah kamu absen masuk hari ini.</p><button type="button" id="gbBtn">Absen Masuk Sekarang</button><small>Izin atau sakit? Isi keterangan di halaman absen, lalu menu terbuka.</small>';
   va.insertBefore(box, va.firstChild);
   document.getElementById('gbBtn').onclick = function () { var b = document.getElementById('btnMasuk'); if (b && !b.disabled) b.click(); };
 
@@ -5053,7 +5076,7 @@ body.mode-admin #lnkLaptopOff{display:none!important}
     if (k !== terkunci) { terkunci = k; document.body.classList.toggle('gerbang', k); }
     if (k && window.innerWidth < 1100) grp();
     var t = document.getElementById('gbTeks');
-    if (t && k) t.textContent = (window.innerWidth >= 1100) ? 'Absen masuk dilakukan dari HP. Menu Riwayat, Laporan, Kelas, dan Nilai terbuka setelah kamu absen masuk hari ini.' : 'Menu Riwayat, Laporan, Kelas, dan Nilai terbuka setelah kamu absen masuk hari ini.';
+    if (t && k) t.textContent = (window.innerWidth >= 1100) ? 'Absen masuk dilakukan dari HP. Menu Riwayat dan Mengajar (Laporan, Kelas, Nilai) terbuka setelah kamu absen masuk hari ini.' : 'Menu Riwayat, Laporan, Kelas, dan Nilai terbuka setelah kamu absen masuk hari ini.';
   }
   window.addEventListener('resize', function () { if (terkunci) grp(); });
   setInterval(hitung, 600); sel.addEventListener('change', function () { setTimeout(hitung, 0); });
@@ -5069,5 +5092,6 @@ body.mode-admin #lnkLaptopOff{display:none!important}
 })();
 </script>
 <script src="desktop.js"></script>
+<script src="nav4.js"></script>
 </body>
 </html>
